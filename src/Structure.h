@@ -3,7 +3,9 @@
 class Structure 
 {
 	public:
-		Structure();
+		Structure() {
+			this->name = "PLACEHOLDER_STRUCTURE_NAME";
+		};
 		std::string name;
 		void show_loot();
 		char symbol;
