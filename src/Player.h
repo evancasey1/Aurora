@@ -24,5 +24,7 @@ class Player
 			double speed;
 			double constitution;
 		};
+		double warmth;
+		double hunger;
 
 };

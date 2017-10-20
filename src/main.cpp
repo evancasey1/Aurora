@@ -6,10 +6,12 @@
 
 #include <iostream>
 #include "Player.h"
+#include "MapSection.h"
+
 
 int main(int argc, char *argv[]) 
 {
-	Player p("Human", "Test");
-	
+	//TODO
+	//Initialization functions	
 	return 0;
 }
