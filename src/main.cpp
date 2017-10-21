@@ -9,18 +9,46 @@
 #include "Player.h"
 #include "MapSection.h"
 
-static const int MAP_SIZE_SMALL  = 25;
-//static const int MAP_SIZE_MEDIUM = 50;
-//static const int MAP_SIZE_LARGE  = 75;
-//static const int MAP_SIZES[3] = {MAP_SIZE_SMALL, MAP_SIZE_MEDIUM, MAP_SIZE_LARGE};
-int chosen_map_size = 0;
+static const int MAP_SIZES[3] = {20, 35, 50};
+static int chosen_map_size = 0;
+
+int userSelectMapSize()
+{
+	//TODO:
+	//	Support for custom map size 
+	std::string input_str;
+	std::cout << "(1) Tiny\n(2) Normal\n(3) Epic\n";
+	std::cout << "Select your map size:\n>> "; 
+
+	while (true) {
+		std::cin >> input_str;
+		for(int i = 0; input_str[i]; i++) {
+			input_str[i] = tolower(input_str[i]);
+		}
+		if (!input_str.compare("1") || !input_str.compare("tiny")) {
+			return 0;
+		}
+		else if (!input_str.compare("2") || !input_str.compare("normal")) {
+			return 1;
+		}
+		else if (!input_str.compare("3") || !input_str.compare("epic")) {
+			return 2;
+		}
+		else if (!input_str.compare("quit") || !input_str.compare("exit")) {
+			return -1;
+		}
+		else {
+			std::cout << "Please enter a valid option.\n>> ";
+		}
+	}
+}
 
 MapSection getMapSectionFromIndex(int row, int col, MapSection map[])
 {
 	return *(map + ((row * chosen_map_size) + col));
 }
 
-void print_map(int size, MapSection map[]) {
+void printMap(int size, MapSection map[]) {
 
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
@@ -32,12 +60,17 @@ void print_map(int size, MapSection map[]) {
 
 int main(int argc, char *argv[]) 
 {
-	//TODO
-	//Dynamic map size
+	//TODO:
+	//	Main game loop
 
-	chosen_map_size = MAP_SIZE_SMALL;
-	MapSection map[MAP_SIZE_SMALL * MAP_SIZE_SMALL];
-	print_map(chosen_map_size, map);
+	int index = userSelectMapSize();
+	if (index == -1) {
+		std::cout << "\nExiting Aurora...\n";
+		exit(0);
+	}
+	chosen_map_size = MAP_SIZES[index];
+	MapSection *map = new MapSection[chosen_map_size * chosen_map_size];
+	printMap(chosen_map_size, map);
 
 	return 0;
 }

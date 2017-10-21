@@ -4,11 +4,13 @@
 class MapSection
 {
 	public:
-		MapSection() {
+		MapSection() 
+		{
 			this->biome  = "PLACEHOLDER";
 			this->symbol = 'P';
 		}
-		MapSection(std::string biome, char sym) {
+		MapSection(std::string biome, char sym) 
+		{
 			this->biome  = biome;
 			this->symbol = sym;
 		}
