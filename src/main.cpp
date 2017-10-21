@@ -6,20 +6,48 @@
 
 #include <iostream>
 #include <string>
+#include <ctype.h>
 #include "Player.h"
 #include "MapSection.h"
 
-static const int MAP_SIZES[3] = {20, 35, 45};
+static const int MAP_SIZES[3] = {20, 30, 40};
 static const int VERTICAL_PADDING = 2;
 static const int HORIZONTAL_PADDING = 0; //0 for now. Exists in case I want to try using it later
 static int user_interface_buffer_height = 50;
-static int command_input_cursor_position = 40; //it doesnt make very much sense why this can be less than ui_buf (above). TODO: understand this
+static int command_input_cursor_position = 43; //it doesnt make very much sense why this can be less than ui_buf (above). TODO: understand this
 static int chosen_map_size;
 
 void quitGame()
 {
 	std::cout << "\nExiting Aurora...\n";
 	exit(0);
+}
+
+//erases <num_lines> lines above cursor
+//TODO:
+// 	have this take in a start_from argument. This will require
+// 	using information about terminal window and saving cursor pos
+void eraseLines(int num_lines)
+{
+	for (int i = 0; i <= num_lines; i++) {
+		std::cout << "\033[1A\033[K";
+	}
+}
+
+void moveCursor(int up, int down, int right, int left)
+{
+	if (up > 0) {
+		std::cout << "\033[" + std::to_string(up) + "A";
+	}
+	if (down > 0) {
+		std::cout << "\033[" + std::to_string(down) + "B";
+	}
+	if (right > 0) {
+		std::cout << "\033[" + std::to_string(right) + "C";
+	}
+	if (left > 0) {
+		std::cout << "\033[" + std::to_string(left) + "D";
+	}
 }
 
 void mainGameLoop(Player *player, MapSection *map[])
@@ -90,12 +118,8 @@ int userSelectMapSize()
 			std::cout << ">> ";
 		}
 	}
-	//This is sort of messy, but essentially it clears the 
-	//5 lines written by this function. This needs to be a 
-	//utility function at some point
-	for (int i = 0; i < 6; i++) {
-		std::cout << "\033[1A\033[K";
-	}
+	//clears the prompt output
+	eraseLines(5);
 	return index;
 }
 
@@ -104,6 +128,8 @@ Player userCreatePlayer()
 	//TODO:
 	// 	Name selection
 	//	Attribute selection
+	//  break into 3 helper functions
+	//		get name, get race, get attrs
 	setAbsoluteCursorPosition(command_input_cursor_position, 0);
 
 	Player player;
@@ -133,6 +159,21 @@ Player userCreatePlayer()
 			//move up a row to prevent scrolling of terminal
 			std::cout << "\033[1A\033[K";
 			std::cout << ">> ";
+		}
+	}
+	input_str = "";
+	std::cout << "What is your name?\n>> ";
+	while(!input_str.compare("")) {
+		std::cin >> input_str;
+		for(int i = 0; input_str[i]; i++) {
+			if (!isalpha(input_str[i]) && !isblank(input_str[i])) {
+				input_str = "";
+				std::cout << "Your name must only be alphabetical.\r";
+				//move cursor up by 1
+				moveCursor(1, 0, 0, 0);
+				std::cout << ">> \033[K";
+				break;
+			}
 		}
 	}
 
