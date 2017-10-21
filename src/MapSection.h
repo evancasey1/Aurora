@@ -7,7 +7,7 @@ class MapSection
 		MapSection() 
 		{
 			this->biome  = "PLACEHOLDER";
-			this->symbol = 'P';
+			this->symbol = 'X';
 		}
 		MapSection(std::string biome, char sym) 
 		{

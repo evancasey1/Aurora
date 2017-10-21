@@ -3,15 +3,16 @@
 class Player 
 {
 	public:
+		Player();
 		Player (std::string race, std::string name);
 		void move(int distance, std::string direction);
-		void show_equipped();
-		void show_inventory();
-		std::string get_name();
-		void set_name(std::string n);
-		std::string get_race();
-		void set_race(std::string r);
-		void show_attrs();
+		void showEquipped();
+		void showInventory();
+		std::string getName();
+		void setName(std::string n);
+		std::string getRace();
+		void setRace(std::string r);
+		void showAttrs();
 
 	private:
 		std::string name;

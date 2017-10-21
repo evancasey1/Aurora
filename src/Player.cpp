@@ -5,22 +5,31 @@
 #include "Dwarf.h"
 #include "Elf.h"
 
-
-Player::Player (std::string race, std::string name) {
-	set_name(name);
-	set_race(race);
+Player::Player()
+{
+	setName("Adventurer");
+	setRace("Undefined");
+}
+Player::Player(std::string race, std::string name) 
+{
+	setName(name);
+	setRace(race);
 }
 
-std::string Player::get_name() {
+std::string Player::getName() 
+{
 	return this->name;
 }
-void Player::set_name(std::string n) {
+void Player::setName(std::string n) 
+{
 	this->name = n;
 }
-std::string Player::get_race() {
+std::string Player::getRace() 
+{
 	return this->race;
 }
-void Player::set_race(std::string r) {
+void Player::setRace(std::string r) 
+{
 	this->race = r;
 }
 
