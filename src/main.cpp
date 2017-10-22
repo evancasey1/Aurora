@@ -9,12 +9,13 @@
 #include <ctype.h>
 #include "Player.h"
 #include "MapSection.h"
+#include "CursorUtilities.h"
 
 static const int MAP_SIZES[3] = {20, 30, 40};
 static const int VERTICAL_PADDING = 2;
 static const int HORIZONTAL_PADDING = 0; //0 for now. Exists in case I want to try using it later
-static int user_interface_buffer_height = 50;
-static int command_input_cursor_position = 43; //it doesnt make very much sense why this can be less than ui_buf (above). TODO: understand this
+static int user_interface_buffer_height = getWindowHeight();
+static int command_input_cursor_position = 43;
 static int chosen_map_size;
 
 void quitGame()
@@ -23,65 +24,9 @@ void quitGame()
 	exit(0);
 }
 
-//erases <num_lines> lines above cursor
-//TODO:
-// 	have this take in a start_from argument. This will require
-// 	using information about terminal window and saving cursor pos
-void eraseLines(int num_lines)
-{
-	for (int i = 0; i <= num_lines; i++) {
-		std::cout << "\033[1A\033[K";
-	}
-}
-
-void moveCursor(int up, int down, int right, int left)
-{
-	if (up > 0) {
-		std::cout << "\033[" + std::to_string(up) + "A";
-	}
-	if (down > 0) {
-		std::cout << "\033[" + std::to_string(down) + "B";
-	}
-	if (right > 0) {
-		std::cout << "\033[" + std::to_string(right) + "C";
-	}
-	if (left > 0) {
-		std::cout << "\033[" + std::to_string(left) + "D";
-	}
-}
-
 void mainGameLoop(Player *player, MapSection *map[])
 {
 	std::cout << "\nThis will be the main game loop\n";
-}
-
-//sets the cursor position regardless of where the cursor currently is.
-//in other words, sets it relative to the terminal indexing
-void setAbsoluteCursorPosition(int row, int col) {
-	//set absolute position to (0, 0)
-	std::cout << "\033[1;0H";
-	//move cursor down by <row>
-	if (row > 0) {
-		std::cout << "\033[" + std::to_string(row) + "B";
-	}
-	//move cursor right by <col>
-	if (col > 0) {
-		std::cout << "\033[" + std::to_string(col) + "C";
-	}
-}
-
-void resetCommandInputCursorPosition(int current_cursor_pos, int ui_buf_height)
-{
-	//move cursor down the remaining lines to reset buffer
-	//for consistent text input area
-	std::cout << "\033[" + std::to_string(current_cursor_pos - ui_buf_height) + "N";
-}
-
-void clearUserInterfaceBuffer(int height) 
-{
-	// "\033[2J" clears the screen from top to bottom
-	// "\033[<height>;1H" puts the cursor down to row <height> and col 1;
-	std::cout << "\033[2J\033[" + std::to_string(height) + ";1H";
 }
 
 int userSelectMapSize()
@@ -114,7 +59,7 @@ int userSelectMapSize()
 		else {
 			//Invalid option. Erase to end of line and 
 			//move up a row to prevent scrolling of terminal
-			std::cout << "\033[1A\033[K";
+			eraseLines(1);
 			std::cout << ">> ";
 		}
 	}
@@ -157,7 +102,7 @@ Player userCreatePlayer()
 		else {
 			//Invalid option. Erase to end of line and 
 			//move up a row to prevent scrolling of terminal
-			std::cout << "\033[1A\033[K";
+			eraseLines(1);
 			std::cout << ">> ";
 		}
 	}
@@ -204,15 +149,13 @@ int main(int argc, char *argv[])
 
 	//this is the clear area that will be the display area for the
 	//map and general ui area. Text input area is below it.
-	//Will be customizable later.
+
 	clearUserInterfaceBuffer(command_input_cursor_position);
-	
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
 	MapSection *map = new MapSection[chosen_map_size * chosen_map_size];
 	printMap(chosen_map_size, user_interface_buffer_height, map);
-
 	Player player = userCreatePlayer();
-	//clearUserInterfaceBuffer(command_input_cursor_position);
+
 	return 0;
 }
