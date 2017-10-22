@@ -13,8 +13,8 @@
 
 static const int MAP_SIZES[3] = {20, 30, 40};
 static const int VERTICAL_PADDING = 2;
-static const int HORIZONTAL_PADDING = 0; //0 for now. Exists in case I want to try using it later
-static int user_interface_buffer_height = getWindowHeight();
+static const int HORIZONTAL_PADDING = 5;
+static int user_interface_buffer_height  = 50;
 static int command_input_cursor_position = 43;
 static int chosen_map_size;
 
@@ -132,8 +132,10 @@ MapSection getMapSectionFromIndex(int row, int col, MapSection map[])
 
 void printMap(int size, int ui_buf_height, MapSection map[]) {
 	//set position to top of terminal (-padding)
-	setAbsoluteCursorPosition(VERTICAL_PADDING, HORIZONTAL_PADDING);
+	setAbsoluteCursorPosition(VERTICAL_PADDING, 0);
+	std::string padding(HORIZONTAL_PADDING, ' ');
 	for (int i = 0; i < size; i++) {
+		std::cout << padding;
 		for (int j = 0; j < size; j++) {
 			std::cout << getMapSectionFromIndex(i, j, map).getSymbol() << " ";
 		}
@@ -151,10 +153,14 @@ int main(int argc, char *argv[])
 	//map and general ui area. Text input area is below it.
 
 	clearUserInterfaceBuffer(command_input_cursor_position);
+	resizeWindowToFit(user_interface_buffer_height, VERTICAL_PADDING, HORIZONTAL_PADDING);
+	setAbsoluteCursorPosition(0, 0);
+
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
 	MapSection *map = new MapSection[chosen_map_size * chosen_map_size];
 	printMap(chosen_map_size, user_interface_buffer_height, map);
+	
 	Player player = userCreatePlayer();
 
 	return 0;

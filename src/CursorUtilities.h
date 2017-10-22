@@ -9,6 +9,7 @@ void resetCommandInputCursorPosition(int current_cursor_pos, int ui_buf_height);
 void clearUserInterfaceBuffer(int height);
 void moveCursor(int up, int down, int right, int left);
 void eraseLines(int num_lines);
+void resizeWindowToFit(int size, int vp, int hp);
 
 
 #endif

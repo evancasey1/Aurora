@@ -28,7 +28,7 @@ void resizeWindow(int height, int width)
 //in other words, sets it relative to the terminal indexing
 void setAbsoluteCursorPosition(int row, int col) {
 	//set absolute position to (0, 0)
-	std::cout << "\033[1;0H";
+	std::cout << "\033[0;0H";
 	//move cursor down by <row>
 	if (row > 0) {
 		std::cout << "\033[" + std::to_string(row) + "B";
@@ -78,4 +78,15 @@ void eraseLines(int num_lines)
 	for (int i = 0; i < num_lines; i++) {
 		std::cout << "\033[1A\033[K";
 	}
+}
+
+//resizes window if it is not big enough to hold all of
+//the required information on screen
+void resizeWindowToFit(int size, int vp, int hp)
+{
+	int width = getWindowWidth();
+	int height = getWindowHeight();
+	width = width < (2*(size + hp)) ? (2*(size + hp)) : width;
+	height = height < (size + vp) ? (size + vp) : width;
+	resizeWindow(height, width);
 }
