@@ -13,7 +13,7 @@ class Player
 		std::string getRace();
 		void setRace(std::string r);
 		void showAttrs();
-		void userCreatePlayer(int curpos);
+		void userCreatePlayer(int cur_pos, int buf_height);
 
 	private:
 		std::string name;
@@ -28,5 +28,4 @@ class Player
 		};
 		double warmth;
 		double hunger;
-
 };

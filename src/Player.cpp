@@ -17,7 +17,7 @@ Player::Player(std::string race, std::string name)
 	setRace(race);
 }
 
-void Player::userCreatePlayer(int command_input_cursor_position)
+void Player::userCreatePlayer(int command_input_cursor_position, int buf_height)
 {
 	//TODO:
 	// 	Name selection
@@ -70,6 +70,8 @@ void Player::userCreatePlayer(int command_input_cursor_position)
 		}
 	}
 	this->setName(input_str);
+	clearUserInterfaceBuffer(buf_height);
+	setAbsoluteCursorPosition(command_input_cursor_position, 0);
 }
 
 std::string Player::getName() 

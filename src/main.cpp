@@ -100,9 +100,9 @@ int main(int argc, char *argv[])
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
 	MapSection *map = new MapSection[chosen_map_size * chosen_map_size];
-	printMap(chosen_map_size, user_interface_buffer_height, map);
+	//printMap(chosen_map_size, user_interface_buffer_height, map);
 	
-	player.userCreatePlayer(command_input_cursor_position);
+	player.userCreatePlayer(command_input_cursor_position, user_interface_buffer_height);
 
 	return 0;
 }
