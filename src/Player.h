@@ -13,6 +13,7 @@ class Player
 		std::string getRace();
 		void setRace(std::string r);
 		void showAttrs();
+		void userCreatePlayer(int curpos);
 
 	private:
 		std::string name;

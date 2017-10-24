@@ -68,63 +68,6 @@ int userSelectMapSize()
 	return index;
 }
 
-Player userCreatePlayer()
-{
-	//TODO:
-	// 	Name selection
-	//	Attribute selection
-	//  break into 3 helper functions
-	//		get name, get race, get attrs
-	setAbsoluteCursorPosition(command_input_cursor_position, 0);
-
-	Player player;
-	std::string input_str;
-	std::string race;
-	std::string name;
-	std::cout << "(1) Human\n(2) Dwarf\n(3) Elf\n";
-	std::cout << "Select your race:\n>> ";
-
-	//while player race is Undefined (default value) keep prompting
-	while (!player.getRace().compare("Undefined")) {
-		std::cin >> input_str;
-		for(int i = 0; input_str[i]; i++) {
-			input_str[i] = tolower(input_str[i]);
-		}
-		if (!input_str.compare("1") || !input_str.compare("human")
-			|| !input_str.compare("2") || !input_str.compare("dwarf")
-			|| !input_str.compare("3") || !input_str.compare("elf")) {
-
-			player.setRace(input_str);
-		}
-		else if (!input_str.compare("quit") || !input_str.compare("exit")) {
-			quitGame();
-		}
-		else {
-			//Invalid option. Erase to end of line and 
-			//move up a row to prevent scrolling of terminal
-			eraseLines(1);
-			std::cout << ">> ";
-		}
-	}
-	input_str = "";
-	std::cout << "What is your name?\n>> ";
-	while(!input_str.compare("")) {
-		std::cin >> input_str;
-		for(int i = 0; input_str[i]; i++) {
-			if (!isalpha(input_str[i]) && !isblank(input_str[i])) {
-				input_str = "";
-				std::cout << "Your name must only be alphabetical.\r";
-				//move cursor up by 1
-				moveCursor(1, 0, 0, 0);
-				std::cout << ">> \033[K";
-				break;
-			}
-		}
-	}
-
-	return player;
-}
-
 MapSection getMapSectionFromIndex(int row, int col, MapSection map[])
 {
 	return *(map + ((row * chosen_map_size) + col));
@@ -148,10 +91,8 @@ int main(int argc, char *argv[])
 {
 	//TODO:
 	//	Main game loop
-
-	//this is the clear area that will be the display area for the
-	//map and general ui area. Text input area is below it.
-
+	Player player;
+	
 	clearUserInterfaceBuffer(command_input_cursor_position);
 	resizeWindowToFit(user_interface_buffer_height, VERTICAL_PADDING, HORIZONTAL_PADDING);
 	setAbsoluteCursorPosition(0, 0);
@@ -161,7 +102,7 @@ int main(int argc, char *argv[])
 	MapSection *map = new MapSection[chosen_map_size * chosen_map_size];
 	printMap(chosen_map_size, user_interface_buffer_height, map);
 	
-	Player player = userCreatePlayer();
+	player.userCreatePlayer(command_input_cursor_position);
 
 	return 0;
 }
