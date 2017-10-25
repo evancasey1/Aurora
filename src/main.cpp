@@ -27,13 +27,9 @@ void quitGame()
 
 void mainGameLoop(Player *player, Map *map)
 {
-	int ch;
-	while(true) {
-		ch = getch();
-		if (ch != -1)
-			player->move(ch);
-		
-	}
+	//TODO:
+	//  implement ncurses
+	return;
 }
 
 int userSelectMapSize()
