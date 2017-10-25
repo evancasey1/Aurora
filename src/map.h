@@ -12,12 +12,13 @@ class Map
 		};
 		Map(int size);
 		MapSection getMapSectionFromIndex(int row, int col);
-		void printMap(int ui_buf_height);
-
+		void printMap(int ui_buf_height, int player_row, int player_col, int vision);
+		
 		MapSection *map;
 
 	private:
 		int size;
+		char player_symbol;
 		const int VERTICAL_PADDING_MAP = 5;
 		const int HORIZONTAL_PADDING_MAP = 10;
 };

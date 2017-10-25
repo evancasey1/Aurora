@@ -10,6 +10,7 @@ Player::Player()
 {
 	setName("Adventurer");
 	setRace("Undefined");
+	this->vision = 5;
 }
 Player::Player(std::string race, std::string name) 
 {
@@ -74,6 +75,22 @@ void Player::userCreatePlayer(int command_input_cursor_position, int buf_height)
 	setAbsoluteCursorPosition(command_input_cursor_position, 0);
 }
 
+void Player::setPosition(int row, int col)
+{
+	this->row = row;
+	this->col = col;
+}
+
+int Player::getRow()
+{
+	return this->row;
+}
+
+int Player::getCol()
+{
+	return this->col;
+}
+
 std::string Player::getName() 
 {
 	return this->name;
@@ -91,9 +108,9 @@ void Player::setRace(std::string r)
 	this->race = r;
 }
 
-void Player::move(int distance, std::string direction)
+void Player::move(int direction)
 {
 	//TODO
-	std::cout << "Placeholder function" << std::endl;
+	std::cout << "Direction: " << direction << std::endl;
 }
 

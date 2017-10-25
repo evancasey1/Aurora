@@ -5,7 +5,7 @@ CXXFLAGS = -g -Wall -std=c++14
 OBJS = main.o player.o cursorUtilities.o map.o
 
 aurora: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o aurora $(OBJS)
+	$(CXX) $(CXXFLAGS) -o aurora $(OBJS) -lncurses
 
 main.o: main.cpp player.h structure.h map.h cursorUtilities.h
 	$(CXX) $(CXXFLAGS) -c main.cpp

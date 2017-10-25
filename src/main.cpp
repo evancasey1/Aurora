@@ -7,11 +7,12 @@
 #include <iostream>
 #include <string>
 #include <ctype.h>
+#include <ncurses.h>
 #include "player.h"
 #include "map.h"
 #include "cursorUtilities.h"
 
-static const int MAP_SIZES[3] = {30, 55, 80};
+static const int MAP_SIZES[3] = {45, 85, 125};
 static const int VERTICAL_PADDING = 2;
 static const int HORIZONTAL_PADDING = 5;
 static int user_interface_buffer_height  = 50;
@@ -26,7 +27,13 @@ void quitGame()
 
 void mainGameLoop(Player *player, Map *map)
 {
-	std::cout << "\nThis will be the main game loop\n";
+	int ch;
+	while(true) {
+		ch = getch();
+		if (ch != -1)
+			player->move(ch);
+		
+	}
 }
 
 int userSelectMapSize()
@@ -81,9 +88,14 @@ int main(int argc, char *argv[])
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
 	Map map(chosen_map_size);
-	map.printMap(user_interface_buffer_height);
+	//map.printMap(user_interface_buffer_height);
 	
 	player.userCreatePlayer(command_input_cursor_position, user_interface_buffer_height);
+	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
+
+	clearUserInterfaceBuffer(command_input_cursor_position);
+	map.printMap(user_interface_buffer_height, player.getRow(), player.getCol(), player.vision);
+	mainGameLoop(&player, &map);
 
 	return 0;
 }
