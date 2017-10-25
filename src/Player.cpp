@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
-#include "CursorUtilities.h"
-#include "Player.h"
-#include "Human.h"
-#include "Dwarf.h"
-#include "Elf.h"
+#include "cursorUtilities.h"
+#include "player.h"
+#include "human.h"
+#include "dwarf.h"
+#include "elf.h"
 
 Player::Player()
 {

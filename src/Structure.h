@@ -14,5 +14,5 @@ class Structure
 	private:
 		//TODO
 		//Add loot table
-		double warm_up();
+		double warm_up_player();
 };

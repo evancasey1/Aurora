@@ -7,11 +7,11 @@
 #include <iostream>
 #include <string>
 #include <ctype.h>
-#include "Player.h"
-#include "MapSection.h"
-#include "CursorUtilities.h"
+#include "player.h"
+#include "map.h"
+#include "cursorUtilities.h"
 
-static const int MAP_SIZES[3] = {20, 30, 40};
+static const int MAP_SIZES[3] = {30, 55, 80};
 static const int VERTICAL_PADDING = 2;
 static const int HORIZONTAL_PADDING = 5;
 static int user_interface_buffer_height  = 50;
@@ -24,7 +24,7 @@ void quitGame()
 	exit(0);
 }
 
-void mainGameLoop(Player *player, MapSection *map[])
+void mainGameLoop(Player *player, Map *map)
 {
 	std::cout << "\nThis will be the main game loop\n";
 }
@@ -68,25 +68,6 @@ int userSelectMapSize()
 	return index;
 }
 
-MapSection getMapSectionFromIndex(int row, int col, MapSection map[])
-{
-	return *(map + ((row * chosen_map_size) + col));
-}
-
-void printMap(int size, int ui_buf_height, MapSection map[]) {
-	//set position to top of terminal (-padding)
-	setAbsoluteCursorPosition(VERTICAL_PADDING, 0);
-	std::string padding(HORIZONTAL_PADDING, ' ');
-	for (int i = 0; i < size; i++) {
-		std::cout << padding;
-		for (int j = 0; j < size; j++) {
-			std::cout << getMapSectionFromIndex(i, j, map).getSymbol() << " ";
-		}
-		std::cout << "\n";
-	}
-	resetCommandInputCursorPosition(size, ui_buf_height);
-}
-
 int main(int argc, char *argv[]) 
 {
 	//TODO:
@@ -99,8 +80,8 @@ int main(int argc, char *argv[])
 
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
-	MapSection *map = new MapSection[chosen_map_size * chosen_map_size];
-	//printMap(chosen_map_size, user_interface_buffer_height, map);
+	Map map(chosen_map_size);
+	map.printMap(user_interface_buffer_height);
 	
 	player.userCreatePlayer(command_input_cursor_position, user_interface_buffer_height);
 

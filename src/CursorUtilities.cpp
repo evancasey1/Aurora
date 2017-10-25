@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <iostream>
-#include "CursorUtilities.h"
+#include "cursorUtilities.h"
 
 static struct winsize w;
 

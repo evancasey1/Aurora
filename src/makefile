@@ -2,17 +2,19 @@
 
 CXX = g++
 CXXFLAGS = -g -Wall -std=c++14
-OBJS = main.o Player.o CursorUtilities.o
+OBJS = main.o player.o cursorUtilities.o map.o
 
 aurora: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o aurora $(OBJS)
 
-main.o: main.cpp Player.h Structure.h MapSection.h CursorUtilities.h
+main.o: main.cpp player.h structure.h map.h cursorUtilities.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
-Player.o: Player.cpp Player.h Human.h Elf.h Dwarf.h CursorUtilities.h
-	$(CXX) $(CXXFLAGS) -c Player.cpp
-CursorUtilities.o: CursorUtilities.cpp CursorUtilities.h
-	$(CXX) $(CXXFLAGS) -c CursorUtilities.cpp
+player.o: player.cpp player.h human.h elf.h dwarf.h cursorUtilities.h
+	$(CXX) $(CXXFLAGS) -c player.cpp
+cursorUtilities.o: cursorUtilities.cpp cursorUtilities.h
+	$(CXX) $(CXXFLAGS) -c cursorUtilities.cpp
+map.o: map.cpp map.h cursorUtilities.h
+	$(CXX) $(CXXFLAGS) -c map.cpp
 
 clean:
 	rm -f $(OBJS) aurora
