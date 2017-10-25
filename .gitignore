@@ -1,4 +1,5 @@
-src/CursorUtilities.o
-src/Player.o
+src/map.o
+src/cursorUtilities.o
+src/player.o
 src/main.o
 src/aurora
