@@ -1,4 +1,5 @@
 #include <string>
+#include <ncurses.h>
 #include "cursorUtilities.h"
 
 class Map
@@ -19,6 +20,6 @@ class Map
 	private:
 		int size;
 		char player_symbol;
-		const int VERTICAL_PADDING_MAP = 5;
-		const int HORIZONTAL_PADDING_MAP = 10;
+		int y_pad = 5;
+		int x_pad;
 };
