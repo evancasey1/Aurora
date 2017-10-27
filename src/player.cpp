@@ -18,20 +18,58 @@ Player::Player(std::string race, std::string name)
 	setRace(race);
 }
 
-void Player::userCreatePlayer(int command_input_cursor_position, int buf_height)
+void Player::userCreatePlayer()
 {
 	//TODO:
 	// 	Name selection
 	//	Attribute selection
 	//  break into 3 helper functions
 	//		get name, get race, get attrs
-	std::string input_str;
-	std::string race;
-	std::string name;
-	printw("Select your race");
-	printw("(1) Human\n(2) Dwarf\n(3) Elf\n");
+	//	make this menu selection a reusable function
+	int enter_key = 10;
+	int chosen_index = 0;
+	const char *options_sel[] =	{">> Human <<", ">> Elf <<", ">> Dwarf <<"};
+	const char *options_idle[] = {"Human", "Elf", "Dwarf"};
+	int horiz_pad = (int) ((COLS/2)-10);
+	int vert_pad = 5;
+	int ch = 0;
+	
+	mvprintw(vert_pad-1, horiz_pad, "Select your map size\n");
+	while(ch != enter_key) {
+		//prints contents of options[]
+		//highlights currently selected option
+		for (int i = 0; i < 3; i++) {
+			if (i != chosen_index) {
+				move(vert_pad + i, horiz_pad);
+				clrtoeol();
+				addstr(options_idle[i]);
+			}
+			else {
+				move(vert_pad + i, horiz_pad);
+				clrtoeol();
+				addstr(options_sel[i]);			
+			}
+		}
+		
+		ch = getch();
+		switch(ch) {
+			case 'w':
+				chosen_index <= 0 ? chosen_index = 2 : chosen_index--;
+				refresh();
+				break;
+			case 's':
+				chosen_index >= 2 ? chosen_index = 0 : chosen_index++;
+				refresh();
+				break;
+			default:
+				break;
+		}
+	}
 	refresh();
+	this->race = options_idle[chosen_index];
+	clear();
 }
+
 
 void Player::setPosition(int row, int col)
 {
@@ -66,7 +104,7 @@ void Player::setRace(std::string r)
 	this->race = r;
 }
 
-void Player::move(int direction)
+void Player::moveSpace(int direction)
 {
 	//TODO
 	std::cout << "Direction: " << direction << std::endl;

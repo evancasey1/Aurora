@@ -97,7 +97,8 @@ int userSelectMapSize()
 		}
 	}
 	refresh();
-
+	clear();
+	refresh();
 	return chosen_index;
 }
 
@@ -114,7 +115,7 @@ int main(int argc, char *argv[])
 	chosen_map_size = MAP_SIZES[index];
 	Map map(chosen_map_size);
 
-	//player.userCreatePlayer(command_input_cursor_position, user_interface_buffer_height);
+	player.userCreatePlayer();
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
 
 	map.printMap(player.getRow(), player.getCol(), player.vision);
