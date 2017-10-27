@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <ncurses.h>
-#include "cursorUtilities.h"
 #include "player.h"
 #include "human.h"
 #include "dwarf.h"

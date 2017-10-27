@@ -1,6 +1,5 @@
 #include <string>
 #include <ncurses.h>
-#include "cursorUtilities.h"
 
 class Map
 {
@@ -13,7 +12,7 @@ class Map
 		};
 		Map(int size);
 		MapSection getMapSectionFromIndex(int row, int col);
-		void printMap(int ui_buf_height, int player_row, int player_col, int vision);
+		void printMap(int player_row, int player_col, int vision);
 		
 		MapSection *map;
 

@@ -2,7 +2,6 @@
 #include <string>
 #include <ncurses.h>
 #include "map.h"
-#include "cursorUtilities.h"
 
 Map::Map(int s) 
 {
@@ -22,14 +21,14 @@ Map::MapSection Map::getMapSectionFromIndex(int row, int col)
 	return *(this->map + ((row * this->size) + col));
 }
 
-void Map::printMap(int ui_buf_height, int player_row, int player_col, int vision) 
+void Map::printMap(int player_row, int player_col, int vision) 
 {
 	//set position to top of terminal (-padding)
 	int row_max = player_row + vision + 1;
 	int col_max = player_col + vision + 1;
 	int count = 0;
 	for (int i = player_row - vision; i < row_max; i++) {
-		move(this->y_pad + count, this->x_pad - vision - 2);
+		move(this->y_pad + count, this->x_pad - vision - 1);
 		for (int j = player_col - vision; j < col_max; j++) {
 			if (i == player_row && j == player_col) {
 				addch(this->player_symbol);

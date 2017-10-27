@@ -3,22 +3,17 @@
 * Author: Evan Casey
 * Date: Oct 17, 2017
 */
-
 #include <iostream>
 #include <string>
-#include <ctype.h>
 #include <ncurses.h>
 #include <unistd.h>
 #include "player.h"
 #include "map.h"
-#include "cursorUtilities.h"
 
 static const int MAP_SIZES[3] = {45, 85, 125};
-//static const int VERTICAL_PADDING = 2;
-//static const int HORIZONTAL_PADDING = 5;
-static int user_interface_buffer_height  = 50;
-//static int command_input_cursor_position = 43;
 static int chosen_map_size;
+static const int VERTICAL_PADDING = 5;
+static const int KEY_ENTER_ASCII = 10;
 
 //from tldp.org
 //tutorial on ncurses windows
@@ -45,7 +40,9 @@ void destroy_win(WINDOW *local_win)
 
 void quitGame()
 {
-	std::cout << "\nExiting Aurora...\n";
+	printw("\nExiting Aurora...\n");
+	refresh();
+	endwin();
 	exit(0);
 }
 
@@ -62,33 +59,47 @@ int userSelectMapSize()
 {
 	//TODO:
 	//	Support for custom map size
-	int index = -1;
+	int chosen_index = 0;
+	const char *options_sel[] =	{">> Tiny <<", ">> Normal <<", ">> Huge <<"};
+	const char *options_idle[] = {"Tiny", "Normal", "Huge"};
+	int horiz_pad = (int) ((COLS/2)-10);
+	int ch = 0;
 	std::string input_str;
-	printw("Select your map size\n");
-	printw("Tiny\nNormal\nHuge\n");
-	refresh();
-
-	while (index == -1) {
-		std::cin >> input_str;
-		for(int i = 0; input_str[i]; i++) {
-			input_str[i] = tolower(input_str[i]);
+	mvprintw(VERTICAL_PADDING-1, horiz_pad, "Select your map size\n");
+	
+	while(ch != KEY_ENTER_ASCII) {
+		//prints contents of options[]
+		//highlights currently selected option
+		for (int i = 0; i < 3; i++) {
+			if (i != chosen_index) {
+				move(VERTICAL_PADDING + i, horiz_pad);
+				clrtoeol();
+				addstr(options_idle[i]);
+			}
+			else {
+				move(VERTICAL_PADDING + i, horiz_pad);
+				clrtoeol();
+				addstr(options_sel[i]);			
+			}
 		}
-		if (!input_str.compare("1") || !input_str.compare("tiny")) {
-			index = 0;
-		}
-		else if (!input_str.compare("2") || !input_str.compare("normal")) {
-			index = 1;
-		}
-		else if (!input_str.compare("3") || !input_str.compare("huge")) {
-			index = 2;
-		}
-		else if (!input_str.compare("quit") || !input_str.compare("exit")) {
-			quitGame();
+		
+		ch = getch();
+		switch(ch) {
+			case 'w':
+				chosen_index <= 0 ? chosen_index = 2 : chosen_index--;
+				refresh();
+				break;
+			case 's':
+				chosen_index >= 2 ? chosen_index = 0 : chosen_index++;
+				refresh();
+				break;
+			default:
+				break;
 		}
 	}
-	//clears the prompt output
-	eraseLines(5);
-	return index;
+	refresh();
+
+	return chosen_index;
 }
 
 int main(int argc, char *argv[]) 
@@ -98,6 +109,7 @@ int main(int argc, char *argv[])
 
 	initscr();
 	cbreak();
+	noecho();
 
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
@@ -106,7 +118,7 @@ int main(int argc, char *argv[])
 	//player.userCreatePlayer(command_input_cursor_position, user_interface_buffer_height);
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
 
-	map.printMap(user_interface_buffer_height, player.getRow(), player.getCol(), player.vision);
+	map.printMap(player.getRow(), player.getCol(), player.vision);
 	mainGameLoop(&player, &map);
 
 	return 0;
