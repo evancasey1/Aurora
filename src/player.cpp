@@ -108,19 +108,19 @@ void Player::moveSpace(int direction, int map_size)
 {
 	//TODO
 	switch (direction) {
-		case KEY_UP:
+		case KEY_UP: case 'w':
 			if (this->row == 0) break;
 			this->row--;
 			break;
-		case KEY_DOWN:
+		case KEY_DOWN: case 's':
 			if (this->row == map_size-1) break;
 			this->row++;
 			break;
-		case KEY_LEFT:
+		case KEY_LEFT: case 'a':
 			if (this->col == 0) break;
 			this->col--;
 			break;
-		case KEY_RIGHT:
+		case KEY_RIGHT: case 'd':
 			if (this->col == map_size-1) break;
 			this->col++;
 			break;

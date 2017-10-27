@@ -124,6 +124,7 @@ int main(int argc, char *argv[])
 	cbreak();
 	noecho();
 	keypad(stdscr, true);
+	curs_set(0);
 
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
