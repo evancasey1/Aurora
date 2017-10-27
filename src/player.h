@@ -5,7 +5,7 @@ class Player
 	public:
 		Player();
 		Player (std::string race, std::string name);
-		void moveSpace(int direction);
+		void moveSpace(int direction, int map_size);
 		void showEquipped();
 		void showInventory();
 		std::string getName();

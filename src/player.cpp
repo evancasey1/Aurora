@@ -10,7 +10,7 @@ Player::Player()
 {
 	setName("Adventurer");
 	setRace("Undefined");
-	this->vision = 5;
+	this->vision = 6;
 }
 Player::Player(std::string race, std::string name) 
 {
@@ -53,11 +53,11 @@ void Player::userCreatePlayer()
 		
 		ch = getch();
 		switch(ch) {
-			case 'w':
+			case KEY_UP: case 'w':
 				chosen_index <= 0 ? chosen_index = 2 : chosen_index--;
 				refresh();
 				break;
-			case 's':
+			case KEY_DOWN: case 's':
 				chosen_index >= 2 ? chosen_index = 0 : chosen_index++;
 				refresh();
 				break;
@@ -104,9 +104,28 @@ void Player::setRace(std::string r)
 	this->race = r;
 }
 
-void Player::moveSpace(int direction)
+void Player::moveSpace(int direction, int map_size)
 {
 	//TODO
-	std::cout << "Direction: " << direction << std::endl;
+	switch (direction) {
+		case KEY_UP:
+			if (this->row == 0) break;
+			this->row--;
+			break;
+		case KEY_DOWN:
+			if (this->row == map_size-1) break;
+			this->row++;
+			break;
+		case KEY_LEFT:
+			if (this->col == 0) break;
+			this->col--;
+			break;
+		case KEY_RIGHT:
+			if (this->col == map_size-1) break;
+			this->col++;
+			break;
+		default:
+			break;
+	}
 }
 

@@ -13,7 +13,7 @@
 static const int MAP_SIZES[3] = {45, 85, 125};
 static int chosen_map_size;
 static const int VERTICAL_PADDING = 5;
-static const int KEY_ENTER_ASCII = 10;
+static const int ENTER_KEY = 10;
 
 //from tldp.org
 //tutorial on ncurses windows
@@ -48,11 +48,25 @@ void quitGame()
 
 void mainGameLoop(Player *player, Map *map)
 {
-	//TODO:
-	//  implement ncurses
-	usleep(3000000);
+	int ch;
+
+	while (true) {
+		ch = getch();
+		switch(ch) {
+			case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
+			case 'w': case 's': case 'a': case 'd':
+				player->moveSpace(ch, map->size);
+				map->printMap(player->getRow(), player->getCol(), player->vision);
+				break;
+			case ENTER_KEY:
+				//TODO:
+				//	open command prompt. will be new window
+				break;
+			default:
+				break;
+		}
+	}
 	endwin();
-	return;
 }
 
 int userSelectMapSize()
@@ -66,7 +80,7 @@ int userSelectMapSize()
 	int ch = 0;
 	
 	mvprintw(VERTICAL_PADDING-1, horiz_pad, "Select your map size\n");
-	while(ch != KEY_ENTER_ASCII) {
+	while(ch != ENTER_KEY) {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {
@@ -84,11 +98,11 @@ int userSelectMapSize()
 		
 		ch = getch();
 		switch(ch) {
-			case 'w':
+			case KEY_UP: case 'w':
 				chosen_index <= 0 ? chosen_index = 2 : chosen_index--;
 				refresh();
 				break;
-			case 's':
+			case KEY_DOWN: case 's':
 				chosen_index >= 2 ? chosen_index = 0 : chosen_index++;
 				refresh();
 				break;
@@ -96,7 +110,6 @@ int userSelectMapSize()
 				break;
 		}
 	}
-	refresh();
 	clear();
 	refresh();
 	return chosen_index;
@@ -110,10 +123,11 @@ int main(int argc, char *argv[])
 	initscr();
 	cbreak();
 	noecho();
+	keypad(stdscr, true);
 
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
-	Map map(chosen_map_size);
+    Map map(chosen_map_size);
 
 	player.userCreatePlayer();
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
