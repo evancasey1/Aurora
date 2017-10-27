@@ -64,9 +64,8 @@ int userSelectMapSize()
 	const char *options_idle[] = {"Tiny", "Normal", "Huge"};
 	int horiz_pad = (int) ((COLS/2)-10);
 	int ch = 0;
-	std::string input_str;
-	mvprintw(VERTICAL_PADDING-1, horiz_pad, "Select your map size\n");
 	
+	mvprintw(VERTICAL_PADDING-1, horiz_pad, "Select your map size\n");
 	while(ch != KEY_ENTER_ASCII) {
 		//prints contents of options[]
 		//highlights currently selected option
