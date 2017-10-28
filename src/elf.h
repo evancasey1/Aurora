@@ -1,7 +1,6 @@
-/*
-* Elf
-*/
 #include <string>
+#ifndef ELF_H
+#define ELF_H
 
 class Elf : public Player
 {
@@ -11,3 +10,5 @@ class Elf : public Player
 		//fight -> perc -> hunt -> speed -> const
 		static constexpr double mods[5] = {0.9, 1.8, 1.3, 1.2, 0.75};
 };
+
+#endif

@@ -1,3 +1,4 @@
+src/enemy.o
 src/map.o
 src/cursorUtilities.o
 src/player.o

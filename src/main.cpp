@@ -7,13 +7,20 @@
 #include <string>
 #include <ncurses.h>
 #include <unistd.h>
+#include <cstdlib>
+#include <ctime>
+#include <vector>
+#include "enemy.h"
 #include "player.h"
 #include "map.h"
 
 static const int MAP_SIZES[3] = {45, 85, 125};
-static int chosen_map_size;
 static const int VERTICAL_PADDING = 5;
 static const int ENTER_KEY = 10;
+static const int SPAWN_TOTAL_DENOM = 100;
+static int enemy_spawn_rate = 10;
+static int chosen_map_size;
+static int max_enemies = 5;
 
 //from tldp.org
 //tutorial on ncurses windows
@@ -49,6 +56,9 @@ void quitGame()
 void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
+	int rng;
+	std::vector<Enemy> enemies;	
+	map->printMap(player->getRow(), player->getCol(), player->vision, enemies);
 
 	while (true) {
 		ch = getch();
@@ -56,7 +66,11 @@ void mainGameLoop(Player *player, Map *map)
 			case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
 			case 'w': case 's': case 'a': case 'd':
 				player->moveSpace(ch, map->size);
-				map->printMap(player->getRow(), player->getCol(), player->vision);
+				rng = (rand() % SPAWN_TOTAL_DENOM);
+				if (enemy_spawn_rate < rng && enemies.size() < max_enemies) {
+					enemies.push_back(*(new Enemy(player->getRow(), player->getCol(), player->vision, map->size)));
+				}
+				map->printMap(player->getRow(), player->getCol(), player->vision, enemies);
 				break;
 			case ENTER_KEY:
 				//TODO:
@@ -119,6 +133,7 @@ int main(int argc, char *argv[])
 {
 	//WINDOW *main_menu;
 	Player player;
+	srand((int)time(0));
 
 	initscr();
 	cbreak();
@@ -133,7 +148,6 @@ int main(int argc, char *argv[])
 	player.userCreatePlayer();
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
 
-	map.printMap(player.getRow(), player.getCol(), player.vision);
 	mainGameLoop(&player, &map);
 
 	return 0;

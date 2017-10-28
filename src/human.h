@@ -2,6 +2,8 @@
 * Human
 */
 #include <string>
+#ifndef HUMAN_H
+#define HUMAN_H
 
 class Human : public Player
 {
@@ -11,3 +13,5 @@ class Human : public Player
 		//fight -> perc -> hunt -> speed -> const
 		static constexpr double mods[5] = {1.1, 0.8, 1.6, 1.1, 1.2};
 };
+
+#endif
