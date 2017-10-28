@@ -9,10 +9,11 @@ class Enemy
 		void seek(int p_row, int p_col);
 		int row;
 		int col;
+		int lifespan = 10;
 
 	private:
 		int health;
-		int vision;
+		int vision = 5;
 };
 
 #endif

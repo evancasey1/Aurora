@@ -18,9 +18,9 @@ static const int MAP_SIZES[3] = {45, 85, 125};
 static const int VERTICAL_PADDING = 5;
 static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
-static int enemy_spawn_rate = 10;
+static int enemy_spawn_rate = 50;
 static int chosen_map_size;
-static int max_enemies = 5;
+static int max_enemies = 2;
 
 //from tldp.org
 //tutorial on ncurses windows
@@ -67,7 +67,7 @@ void mainGameLoop(Player *player, Map *map)
 			case 'w': case 's': case 'a': case 'd':
 				player->moveSpace(ch, map->size);
 				rng = (rand() % SPAWN_TOTAL_DENOM);
-				if (enemy_spawn_rate < rng && enemies.size() < max_enemies) {
+				if (enemy_spawn_rate < (SPAWN_TOTAL_DENOM - rng) && enemies.size() < max_enemies) {
 					enemies.push_back(*(new Enemy(player->getRow(), player->getCol(), player->vision, map->size)));
 				}
 				map->printMap(player->getRow(), player->getCol(), player->vision, enemies);
