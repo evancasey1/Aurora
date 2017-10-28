@@ -47,7 +47,7 @@ void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy
 	for (int i = row_min; i < row_max; i++) {
 		move(this->y_pad + count, startx);
 		for (int j = col_min; j < col_max; j++) {
-			if (i == player_row && j == player_col) {
+			if (player_row == i && player_col == j) {
 				to_add = this->player_symbol;
 			}
 			else {

@@ -48,3 +48,35 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	this->row = e_row;
 	this->col = e_col;
 }
+
+void Enemy::seek(int p_row, int p_col)
+{
+	//TODO
+	//	find a way to shorten this function up and not
+	//  use so much repetition
+
+	srand((int)time(0));
+	int r_diff, c_diff;
+	int i = 0;
+
+	for (i = 0; i < this->moves; i++){
+		r_diff = p_row - this->row; //if +, row++, else row--
+		c_diff = p_col - this->col; //if +, col++, else col--
+
+		if (p_row > this->row) {
+			this->row++;
+		}
+		else if (p_row < this->row) {
+			this->row--;
+		}
+		else if (p_col > this->col) {
+			this->col++;
+		}
+		else if (p_col < this->col) {
+			this->col--;
+		}
+		else if (p_col == this->col && p_row == this->row) {
+			//combat logic here
+		}
+	}
+}

@@ -12,8 +12,9 @@ class Enemy
 		int lifespan = 10;
 
 	private:
-		int health;
-		int vision = 5;
+		//int health;
+		//int vision = 5;
+		int moves = 2;
 };
 
 #endif
