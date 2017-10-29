@@ -18,9 +18,9 @@ static const int MAP_SIZES[3] = {45, 85, 125};
 static const int VERTICAL_PADDING = 5;
 static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
-static int enemy_spawn_rate = 20;
+static int enemy_spawn_rate = 2; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
 static int chosen_map_size;
-static int max_enemies = 3;
+static int max_enemies = 2;
 
 //from tldp.org
 //tutorial on ncurses windows
@@ -53,10 +53,26 @@ void quitGame()
 	exit(0);
 }
 
+void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
+{
+	int rng;
+	for (auto &e : *enemies) {
+		e.seek(player->getRow(), player->getCol());
+		/*
+		if (e.row == player->getRow() && e.col == player->getCol()) {
+			//initiate combat
+		}
+		*/
+	}
+	rng = (rand() % SPAWN_TOTAL_DENOM);
+	if (rng <= enemy_spawn_rate && enemies->size() < max_enemies) {
+		enemies->push_back(*(new Enemy(player->getRow(), player->getCol(), player->vision, map->size)));
+	}
+}
+
 void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
-	int rng;
 	std::vector<Enemy> enemies;	
 	map->printMap(player->getRow(), player->getCol(), player->vision, enemies);
 
@@ -66,13 +82,7 @@ void mainGameLoop(Player *player, Map *map)
 			case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
 			case 'w': case 's': case 'a': case 'd':
 				player->moveSpace(ch, map->size);
-				rng = (rand() % SPAWN_TOTAL_DENOM);
-				if (enemy_spawn_rate < (SPAWN_TOTAL_DENOM - rng) && enemies.size() < max_enemies) {
-					enemies.push_back(*(new Enemy(player->getRow(), player->getCol(), player->vision, map->size)));
-				}
-				for (auto &e : enemies) {
-					e.seek(player->getRow(), player->getCol());
-				}
+				enemyEvents(player, map, &enemies);
 				map->printMap(player->getRow(), player->getCol(), player->vision, enemies);
 				break;
 			case ENTER_KEY:
