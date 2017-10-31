@@ -2,19 +2,21 @@
 #include <ctime>
 #include <iostream>
 #include <ncurses.h>
+#include <string>
 #include "enemy.h"
 
 Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 {
 	//TODO
 	//  cant spawn on another enemy
-	//  fix spawn range
+	//  weight name (enemy type) percent chance
 	int e_row = 0;
 	int e_col = 0;
 	int range = (p_vision * 2) + 1;
 	srand((int)time(0));
 	int choice = (rand() % 2); //0 or 1
 	int op = (rand() % 2);
+	this->name = NAMES[(rand() % this->NUM_ENEMY_TYPES)];
 
 	//randomize spawn location
 	switch (choice) {

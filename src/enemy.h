@@ -10,11 +10,15 @@ class Enemy
 		int row;
 		int col;
 		int lifespan = 10;
+		const char *name;
 
 	private:
 		//int health;
 		//int vision = 5;
 		int moves = 2;
+		static const int NUM_ENEMY_TYPES = 7;
+		const char *NAMES[NUM_ENEMY_TYPES] = {"Wolf", "Alpha Wolf", "Wight", "Goblin"
+							    			  "Troll", "Orc", "Bear"};
 };
 
 #endif

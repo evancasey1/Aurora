@@ -63,6 +63,9 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 			//TODO:
 			//	combat function
 			//	first need items and enemy
+			addstr(e.name);
+			refresh();
+			usleep(250000);
 			enemies->erase(enemies->begin() + index);
 		}
 		index++;
