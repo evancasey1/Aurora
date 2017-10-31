@@ -43,6 +43,8 @@ void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy
 	col_min < 0 ? col_min = 0 : false;
 	startx < 0 ? startx = 0 : false;
 
+	move(this->y_pad - 1, startx);
+	printw("X: %d Y: %d\n", player_col, player_row);
 	int count = 0;
 	for (int i = row_min; i < row_max; i++) {
 		move(this->y_pad + count, startx);
