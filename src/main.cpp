@@ -56,13 +56,16 @@ void quitGame()
 void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 {
 	int rng;
+	int index = 0;
 	for (auto &e : *enemies) {
 		e.seek(player->getRow(), player->getCol());
-		/*
 		if (e.row == player->getRow() && e.col == player->getCol()) {
-			//initiate combat
+			//TODO:
+			//	combat function
+			//	first need items and enemy
+			enemies->erase(enemies->begin() + index);
 		}
-		*/
+		index++;
 	}
 	rng = (rand() % SPAWN_TOTAL_DENOM);
 	if (rng <= enemy_spawn_rate && enemies->size() < max_enemies) {
