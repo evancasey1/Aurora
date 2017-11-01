@@ -16,6 +16,7 @@
 
 static const int MAP_SIZES[3] = {45, 85, 125};
 static const int MAP_VERTICAL_PADDING = 2;
+static const int COM_VERTICAL_PADDING = 5;
 static const int MAP_HORIZONTAL_PADDING = 5;
 static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
@@ -27,6 +28,8 @@ WINDOW *combat_window;
 
 void initiate_combat(Player *player, Enemy *enemy)
 {
+	//TODO:
+	//	actual combat
 	wprintw(combat_window, "Combat has started\n");
 	wrefresh(combat_window);
 }
@@ -38,9 +41,6 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	for (auto &e : *enemies) {
 		e.seek(player->getRow(), player->getCol());
 		if (e.row == player->getRow() && e.col == player->getCol()) {
-			//TODO:
-			//	combat function
-			//	first need items and enemy
 			initiate_combat(player, &e);
 			enemies->erase(enemies->begin() + index);
 		}
@@ -126,6 +126,9 @@ int userSelectMapSize()
 
 int main(int argc, char *argv[]) 
 {
+	//ISSUE:
+	//	Rare segementation fault on player movement. 
+	//		Not able to reproduce
 	Player player;
 	srand((int)time(0));
 
@@ -142,14 +145,11 @@ int main(int argc, char *argv[])
 	player.userCreatePlayer();
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
 
-	//constants are being put into non-constant ints because 
-	//these values will change later but the original values
-	//should still be obtainable
-	int starty = MAP_VERTICAL_PADDING, startx = MAP_HORIZONTAL_PADDING;
-	int height = 50, width = 50;
+	int map_height = 50, map_width = 50;
+	int com_height = 60, com_width = 60;
 
-	map_window = newwin(height, width, starty, startx);
-	combat_window = newwin(height, width, starty, width + (startx * 2));
+	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
+	combat_window = newwin(com_height, com_width, COM_VERTICAL_PADDING, map_width + (MAP_HORIZONTAL_PADDING * 2));
 
 	mainGameLoop(&player, &map);
 
