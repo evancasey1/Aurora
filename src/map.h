@@ -14,17 +14,17 @@ class Map
 			std::string biome;
 			//will contain structure information later
 		};
-		Map(int s);
+		Map(int s, int vp, int hp);
 		MapSection getMapSectionFromIndex(int row, int col);
-		void printMap(int player_row, int player_col, int vision, std::vector<Enemy> e);
+		void printMap(int player_row, int player_col, int vision, std::vector<Enemy> e, WINDOW *win);
 		int size;
 		MapSection *map;
 
 	private:
 		char player_symbol;
 		char enemy_symbol;
-		int y_pad = 5;
-		int x_pad;
+		int pad_y;
+		int pad_x;
 };
 
 #endif

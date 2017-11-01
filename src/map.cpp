@@ -6,13 +6,15 @@
 #include <vector>
 #include "map.h"
 
-Map::Map(int s) 
+Map::Map(int s, int vp, int hp) 
 {
 	this->size = s;
 	this->player_symbol = '@';
 	this->enemy_symbol = 'X';
 	this->map = new MapSection[size * size];
-	this->x_pad = (int)(COLS/2);
+	this->pad_y = vp;
+	this->pad_x = hp;
+
 	srand((int)time(0));
 	int r;
 	for (int i = 0; i < s; i++) {
@@ -28,26 +30,23 @@ Map::MapSection Map::getMapSectionFromIndex(int row, int col)
 	return *(this->map + ((row * this->size) + col));
 }
 
-void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy> enemies) 
+void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy> enemies, WINDOW *map_window) 
 {
+	wmove(map_window, this->pad_y, this->pad_x);
 	char to_add;
 	int row_max = player_row + vision + 1;
 	int col_max = player_col + vision + 1;
 	int row_min = player_row - vision;
 	int col_min = player_col - vision;
-	int startx  = this->x_pad - vision - 3;
 
 	row_max > this->size ? row_max = this->size : false;
 	col_max > this->size ? col_max = this->size : false;
 	row_min < 0 ? row_min = 0 : false;
 	col_min < 0 ? col_min = 0 : false;
-	startx < 0 ? startx = 0 : false;
 
-	move(this->y_pad - 1, startx);
-	printw("X: %d Y: %d\n", player_col, player_row);
+	wprintw(map_window, " X: %d Y: %d\n", player_col, player_row);
 	int count = 0;
 	for (int i = row_min; i < row_max; i++) {
-		move(this->y_pad + count, startx);
 		for (int j = col_min; j < col_max; j++) {
 			if (player_row == i && player_col == j) {
 				to_add = this->player_symbol;
@@ -60,12 +59,13 @@ void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy
 					to_add = this->enemy_symbol;
 				}
 			}
-			addch(to_add);
-			printw(" ");
+			waddch(map_window, to_add);
+			wprintw(map_window, " ");
 		}
 		count++;
-		printw("\n");
-		clrtoeol();
-		refresh();
+		wprintw(map_window, "\n");
+		wclrtoeol(map_window);
+		wrefresh(map_window);
 	}
+	wmove(map_window, this->pad_y, this->pad_x);
 }

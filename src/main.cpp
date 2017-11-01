@@ -15,42 +15,20 @@
 #include "map.h"
 
 static const int MAP_SIZES[3] = {45, 85, 125};
-static const int VERTICAL_PADDING = 5;
+static const int MAP_VERTICAL_PADDING = 2;
+static const int MAP_HORIZONTAL_PADDING = 5;
 static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
 static int enemy_spawn_rate = 2; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
 static int chosen_map_size;
 static int max_enemies = 2;
+WINDOW *map_window;
+WINDOW *combat_window;
 
-//from tldp.org
-//tutorial on ncurses windows
-WINDOW *create_newwin(int height, int width, int starty, int startx)
-{	WINDOW *local_win;
-
-	local_win = newwin(height, width, starty, startx);
-	box(local_win, 0 , 0);		/* 0, 0 gives default characters 
-					 			* for the vertical and horizontal
-					 			* lines			        */
-	wrefresh(local_win);		/* Show that box 		*/
-
-	return local_win;
-}
-
-//from tldp.org
-//tutorial on ncurses windows
-void destroy_win(WINDOW *local_win)
-{	
-	wborder(local_win, ' ', ' ', ' ',' ',' ',' ',' ',' ');
-	wrefresh(local_win);
-	delwin(local_win);
-}
-
-void quitGame()
+void initiate_combat(Player *player, Enemy *enemy)
 {
-	printw("\nExiting Aurora...\n");
-	refresh();
-	endwin();
-	exit(0);
+	wprintw(combat_window, "Combat has started\n");
+	wrefresh(combat_window);
 }
 
 void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
@@ -63,9 +41,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 			//TODO:
 			//	combat function
 			//	first need items and enemy
-			addstr(e.name);
-			refresh();
-			usleep(250000);
+			initiate_combat(player, &e);
 			enemies->erase(enemies->begin() + index);
 		}
 		index++;
@@ -80,7 +56,7 @@ void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
 	std::vector<Enemy> enemies;	
-	map->printMap(player->getRow(), player->getCol(), player->vision, enemies);
+	map->printMap(player->getRow(), player->getCol(), player->vision, enemies, map_window);
 
 	while (true) {
 		ch = getch();
@@ -89,7 +65,7 @@ void mainGameLoop(Player *player, Map *map)
 			case 'w': case 's': case 'a': case 'd':
 				player->moveSpace(ch, map->size);
 				enemyEvents(player, map, &enemies);
-				map->printMap(player->getRow(), player->getCol(), player->vision, enemies);
+				map->printMap(player->getRow(), player->getCol(), player->vision, enemies, map_window);
 				break;
 			case ENTER_KEY:
 				//TODO:
@@ -112,18 +88,18 @@ int userSelectMapSize()
 	int horiz_pad = (int) ((COLS/2)-10);
 	int ch = 0;
 	
-	mvprintw(VERTICAL_PADDING-1, horiz_pad, "Select your map size\n");
+	mvprintw(MAP_VERTICAL_PADDING-1, horiz_pad, "Select your map size\n");
 	while(ch != ENTER_KEY) {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {
 			if (i != chosen_index) {
-				move(VERTICAL_PADDING + i, horiz_pad);
+				move(MAP_VERTICAL_PADDING + i, horiz_pad);
 				clrtoeol();
 				addstr(options_idle[i]);
 			}
 			else {
-				move(VERTICAL_PADDING + i, horiz_pad);
+				move(MAP_VERTICAL_PADDING + i, horiz_pad);
 				clrtoeol();
 				addstr(options_sel[i]);			
 			}
@@ -150,7 +126,6 @@ int userSelectMapSize()
 
 int main(int argc, char *argv[]) 
 {
-	//WINDOW *main_menu;
 	Player player;
 	srand((int)time(0));
 
@@ -162,10 +137,19 @@ int main(int argc, char *argv[])
 
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
-    Map map(chosen_map_size);
+    Map map(chosen_map_size, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
 
 	player.userCreatePlayer();
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
+
+	//constants are being put into non-constant ints because 
+	//these values will change later but the original values
+	//should still be obtainable
+	int starty = MAP_VERTICAL_PADDING, startx = MAP_HORIZONTAL_PADDING;
+	int height = 50, width = 50;
+
+	map_window = newwin(height, width, starty, startx);
+	combat_window = newwin(height, width, starty, width + (startx * 2));
 
 	mainGameLoop(&player, &map);
 

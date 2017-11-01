@@ -31,7 +31,7 @@ void Player::userCreatePlayer()
 	const char *options_sel[] =	{">> Human <<", ">> Elf <<", ">> Dwarf <<"};
 	const char *options_idle[] = {"Human", "Elf", "Dwarf"};
 	int horiz_pad = (int) ((COLS/2)-10);
-	int vert_pad = 5;
+	int vert_pad = 2;
 	int ch = 0;
 	
 	mvprintw(vert_pad-1, horiz_pad, "Select your map size\n");
@@ -65,9 +65,9 @@ void Player::userCreatePlayer()
 				break;
 		}
 	}
-	refresh();
 	this->race = options_idle[chosen_index];
 	clear();
+	refresh();
 }
 
 
