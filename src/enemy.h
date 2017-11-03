@@ -21,8 +21,7 @@ class Enemy
 		int seek_moves = 2;
 		int idle_moves = 1;
 		static const int NUM_ENEMY_TYPES = 7;
-		const char *NAMES[NUM_ENEMY_TYPES] = {"Wolf", "Alpha Wolf", "Wight", "Goblin"
-							    			  "Troll", "Orc", "Bear"};
+		const char *NAMES[NUM_ENEMY_TYPES] = {"Wolf", "Alpha Wolf", "Wight", "Goblin", "Troll", "Orc", "Bear"};
 };
 
 #endif

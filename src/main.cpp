@@ -52,13 +52,11 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 		distance = getDistance(player->getCol(), player->getRow(), e.col, e.row);
 		if (distance <= (double) e.vision) {
 			e.seek(player->getRow(), player->getCol());
-			wprintw(combat_window, "Enemy has sighted you!\n");
+			wprintw(combat_window, "%s has spotted you!\n", e.name);
 			wrefresh(combat_window);
 		}
 		else {
 			e.idle();
-			wprintw(combat_window, "Enemy has not spotted you...\n");
-			wrefresh(combat_window);
 		}
 		if (e.row == player->getRow() && e.col == player->getCol()) {
 			initiate_combat(player, &e);
