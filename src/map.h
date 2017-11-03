@@ -21,6 +21,8 @@ class Map
 		MapSection *map;
 		int player_color;
 		int enemy_color;
+		int daytime_color;
+		int nighttime_color;
 
 	private:
 		char player_symbol;

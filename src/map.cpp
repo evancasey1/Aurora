@@ -20,6 +20,8 @@ Map::Map(int s, int vp, int hp)
 	init_pair(1, COLOR_BLACK, COLOR_WHITE); //default day
 	this->player_color = 4;
 	this->enemy_color = 3;
+	this->nighttime_color = 2;
+	this->daytime_color = 1;
 
 	srand((int)time(0));
 	int r;
@@ -40,14 +42,14 @@ void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy
 {
 	//TODO:
 	//	reduce flicker
-	
+
 	wmove(map_window, this->pad_y, this->pad_x);
 	char to_add;
 	int row_max = player_row + vision + 1;
 	int col_max = player_col + vision + 1;
 	int row_min = player_row - vision;
 	int col_min = player_col - vision;
-	int color_index = 1; //init to daytime for now
+	int color_index = this->daytime_color; //init to daytime for now
 
 	row_max > this->size ? row_max = this->size : false;
 	col_max > this->size ? col_max = this->size : false;
