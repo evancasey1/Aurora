@@ -17,6 +17,7 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	int choice = (rand() % 2); //0 or 1
 	int op = (rand() % 2);
 	this->name = NAMES[(rand() % this->NUM_ENEMY_TYPES)];
+	this->vision = 4;
 
 	//randomize spawn location
 	switch (choice) {
@@ -51,11 +52,34 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	this->col = e_col;
 }
 
+void Enemy::idle()
+{
+	//move a random direction or stay still
+	int move;
+	for (int i = 0; i < this->idle_moves; i++) {
+		move = (rand() % 6);
+		switch (move) {
+			case 0:
+				this->row++;
+				break;
+			case 1:
+				this->row--;
+				break;
+			case 2:
+				this->col++;
+				break;
+			case 3:
+				this->col--;
+				break;
+			default:
+				break;
+		}
+	}
+}
+
 void Enemy::seek(int p_row, int p_col)
 {
-	srand((int)time(0));
-
-	for (int i = 0; i < this->moves; i++){
+	for (int i = 0; i < this->seek_moves; i++){
 		if (p_row > this->row) {
 			this->row++;
 		}

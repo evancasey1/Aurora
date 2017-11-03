@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <math.h>
 #include "enemy.h"
 #include "player.h"
 #include "map.h"
@@ -20,9 +21,9 @@ static const int COM_VERTICAL_PADDING = 5;
 static const int MAP_HORIZONTAL_PADDING = 5;
 static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
-static int enemy_spawn_rate = 2; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
+static int enemy_spawn_rate = 50; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
 static int chosen_map_size;
-static int max_enemies = 2;
+static int max_enemies = 1;
 WINDOW *map_window;
 WINDOW *combat_window;
 
@@ -34,12 +35,31 @@ void initiate_combat(Player *player, Enemy *enemy)
 	wrefresh(combat_window);
 }
 
+//get the distance between 2 points
+double getDistance(int a_x, int a_y, int b_x, int b_y)
+{
+	int dx = abs(b_x - a_x);
+	int dy = abs(b_y - a_y);
+	return sqrt(pow(dx, 2) + pow(dy, 2));
+}
+
 void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 {
 	int rng;
 	int index = 0;
+	double distance;
 	for (auto &e : *enemies) {
-		e.seek(player->getRow(), player->getCol());
+		distance = getDistance(player->getCol(), player->getRow(), e.col, e.row);
+		if (distance <= (double) e.vision) {
+			e.seek(player->getRow(), player->getCol());
+			wprintw(combat_window, "Enemy has sighted you!\n");
+			wrefresh(combat_window);
+		}
+		else {
+			e.idle();
+			wprintw(combat_window, "Enemy has not spotted you...\n");
+			wrefresh(combat_window);
+		}
 		if (e.row == player->getRow() && e.col == player->getCol()) {
 			initiate_combat(player, &e);
 			enemies->erase(enemies->begin() + index);

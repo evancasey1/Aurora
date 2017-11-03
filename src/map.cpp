@@ -14,7 +14,8 @@ Map::Map(int s, int vp, int hp)
 	this->map = new MapSection[size * size];
 	this->pad_y = vp;
 	this->pad_x = hp;
-	init_pair(4, COLOR_BLACK, COLOR_WHITE); //player
+	
+	init_pair(4, COLOR_BLUE, COLOR_WHITE); //player
 	init_pair(3, COLOR_RED, COLOR_WHITE); //enemy
 	init_pair(2, COLOR_WHITE, COLOR_BLACK); //default night
 	init_pair(1, COLOR_BLACK, COLOR_WHITE); //default day
