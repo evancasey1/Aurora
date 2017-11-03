@@ -19,6 +19,8 @@ class Map
 		void printMap(int player_row, int player_col, int vision, std::vector<Enemy> e, WINDOW *win);
 		int size;
 		MapSection *map;
+		int player_color;
+		int enemy_color;
 
 	private:
 		char player_symbol;

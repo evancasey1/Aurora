@@ -137,6 +137,7 @@ int main(int argc, char *argv[])
 	noecho();
 	keypad(stdscr, true);
 	curs_set(0);
+	start_color();
 
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
@@ -145,7 +146,7 @@ int main(int argc, char *argv[])
 	player.userCreatePlayer();
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
 
-	int map_height = 50, map_width = 50;
+	int map_height = 25, map_width = 35;
 	int com_height = 60, com_width = 60;
 
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
