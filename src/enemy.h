@@ -10,8 +10,9 @@ class Enemy
 		void idle();
 		int row;
 		int col;
-		int lifespan = 10;
+		int lifespan;
 		int vision;
+		bool alert_player = true;
 		const char *name;
 
 	private:

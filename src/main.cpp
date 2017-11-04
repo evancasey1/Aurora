@@ -23,7 +23,7 @@ static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
 static int enemy_spawn_rate = 50; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
 static int chosen_map_size;
-static int max_enemies = 1;
+static int max_enemies = 3;
 WINDOW *map_window;
 WINDOW *combat_window;
 
@@ -48,14 +48,23 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	int rng;
 	int index = 0;
 	double distance;
+	wattron(combat_window, COLOR_PAIR(5)); //turn on enemy color scheme while enemy events are active
 	for (auto &e : *enemies) {
 		distance = getDistance(player->getCol(), player->getRow(), e.col, e.row);
 		if (distance <= (double) e.vision) {
 			e.seek(player->getRow(), player->getCol());
-			wprintw(combat_window, "%s has spotted you!\n", e.name);
-			wrefresh(combat_window);
+			if (e.alert_player) {
+				e.alert_player = false;
+				wprintw(combat_window, "%s has spotted you!\n", e.name);
+				wrefresh(combat_window);
+			}
 		}
 		else {
+			if (!e.alert_player) {
+				//if player gets out of range of enemy sight
+				//set up to alert them when they get back into range
+				e.alert_player = true;
+			}
 			e.idle();
 		}
 		if (e.row == player->getRow() && e.col == player->getCol()) {
@@ -68,6 +77,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	if (rng <= enemy_spawn_rate && enemies->size() < max_enemies) {
 		enemies->push_back(*(new Enemy(player->getRow(), player->getCol(), player->vision, map->size)));
 	}
+	wattroff(combat_window, COLOR_PAIR(1));
 }
 
 void mainGameLoop(Player *player, Map *map)
@@ -157,6 +167,14 @@ int main(int argc, char *argv[])
 	curs_set(0);
 	start_color();
 
+	// START COLORS //
+	init_pair(5, COLOR_RED, COLOR_BLACK); //enemy alert: MAIN
+	init_pair(4, COLOR_BLUE, COLOR_WHITE); //player: MAP
+	init_pair(3, COLOR_RED, COLOR_WHITE); //enemy: MAP
+	init_pair(2, COLOR_WHITE, COLOR_BLACK); //default night: MAP
+	init_pair(1, COLOR_BLACK, COLOR_WHITE); //default day: MAP
+	// END COLORS //
+
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
     Map map(chosen_map_size, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
@@ -164,11 +182,12 @@ int main(int argc, char *argv[])
 	player.userCreatePlayer();
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
 
-	int map_height = 25, map_width = 35;
-	int com_height = 60, com_width = 60;
+	int map_height = 20, map_width = 35;
+	int com_height = 14, com_width = 50;
 
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
 	combat_window = newwin(com_height, com_width, COM_VERTICAL_PADDING, map_width + (MAP_HORIZONTAL_PADDING * 2));
+	scrollok(combat_window, true);
 
 	mainGameLoop(&player, &map);
 

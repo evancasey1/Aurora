@@ -17,7 +17,7 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	int choice = (rand() % 2); //0 or 1
 	int op = (rand() % 2);
 	this->name = NAMES[(rand() % this->NUM_ENEMY_TYPES)];
-	this->vision = 4;
+	this->vision = 5;
 
 	//randomize spawn location
 	switch (choice) {
