@@ -20,6 +20,8 @@ class Player
 		int getCol();
 		void setPosition(int r, int c);
 		int vision;
+		int allowed_moves = 1;
+		int used_moves = 0;
 
 	private:
 		std::string name;

@@ -5,15 +5,14 @@
 #include <ctime>
 #include <vector>
 #include "map.h"
+#include "player.h"
 
-Map::Map(int s, int vp, int hp) 
+Map::Map(int s) 
 {
 	this->size = s;
 	this->player_symbol = '@';
 	this->enemy_symbol = 'X';
 	this->map = new MapSection[size * size];
-	this->pad_y = vp;
-	this->pad_x = hp;
 	
 	this->player_color = 4;
 	this->enemy_color = 3;
@@ -35,17 +34,24 @@ Map::MapSection Map::getMapSectionFromIndex(int row, int col)
 	return *(this->map + ((row * this->size) + col));
 }
 
-void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy> enemies, WINDOW *map_window) 
+void Map::printPlayerInfo(Player player, WINDOW *map_window)
+{
+	wmove(map_window, 0, 0);
+	wprintw(map_window, "X: %d Y: %d --- Moves: %d/%d\n", player.getCol(), player.getRow(), player.used_moves, player.allowed_moves);
+	wrefresh(map_window);
+}
+
+void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, WINDOW *map_window) 
 {
 	//TODO:
 	//	reduce flicker
 
-	wmove(map_window, this->pad_y, this->pad_x);
+	wmove(map_window, 1, 0);
 	char to_add;
-	int row_max = player_row + vision + 1;
-	int col_max = player_col + vision + 1;
-	int row_min = player_row - vision;
-	int col_min = player_col - vision;
+	int row_max = player->getRow() + vision + 1;
+	int col_max = player->getCol() + vision + 1;
+	int row_min = player->getRow() - vision;
+	int col_min = player->getCol() - vision;
 	int color_index = this->daytime_color; //init to daytime for now
 
 	row_max > this->size ? row_max = this->size : false;
@@ -53,11 +59,10 @@ void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy
 	row_min < 0 ? row_min = 0 : false;
 	col_min < 0 ? col_min = 0 : false;
 
-	wprintw(map_window, " X: %d Y: %d\n", player_col, player_row);
 	int count = 0;
 	for (int i = row_min; i < row_max; i++) {
 		for (int j = col_min; j < col_max; j++) {
-			if (player_row == i && player_col == j) {
+			if (player->getRow() == i && player->getCol() == j) {
 				to_add = this->player_symbol;
 				color_index = this->player_color;
 			}
@@ -79,16 +84,15 @@ void Map::printMap(int player_row, int player_col, int vision, std::vector<Enemy
 		}
 		count++;
 		wprintw(map_window, "\n");
-		if (player_row + vision > this->size - 1) {
-			wmove(map_window, player_row + vision, 0);
+		if (player->getRow() + vision > this->size - 1) {
+			wmove(map_window, player->getRow() + vision, 0);
 			wclrtoeol(map_window);
 		}
-		else if (player_row - vision < 0) {
-			wmove(map_window, player_row - vision, 0);
+		else if (player->getRow() - vision < 0) {
+			wmove(map_window, player->getRow() - vision, 0);
 			wclrtoeol(map_window);
 		}
 		
 		wrefresh(map_window);
 	}
-	wmove(map_window, this->pad_y, this->pad_x);
 }

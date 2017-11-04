@@ -11,7 +11,7 @@ main.o: main.cpp player.h structure.h map.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
 player.o: player.cpp player.h human.h elf.h dwarf.h
 	$(CXX) $(CXXFLAGS) -c player.cpp
-map.o: map.cpp map.h enemy.h
+map.o: map.cpp map.h enemy.h player.h
 	$(CXX) $(CXXFLAGS) -c map.cpp
 enemy.o: enemy.cpp enemy.h
 	$(CXX) $(CXXFLAGS) -c enemy.cpp

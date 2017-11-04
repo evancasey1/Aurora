@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include <vector>
 #include "enemy.h"
+#include "player.h"
 #ifndef MAP_H
 #define MAP_H
 
@@ -14,9 +15,10 @@ class Map
 			std::string biome;
 			//will contain structure information later
 		};
-		Map(int s, int vp, int hp);
+		Map(int s);
 		MapSection getMapSectionFromIndex(int row, int col);
-		void printMap(int player_row, int player_col, int vision, std::vector<Enemy> e, WINDOW *win);
+		void printMap(Player *player, int vision, std::vector<Enemy> e, WINDOW *win);
+		void printPlayerInfo(Player player, WINDOW *win);
 		int size;
 		MapSection *map;
 		int player_color;
@@ -27,8 +29,6 @@ class Map
 	private:
 		char player_symbol;
 		char enemy_symbol;
-		int pad_y;
-		int pad_x;
 };
 
 #endif

@@ -12,18 +12,17 @@
 #include <vector>
 #include <math.h>
 #include "enemy.h"
-#include "player.h"
 #include "map.h"
 
 static const int MAP_SIZES[3] = {45, 85, 125};
 static const int MAP_VERTICAL_PADDING = 2;
-static const int COM_VERTICAL_PADDING = 5;
+static const int COM_VERTICAL_PADDING = 3;
 static const int MAP_HORIZONTAL_PADDING = 5;
 static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
 static int enemy_spawn_rate = 50; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
 static int chosen_map_size;
-static int max_enemies = 3;
+static int max_enemies = 2;
 WINDOW *map_window;
 WINDOW *combat_window;
 
@@ -84,23 +83,37 @@ void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
 	std::vector<Enemy> enemies;	
-	map->printMap(player->getRow(), player->getCol(), player->vision, enemies, map_window);
+	map->printPlayerInfo(*player, map_window);
+	map->printMap(player, player->vision, enemies, map_window);
 
 	while (true) {
 		ch = getch();
 		switch(ch) {
+			//player movement
 			case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
 			case 'w': case 's': case 'a': case 'd':
+				player->used_moves++;
 				player->moveSpace(ch, map->size);
-				enemyEvents(player, map, &enemies);
-				map->printMap(player->getRow(), player->getCol(), player->vision, enemies, map_window);
+				map->printPlayerInfo(*player, map_window);
+				map->printMap(player, player->vision, enemies, map_window);
 				break;
+			//player skips a single move
+			case ' ':
+				player->used_moves++;
+				map->printPlayerInfo(*player, map_window);
+				break;
+			//player skips all remaining moves for the turn
 			case ENTER_KEY:
-				//TODO:
-				//	open command prompt. will be new window
+				player->used_moves = player->allowed_moves;
 				break;
 			default:
 				break;
+		}
+		if (player->used_moves == player->allowed_moves) {
+			enemyEvents(player, map, &enemies);
+			player->used_moves = 0;
+			map->printPlayerInfo(*player, map_window);
+			map->printMap(player, player->vision, enemies, map_window);
 		}
 	}
 	endwin();
@@ -157,6 +170,7 @@ int main(int argc, char *argv[])
 	//ISSUE:
 	//	Rare segementation fault on player movement. 
 	//		Not able to reproduce
+	//		maybe when 2 enemies are on same tile at same time
 	Player player;
 	srand((int)time(0));
 
@@ -177,7 +191,7 @@ int main(int argc, char *argv[])
 
 	int index = userSelectMapSize();
 	chosen_map_size = MAP_SIZES[index];
-    Map map(chosen_map_size, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
+    Map map(chosen_map_size);
 
 	player.userCreatePlayer();
 	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
