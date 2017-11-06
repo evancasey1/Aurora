@@ -24,14 +24,14 @@ static int enemy_spawn_rate = 50; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance
 static int chosen_map_size;
 static int max_enemies = 2;
 WINDOW *map_window;
-WINDOW *combat_window;
+WINDOW *alert_window;
 
 void initiate_combat(Player *player, Enemy *enemy)
 {
 	//TODO:
 	//	actual combat
-	wprintw(combat_window, "Combat has started\n");
-	wrefresh(combat_window);
+	wprintw(alert_window, "Combat has started\n");
+	wrefresh(alert_window);
 }
 
 //get the distance between 2 points
@@ -47,15 +47,15 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	int rng;
 	int index = 0;
 	double distance;
-	wattron(combat_window, COLOR_PAIR(5)); //turn on enemy color scheme while enemy events are active
+	wattron(alert_window, COLOR_PAIR(5)); //turn on enemy color scheme while enemy events are active
 	for (auto &e : *enemies) {
 		distance = getDistance(player->getCol(), player->getRow(), e.col, e.row);
 		if (distance <= (double) e.vision) {
 			e.seek(player->getRow(), player->getCol());
 			if (e.alert_player) {
 				e.alert_player = false;
-				wprintw(combat_window, "%s has spotted you!\n", e.name);
-				wrefresh(combat_window);
+				wprintw(alert_window, "%s has spotted you!\n", e.name);
+				wrefresh(alert_window);
 			}
 		}
 		else {
@@ -76,7 +76,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	if (rng <= enemy_spawn_rate && enemies->size() < max_enemies) {
 		enemies->push_back(*(new Enemy(player->getRow(), player->getCol(), player->vision, map->size)));
 	}
-	wattroff(combat_window, COLOR_PAIR(1));
+	wattroff(alert_window, COLOR_PAIR(1));
 }
 
 void mainGameLoop(Player *player, Map *map)
@@ -200,8 +200,8 @@ int main(int argc, char *argv[])
 	int com_height = 14, com_width = 50;
 
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
-	combat_window = newwin(com_height, com_width, COM_VERTICAL_PADDING, map_width + (MAP_HORIZONTAL_PADDING * 2));
-	scrollok(combat_window, true);
+	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING, map_width + (MAP_HORIZONTAL_PADDING * 2));
+	scrollok(alert_window, true);
 
 	mainGameLoop(&player, &map);
 
