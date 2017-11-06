@@ -171,6 +171,23 @@ int main(int argc, char *argv[])
 	//	Rare segementation fault on player movement. 
 	//		Not able to reproduce
 	//		maybe when 2 enemies are on same tile at same time
+	//TODO:
+	//	At some point put map creation into the map class. Not vital, but would
+	//  make more sense for the organization and flow of the program
+	//	---
+	//	Add equipment class (food, supplies)
+	//	---
+	//	Add weapon class to be implemented by Player and Enemy both
+	//	---
+	//	Add new window for combat. Yet to be determined how this will be laid out.
+	//  ---
+	//	Figure out what to do if 2 different enemies reach the player at the same time.
+	//	---
+	//	Implement enemy party system (I.E. A troop of 3 goblins with varying statlines)
+	//	---
+	//	Player attributes for greater customization over game experience
+	//	---
+	
 	Player player;
 	srand((int)time(0));
 

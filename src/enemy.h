@@ -2,6 +2,15 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+
+//TODO:
+//	this will be the parent class to each subclass of enemies.
+//	Because enemies will have unique abilities/equipment/loot/stats
+//	and to be able to be more flexible, this change will be necessary down the line.
+//  ---
+//	Enemies will all have an A* pathfinding algorithm implemented instead of the
+//	current "dumb" algorithm that will introduce problems when obstacles are implemented
+//	and currently do have issues when 2 or more enemies are in close proximity
 class Enemy
 {
 	public:

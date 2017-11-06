@@ -6,6 +6,17 @@
 #ifndef MAP_H
 #define MAP_H
 
+//TODO:
+//	Terrain generation in a more organized fashion
+//		Different terrains will have different symbols, obstacles, enemies, and challenges	
+//		Organize like a map, with terrain blocks grouped together and not randomly strewn about.
+// 	---
+//	Generate obstacles. Will need Enemy A* pathfinding before this can happen.
+//	---
+//	Generate buildings. 
+//		These structures will be denoted by a grouping of 4 or more concurrent
+//		symbols on the map, and when entered will have their own map and enemy generation.
+
 class Map
 {
 	public:
