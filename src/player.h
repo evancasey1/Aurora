@@ -8,18 +8,18 @@ class Player
 		Player();
 		Player (std::string race, std::string name);
 		void moveSpace(int direction, int map_size);
-		void showEquipped();
-		void showInventory();
 		std::string getName();
 		void setName(std::string n);
 		std::string getRace();
 		void setRace(std::string r);
-		void showAttrs();
 		void userCreatePlayer();
 		int getRow();
 		int getCol();
 		void setPosition(int r, int c);
+		void printStatus(WINDOW *player_window);
+
 		int vision;
+		int current_health, total_health;
 		int allowed_moves = 1;
 		int used_moves = 0;
 

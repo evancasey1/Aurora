@@ -11,6 +11,11 @@ Player::Player()
 	setName("Adventurer");
 	setRace("Undefined");
 	this->vision = 6;
+
+	//placeholder. For debugging only
+	//Player creation will be overhauled later
+	this->total_health = 15;
+	this->current_health = 15;
 }
 Player::Player(std::string race, std::string name) 
 {
@@ -102,6 +107,14 @@ std::string Player::getRace()
 void Player::setRace(std::string r) 
 {
 	this->race = r;
+}
+
+//Will print things like player gold count, health, status, and 
+//directional indicators to next obelisk
+void Player::printStatus(WINDOW *player_window)
+{
+	wprintw(player_window, "Health: %d/%d", this->current_health, this->total_health);
+	wrefresh(player_window);
 }
 
 void Player::moveSpace(int direction, int map_size)

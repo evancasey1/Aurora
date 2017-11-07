@@ -15,8 +15,8 @@
 #include "map.h"
 
 static const int MAP_SIZES[3] = {45, 85, 125};
-static const int MAP_VERTICAL_PADDING = 2;
-static const int COM_VERTICAL_PADDING = 3;
+static const int MAP_VERTICAL_PADDING = 3;
+static const int COM_VERTICAL_PADDING = 4;
 static const int MAP_HORIZONTAL_PADDING = 5;
 static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
@@ -25,6 +25,7 @@ static int chosen_map_size;
 static int max_enemies = 2;
 WINDOW *map_window;
 WINDOW *alert_window;
+WINDOW *player_status_window;
 
 void initiate_combat(Player *player, Enemy *enemy)
 {
@@ -85,6 +86,7 @@ void mainGameLoop(Player *player, Map *map)
 	std::vector<Enemy> enemies;	
 	map->printPlayerInfo(*player, map_window);
 	map->printMap(player, player->vision, enemies, map_window);
+	player->printStatus(player_status_window);
 
 	while (true) {
 		ch = getch();
@@ -123,6 +125,7 @@ int userSelectMapSize()
 {
 	//TODO:
 	//	Support for custom map size
+	//	Use NCURSES highlighting instead of this jank solution
 	int chosen_index = 0;
 	const char *options_sel[] =	{">> Tiny <<", ">> Normal <<", ">> Huge <<"};
 	const char *options_idle[] = {"Tiny", "Normal", "Huge"};
@@ -215,9 +218,11 @@ int main(int argc, char *argv[])
 
 	int map_height = 20, map_width = 35;
 	int com_height = 14, com_width = 50;
+	int ps_height  = 1 , ps_width = map_width + com_width;
 
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
 	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING, map_width + (MAP_HORIZONTAL_PADDING * 2));
+	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
 	scrollok(alert_window, true);
 
 	mainGameLoop(&player, &map);
