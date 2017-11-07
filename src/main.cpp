@@ -19,9 +19,9 @@ static const int MAP_VERTICAL_PADDING = 3;
 static const int COM_VERTICAL_PADDING = 4;
 static const int MAP_HORIZONTAL_PADDING = 5;
 static const int SPAWN_TOTAL_DENOM = 100;
-static int enemy_spawn_rate = 50; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
-static int chosen_map_size;
-static int max_enemies = 2;
+static int enemy_spawn_rate = 100; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
+//static int chosen_map_size;
+static int max_enemies = 50;
 WINDOW *map_window;
 WINDOW *alert_window;
 WINDOW *player_status_window;
@@ -64,7 +64,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 				//set up to alert them when they get back into range
 				e.alert_player = true;
 			}
-			e.idle();
+			e.idle(map->size);
 		}
 		if (e.row == player->getRow() && e.col == player->getCol()) {
 			initiate_combat(player, &e);
@@ -122,41 +122,40 @@ void mainGameLoop(Player *player, Map *map)
 	endwin();
 }
 
-int userSelectMapSize()
+Map* userCreateMap()
 {
 	//TODO:
 	//	Support for custom map size
-	//	Use NCURSES highlighting instead of this jank solution
 	int chosen_index = 0;
-	const char *options_sel[] =	{">> Tiny <<", ">> Normal <<", ">> Huge <<"};
-	const char *options_idle[] = {"Tiny", "Normal", "Huge"};
+	const char *options[] = {"Tiny", "Normal", "Huge"};
 	int horiz_pad = (int) ((COLS/2)-10);
 	int ch = 0;
-	
-	mvprintw(MAP_VERTICAL_PADDING-1, horiz_pad, "Select your map size\n");
+	attron(A_BOLD);
+	mvprintw(MAP_VERTICAL_PADDING-1, horiz_pad, "Select your map size:\n");
+	attroff(A_BOLD);
 	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {
+			move(MAP_VERTICAL_PADDING + i, horiz_pad);
+			clrtoeol();
 			if (i != chosen_index) {
-				move(MAP_VERTICAL_PADDING + i, horiz_pad);
-				clrtoeol();
-				addstr(options_idle[i]);
+				addstr(options[i]);
 			}
 			else {
-				move(MAP_VERTICAL_PADDING + i, horiz_pad);
-				clrtoeol();
-				addstr(options_sel[i]);			
+				attron(A_STANDOUT);
+				addstr(options[i]);
+				attroff(A_STANDOUT);			
 			}
 		}
 		
 		ch = getch();
 		switch(ch) {
-			case KEY_UP: case 'w':
+			case KEY_UP:
 				chosen_index <= 0 ? chosen_index = 2 : chosen_index--;
 				refresh();
 				break;
-			case KEY_DOWN: case 's':
+			case KEY_DOWN:
 				chosen_index >= 2 ? chosen_index = 0 : chosen_index++;
 				refresh();
 				break;
@@ -166,7 +165,7 @@ int userSelectMapSize()
 	}
 	clear();
 	refresh();
-	return chosen_index;
+	return new Map(MAP_SIZES[chosen_index]);
 }
 
 int main(int argc, char *argv[]) 
@@ -174,7 +173,8 @@ int main(int argc, char *argv[])
 	//ISSUE:
 	//	Rare segementation fault on player movement. 
 	//		Not able to reproduce
-	//		maybe when 2 enemies are on same tile at same time
+	//		Seems to happen more at the edges of the map. 
+	//		Could be an issue with enemy spawns
 	//TODO:
 	//	At some point put map creation into the map class. Not vital, but would
 	//  make more sense for the organization and flow of the program
@@ -193,6 +193,7 @@ int main(int argc, char *argv[])
 	//	---
 	
 	Player player;
+	//Map map;
 	srand((int)time(0));
 
 	initscr();
@@ -210,14 +211,12 @@ int main(int argc, char *argv[])
 	init_pair(1, COLOR_BLACK, COLOR_WHITE); //default day: MAP
 	// END COLORS //
 
-	int index = userSelectMapSize();
-	chosen_map_size = MAP_SIZES[index];
-    Map map(chosen_map_size);
+	Map *map = userCreateMap();
 
 	player.userCreatePlayer();
-	player.setPosition((int)chosen_map_size/2, (int)chosen_map_size/2);
+	player.setPosition((int)map->size/2, (int)map->size/2);
 
-	int map_height = 20, map_width = 35;
+	int map_height = 30, map_width = 50;
 	int com_height = 14, com_width = 50;
 	int ps_height  = 1 , ps_width = map_width + com_width;
 
@@ -226,7 +225,7 @@ int main(int argc, char *argv[])
 	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
 	scrollok(alert_window, true);
 
-	mainGameLoop(&player, &map);
+	mainGameLoop(&player, map);
 
 	return 0;
 }

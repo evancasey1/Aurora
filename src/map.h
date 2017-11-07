@@ -26,6 +26,7 @@ class Map
 			std::string biome;
 			//will contain structure information later
 		};
+		Map();
 		Map(int s);
 		MapSection getMapSectionFromIndex(int row, int col);
 		void printMap(Player *player, int vision, std::vector<Enemy> e, WINDOW *win);

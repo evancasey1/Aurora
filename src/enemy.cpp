@@ -50,9 +50,10 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 
 	this->row = e_row;
 	this->col = e_col;
+	printw("Row: %d, Col: %d - ", e_row, e_col);
 }
 
-void Enemy::idle()
+void Enemy::idle(int map_size)
 {
 	//move a random direction or stay still
 	int move;
@@ -74,6 +75,12 @@ void Enemy::idle()
 			default:
 				break;
 		}
+		//bounding logic
+		if (this->row >= map_size) this->row--;
+		else if (this->row < 0) this->row++;
+
+		if (this->col >= map_size) this->col--;
+		else if (this->col < 0) this->col++;
 	}
 }
 

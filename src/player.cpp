@@ -32,26 +32,27 @@ void Player::userCreatePlayer()
 	//		get name, get race, get attrs
 	//	make this menu selection a reusable function
 	int chosen_index = 0;
-	const char *options_sel[] =	{">> Human <<", ">> Elf <<", ">> Dwarf <<"};
-	const char *options_idle[] = {"Human", "Elf", "Dwarf"};
+	const char *options[] = {"Human", "Elf", "Dwarf"};
 	int horiz_pad = (int) ((COLS/2)-10);
 	int vert_pad = 3;
 	int ch = 0;
 	
-	mvprintw(vert_pad-1, horiz_pad, "Select your map size\n");
+	attron(A_BOLD);
+	mvprintw(vert_pad-1, horiz_pad, "Select your adventurer:\n");
+	attroff(A_BOLD);
 	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {
+			move(vert_pad + i, horiz_pad);
+			clrtoeol();
 			if (i != chosen_index) {
-				move(vert_pad + i, horiz_pad);
-				clrtoeol();
-				addstr(options_idle[i]);
+				addstr(options[i]);
 			}
 			else {
-				move(vert_pad + i, horiz_pad);
-				clrtoeol();
-				addstr(options_sel[i]);			
+				attron(A_STANDOUT);
+				addstr(options[i]);
+				attroff(A_STANDOUT);	
 			}
 		}
 		
@@ -69,7 +70,7 @@ void Player::userCreatePlayer()
 				break;
 		}
 	}
-	this->race = options_idle[chosen_index];
+	this->race = options[chosen_index];
 	clear();
 	refresh();
 }
