@@ -20,7 +20,7 @@ class Player
 		int getCol();
 		void setPosition(int r, int c);
 		int vision;
-		int allowed_moves = 2;
+		int allowed_moves = 1;
 		int used_moves = 0;
 
 	private:
@@ -34,8 +34,6 @@ class Player
 			double speed;
 			double constitution;
 		};
-		double warmth;
-		double hunger;
 		int row;
 		int col;
 };
