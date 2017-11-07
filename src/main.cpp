@@ -97,7 +97,10 @@ void mainGameLoop(Player *player, Map *map)
 				player->used_moves++;
 				player->moveSpace(ch, map->size);
 				map->printPlayerInfo(*player, map_window);
-				map->printMap(player, player->vision, enemies, map_window);
+				//only prints if enemies won't also update and force a map print
+				if (player->used_moves != player->allowed_moves) {
+					map->printMap(player, player->vision, enemies, map_window);
+				}
 				break;
 			//player skips a single move
 			case ' ':
