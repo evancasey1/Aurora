@@ -18,7 +18,6 @@ static const int MAP_SIZES[3] = {45, 85, 125};
 static const int MAP_VERTICAL_PADDING = 3;
 static const int COM_VERTICAL_PADDING = 4;
 static const int MAP_HORIZONTAL_PADDING = 5;
-static const int ENTER_KEY = 10;
 static const int SPAWN_TOTAL_DENOM = 100;
 static int enemy_spawn_rate = 50; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
 static int chosen_map_size;
@@ -93,7 +92,6 @@ void mainGameLoop(Player *player, Map *map)
 		switch(ch) {
 			//player movement
 			case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
-			case 'w': case 's': case 'a': case 'd':
 				player->used_moves++;
 				player->moveSpace(ch, map->size);
 				map->printPlayerInfo(*player, map_window);
@@ -108,7 +106,7 @@ void mainGameLoop(Player *player, Map *map)
 				map->printPlayerInfo(*player, map_window);
 				break;
 			//player skips all remaining moves for the turn
-			case ENTER_KEY:
+			case '\n': case KEY_ENTER:
 				player->used_moves = player->allowed_moves;
 				break;
 			default:
@@ -136,7 +134,7 @@ int userSelectMapSize()
 	int ch = 0;
 	
 	mvprintw(MAP_VERTICAL_PADDING-1, horiz_pad, "Select your map size\n");
-	while(ch != ENTER_KEY) {
+	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {

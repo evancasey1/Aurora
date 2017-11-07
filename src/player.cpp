@@ -31,7 +31,6 @@ void Player::userCreatePlayer()
 	//  break into 3 helper functions
 	//		get name, get race, get attrs
 	//	make this menu selection a reusable function
-	int enter_key = 10;
 	int chosen_index = 0;
 	const char *options_sel[] =	{">> Human <<", ">> Elf <<", ">> Dwarf <<"};
 	const char *options_idle[] = {"Human", "Elf", "Dwarf"};
@@ -40,7 +39,7 @@ void Player::userCreatePlayer()
 	int ch = 0;
 	
 	mvprintw(vert_pad-1, horiz_pad, "Select your map size\n");
-	while(ch != enter_key) {
+	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {
@@ -58,11 +57,11 @@ void Player::userCreatePlayer()
 		
 		ch = getch();
 		switch(ch) {
-			case KEY_UP: case 'w':
+			case KEY_UP:
 				chosen_index <= 0 ? chosen_index = 2 : chosen_index--;
 				refresh();
 				break;
-			case KEY_DOWN: case 's':
+			case KEY_DOWN:
 				chosen_index >= 2 ? chosen_index = 0 : chosen_index++;
 				refresh();
 				break;
@@ -121,19 +120,19 @@ void Player::moveSpace(int direction, int map_size)
 {
 	//TODO
 	switch (direction) {
-		case KEY_UP: case 'w':
+		case KEY_UP:
 			if (this->row == 0) break;
 			this->row--;
 			break;
-		case KEY_DOWN: case 's':
+		case KEY_DOWN:
 			if (this->row == map_size-1) break;
 			this->row++;
 			break;
-		case KEY_LEFT: case 'a':
+		case KEY_LEFT:
 			if (this->col == 0) break;
 			this->col--;
 			break;
-		case KEY_RIGHT: case 'd':
+		case KEY_RIGHT:
 			if (this->col == map_size-1) break;
 			this->col++;
 			break;
