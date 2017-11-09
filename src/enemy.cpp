@@ -16,7 +16,9 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	srand((int)time(0));
 	int choice = (rand() % 2); //0 or 1
 	int op = (rand() % 2);
-	this->name = NAMES[(rand() % this->NUM_ENEMY_TYPES)];
+	int index = (rand() % this->NUM_ENEMY_TYPES);
+	this->name = NAMES[index];
+	this->symbol = SYMBOLS[index];
 	this->vision = 5;
 
 	//randomize spawn location
@@ -50,7 +52,7 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 
 	this->row = e_row;
 	this->col = e_col;
-	printw("Row: %d, Col: %d - ", e_row, e_col);
+	//printw("Row: %d, Col: %d - ", e_row, e_col);
 }
 
 void Enemy::idle(int map_size)

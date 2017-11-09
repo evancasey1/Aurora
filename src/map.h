@@ -40,7 +40,6 @@ class Map
 
 	private:
 		char player_symbol;
-		char enemy_symbol;
 };
 
 #endif

@@ -23,6 +23,7 @@ class Enemy
 		int vision;
 		bool alert_player = true;
 		const char *name;
+		char symbol;
 
 	private:
 		//int health;
@@ -30,8 +31,9 @@ class Enemy
 		//moves will be enemy specific later. temp values
 		int seek_moves = 1;
 		int idle_moves = 1;
-		static const int NUM_ENEMY_TYPES = 7;
-		const char *NAMES[NUM_ENEMY_TYPES] = {"Wolf", "Alpha Wolf", "Wight", "Goblin", "Troll", "Orc", "Bear"};
+		static const int NUM_ENEMY_TYPES = 6;
+		const char *NAMES[NUM_ENEMY_TYPES] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
+		char SYMBOLS[NUM_ENEMY_TYPES] = {'W', 'U', 'G', 'T', 'O', 'B'};
 };
 
 #endif

@@ -11,7 +11,6 @@ Map::Map(int s)
 {
 	this->size = s;
 	this->player_symbol = '@';
-	this->enemy_symbol = 'X';
 	this->map = new MapSection[size * size];
 	
 	this->player_color = 4;
@@ -71,7 +70,7 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, WINDO
 			}
 			for (auto &e : enemies) {
 				if (e.row == i && e.col == j) {
-					to_add = this->enemy_symbol;
+					to_add = e.symbol;
 					color_index = this->enemy_color;
 					break;
 				}
