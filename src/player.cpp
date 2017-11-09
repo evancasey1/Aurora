@@ -117,28 +117,29 @@ void Player::printStatus(WINDOW *player_window)
 	wrefresh(player_window);
 }
 
-void Player::moveSpace(int direction, int map_size)
+//Returns true if the movement was valid, false otherwise
+bool Player::moveSpace(int direction, int map_size)
 {
-	//TODO
 	switch (direction) {
 		case KEY_UP:
-			if (this->row == 0) break;
+			if (this->row == 0) return false;
 			this->row--;
 			break;
 		case KEY_DOWN:
-			if (this->row == map_size-1) break;
+			if (this->row == map_size-1) return false;
 			this->row++;
 			break;
 		case KEY_LEFT:
-			if (this->col == 0) break;
+			if (this->col == 0) return false;
 			this->col--;
 			break;
 		case KEY_RIGHT:
-			if (this->col == map_size-1) break;
+			if (this->col == map_size-1) return false;
 			this->col++;
 			break;
 		default:
 			break;
 	}
+	return true;
 }
 

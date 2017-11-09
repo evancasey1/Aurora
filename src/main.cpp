@@ -92,12 +92,13 @@ void mainGameLoop(Player *player, Map *map)
 		switch(ch) {
 			//player movement
 			case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
-				player->used_moves++;
-				player->moveSpace(ch, map->size);
-				map->printPlayerInfo(*player, map_window);
-				//only prints if enemies won't also update and force a map print
-				if (player->used_moves != player->allowed_moves) {
-					map->printMap(player, player->vision, enemies, map_window);
+				if(player->moveSpace(ch, map->size)) {
+					player->used_moves++;
+					map->printPlayerInfo(*player, map_window);
+					//only prints if enemies won't also update and force a map print
+					if (player->used_moves != player->allowed_moves) {
+						map->printMap(player, player->vision, enemies, map_window);
+					}
 				}
 				break;
 			//player skips a single move
