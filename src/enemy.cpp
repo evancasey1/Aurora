@@ -12,16 +12,19 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	//  weight name (enemy type) percent chance
 	int e_row = 0;
 	int e_col = 0;
-	int range = (p_vision * 2) + 1;
+	//int range = (p_vision * 2) + 1;
 	srand((int)time(0));
-	int choice = (rand() % 2); //0 or 1
-	int op = (rand() % 2);
+	//int choice = (rand() % 2); //0 or 1
+	//int op = (rand() % 2);
 	int index = (rand() % this->NUM_ENEMY_TYPES);
 	this->name = NAMES[index];
 	this->symbol = SYMBOLS[index];
 	this->vision = 5;
 
 	//randomize spawn location
+	//Commented out for now because this is suspected to cause the
+	//segmentation fault
+	/*
 	switch (choice) {
 		case 0:
 			if (!op) {
@@ -43,7 +46,9 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 			break;
 		default:
 			break;
-	}
+	}*/
+	e_row = (rand() % map_size);
+	e_col = (rand() % map_size);
 
 	e_row > (map_size - 1) ? e_row = (map_size - 1) : false;
 	e_row < 0 ? e_row = 0 : false;
