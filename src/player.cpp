@@ -16,6 +16,10 @@ Player::Player()
 	//Player creation will be overhauled later
 	this->total_health = 15;
 	this->current_health = 15;
+	this->speed = 2.0;
+	this->attack_power = 5;
+	this->attack_power_range = 2;
+	this->crit_chance = 0.2;
 }
 Player::Player(std::string race, std::string name) 
 {
@@ -113,6 +117,8 @@ void Player::setRace(std::string r)
 //directional indicators to next obelisk
 void Player::printStatus(WINDOW *player_window)
 {
+	wmove(player_window, 0, 0);
+	wclrtoeol(player_window);
 	wprintw(player_window, "Health: %d/%d", this->current_health, this->total_health);
 	wrefresh(player_window);
 }

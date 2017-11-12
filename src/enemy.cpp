@@ -20,6 +20,12 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	this->name = NAMES[index];
 	this->symbol = SYMBOLS[index];
 	this->vision = 5;
+	this->total_health = 10;
+	this->current_health = this->total_health;
+	this->attack_power = 2;
+	this->attack_power_range = 1;
+	this->crit_chance = 0.1;
+	this->speed = 1.5;
 
 	//randomize spawn location
 	//Commented out for now because this is suspected to cause the

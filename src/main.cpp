@@ -26,12 +26,51 @@ WINDOW *map_window;
 WINDOW *alert_window;
 WINDOW *player_status_window;
 
+
 void initiate_combat(Player *player, Enemy *enemy)
 {
 	//TODO:
 	//	actual combat
+	int player_attack_power;
+	int enemy_attack_power;
 	wprintw(alert_window, "Combat has started\n");
 	wrefresh(alert_window);
+	while (player->current_health > 0 && enemy->current_health > 0) {
+		player_attack_power = (rand() % player->attack_power_range) + player->attack_power;
+		enemy_attack_power  = (rand() % enemy->attack_power_range) + enemy->attack_power;
+		if (player->speed > enemy->speed) {
+			//player attacks first
+			enemy->current_health -= player_attack_power;
+			wprintw(alert_window, "You hit %s for %d damage.\n", enemy->name, player_attack_power);
+			if (enemy->current_health > 0) {
+				player->current_health -= enemy_attack_power;
+				wprintw(alert_window, "%s hits you for %d damage.\n", enemy->name, enemy_attack_power);
+			}
+			else {
+				wprintw(alert_window, "You killed %s.\n", enemy->name);
+			}
+		}
+		else {
+			//enemy attacks first
+			player->current_health -= enemy_attack_power;
+			wprintw(alert_window, "%s hits you for %d damage.\n", enemy->name, enemy_attack_power);
+			if (player->current_health > 0) {
+				enemy->current_health -= player_attack_power;
+				wprintw(alert_window, "You hit %s for %d damage.\n", enemy->name, player_attack_power);
+			}
+		}
+		if (player->current_health <= 0) {
+			//player died
+			wprintw(alert_window, "%s killed you. Game over.\n", enemy->name);
+			wrefresh(alert_window);
+			usleep(5000000);
+			endwin();
+			exit(0);
+		}
+		player->printStatus(player_status_window);
+		wrefresh(player_status_window);
+		wrefresh(alert_window);
+	}
 }
 
 //get the distance between 2 points

@@ -21,6 +21,12 @@ class Enemy
 		int col;
 		int lifespan;
 		int vision;
+		int current_health;
+		int total_health;
+		int attack_power;
+		int attack_power_range;
+		double speed;
+		double crit_chance;
 		bool alert_player = true;
 		const char *name;
 		char symbol;

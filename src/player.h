@@ -20,6 +20,9 @@ class Player
 
 		int vision;
 		int current_health, total_health;
+		int attack_power, attack_power_range;
+		double speed;
+		double crit_chance;
 		int allowed_moves = 1;
 		int used_moves = 0;
 
