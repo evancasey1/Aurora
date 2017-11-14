@@ -23,8 +23,9 @@ class Player
 		int attack_power, attack_power_range;
 		double speed;
 		double crit_chance;
-		int allowed_moves = 1;
-		int used_moves = 0;
+		double accuracy;
+		int allowed_moves;
+		int used_moves;
 
 	private:
 		std::string name;

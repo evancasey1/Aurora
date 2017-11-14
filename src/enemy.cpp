@@ -16,11 +16,14 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	this->vision = 5;
 	this->total_health = 10;
 	this->current_health = this->total_health;
-	this->attack_power = 2;
+	this->attack_power = 3;
 	this->attack_power_range = 1;
 	this->crit_chance = 0.1;
 	this->speed = 1.5;
 	this->alert_player = true;
+	this->idle_moves = 1;
+	this->seek_moves = 1;
+	this->accuracy = 0.5;
 
 	int e_row = 0;
 	int e_col = 0;

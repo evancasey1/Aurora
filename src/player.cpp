@@ -2,9 +2,6 @@
 #include <string>
 #include <ncurses.h>
 #include "player.h"
-#include "human.h"
-#include "dwarf.h"
-#include "elf.h"
 
 Player::Player()
 {
@@ -14,12 +11,16 @@ Player::Player()
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
-	this->total_health = 15;
-	this->current_health = 15;
+	this->total_health = 50;
+	this->current_health = this->total_health;
 	this->speed = 2.0;
-	this->attack_power = 5;
-	this->attack_power_range = 2;
-	this->crit_chance = 0.2;
+	this->attack_power = 3;
+	this->attack_power_range = 4;
+	this->crit_chance = 0.05;
+	this->allowed_moves = 1;
+	this->used_moves = 0;
+	//Will be an attribute of weapon later
+	this->accuracy = 0.9;
 }
 Player::Player(std::string race, std::string name) 
 {

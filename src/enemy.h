@@ -27,16 +27,17 @@ class Enemy
 		int attack_power_range;
 		double speed;
 		double crit_chance;
+		double accuracy;
 		bool alert_player;
-		const char *name;
 		char symbol;
+		const char *name;
 
 	private:
 		//int health;
 		
 		//moves will be enemy specific later. temp values
-		int seek_moves = 1;
-		int idle_moves = 1;
+		int seek_moves;
+		int idle_moves;
 		static const int NUM_ENEMY_TYPES = 6;
 		const char *NAMES[NUM_ENEMY_TYPES] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
 		char SYMBOLS[NUM_ENEMY_TYPES] = {'W', 'U', 'G', 'T', 'O', 'B'};

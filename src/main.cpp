@@ -26,6 +26,21 @@ WINDOW *map_window;
 WINDOW *alert_window;
 WINDOW *player_status_window;
 
+int computeAttackPower(int base_power, int power_range, double accuracy, double crit_chance) {
+	int power = base_power;
+	double chance_to_hit  = ((double) rand() / RAND_MAX);
+	double chance_to_crit = ((double) rand() / RAND_MAX);
+	if (power_range != 0) {
+		power += (rand() % power_range);
+	}
+	if (crit_chance >= chance_to_crit) {
+		power *= 2;
+	}
+	if(accuracy >= chance_to_hit) {
+		return power;
+	}
+	return 0;
+}
 
 void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
@@ -34,8 +49,8 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	int player_attack_power;
 	int enemy_attack_power;
 	Enemy *enemy = &(enemies->at(enemy_index));
-	player_attack_power = (rand() % player->attack_power_range) + player->attack_power;
-	enemy_attack_power  = (rand() % enemy->attack_power_range) + enemy->attack_power;
+	player_attack_power = computeAttackPower(player->attack_power, player->attack_power_range, player->accuracy, player->crit_chance);
+	enemy_attack_power  = computeAttackPower(enemy->attack_power, enemy->attack_power_range, enemy->accuracy, enemy->crit_chance);
 	if (player->speed > enemy->speed) {
 		//player attacks first
 		enemy->current_health -= player_attack_power;
@@ -46,7 +61,6 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 		}
 		else {
 			wprintw(alert_window, "You killed %s.\n", enemy->name);
-			enemies->erase(enemies->begin() + enemy_index);
 		}
 	}
 	else {
@@ -62,6 +76,7 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 		//player died
 		wprintw(alert_window, "%s killed you. Game over.\n", enemy->name);
 		wrefresh(alert_window);
+		wrefresh(player_status_window);
 		usleep(3500000);
 		endwin();
 		std::cout << "Game over.\n" << std::endl;
@@ -110,10 +125,23 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 		}
 		index++;
 	}
+	//loop through enemy vector and delete all dead enemies
+	std::vector<Enemy>::iterator iter;
+	for (iter = enemies->begin(); iter != enemies->end();) {
+		if (iter->current_health <= 0) {
+			iter = enemies->erase(iter);
+		}
+		else {
+			++iter;
+		}
+	}
+
+	//Chance to spawn an enemy
 	rng = (rand() % SPAWN_TOTAL_DENOM);
 	if (rng <= enemy_spawn_rate && enemies->size() < max_enemies) {
 		enemies->push_back(*(new Enemy(player->getRow(), player->getCol(), player->vision, map->size)));
 	}
+
 	wattroff(alert_window, COLOR_PAIR(1));
 }
 
