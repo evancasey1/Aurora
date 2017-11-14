@@ -18,7 +18,6 @@ Map::Map(int s)
 	this->nighttime_color = 2;
 	this->daytime_color = 1;
 
-	srand((int)time(0));
 	int r;
 	for (int i = 0; i < s; i++) {
 		for (int j = 0; j < s; j++) {
