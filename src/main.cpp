@@ -30,7 +30,7 @@ WINDOW *player_status_window;
 void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
 	//TODO:
-	//	actual combat
+	//	actual turn-based combat
 	int player_attack_power;
 	int enemy_attack_power;
 	Enemy *enemy = &(enemies->at(enemy_index));

@@ -26,6 +26,7 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 	this->attack_power_range = 1;
 	this->crit_chance = 0.1;
 	this->speed = 1.5;
+	this->alert_player = true;
 
 	//randomize spawn location
 	//Commented out for now because this is suspected to cause the

@@ -27,7 +27,7 @@ class Enemy
 		int attack_power_range;
 		double speed;
 		double crit_chance;
-		bool alert_player = true;
+		bool alert_player;
 		const char *name;
 		char symbol;
 
