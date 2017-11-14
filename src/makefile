@@ -7,7 +7,7 @@ OBJS = main.o player.o map.o enemy.o
 aurora: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o aurora $(OBJS) -lncurses
 
-main.o: main.cpp player.h structure.h map.h
+main.o: main.cpp player.h map.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
 player.o: player.cpp player.h
 	$(CXX) $(CXXFLAGS) -c player.cpp

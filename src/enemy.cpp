@@ -24,7 +24,7 @@ Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
 
 	int e_row = 0;
 	int e_col = 0;
-	int range = (p_vision * 2) + 1;
+	int range = (p_vision * 2);
 	int choice = (rand() % 2); //0 or 1
 	int op = (rand() % 2);
 	switch (choice) {
