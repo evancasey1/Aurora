@@ -14,7 +14,7 @@
 class Enemy
 {
 	public:
-		Enemy(int rw, int cl, int vi, int sz);
+		Enemy(std::string en, char es, int rw, int cl, int vi, int sz);
 		void seek(int p_row, int p_col);
 		void idle(int m_size);
 		int row;
@@ -30,17 +30,11 @@ class Enemy
 		double accuracy;
 		bool alert_player;
 		char symbol;
-		const char *name;
+		std::string name;
 
-	private:
-		//int health;
-		
-		//moves will be enemy specific later. temp values
+	private:		
 		int seek_moves;
 		int idle_moves;
-		static const int NUM_ENEMY_TYPES = 6;
-		const char *NAMES[NUM_ENEMY_TYPES] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
-		char SYMBOLS[NUM_ENEMY_TYPES] = {'W', 'U', 'G', 'T', 'O', 'B'};
 };
 
 #endif

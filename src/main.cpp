@@ -14,17 +14,22 @@
 #include "enemy.h"
 #include "map.h"
 
-static const int MAP_SIZES[3] = {45, 85, 125};
-static const int MAP_VERTICAL_PADDING = 3;
-static const int COM_VERTICAL_PADDING = 4;
-static const int MAP_HORIZONTAL_PADDING = 5;
-static const int SPAWN_TOTAL_DENOM = 100;
+/* Begin globals */
+const int MAP_SIZES[3] = {45, 85, 125};
+const int MAP_VERTICAL_PADDING = 3;
+const int COM_VERTICAL_PADDING = 4;
+const int MAP_HORIZONTAL_PADDING = 5;
+const int SPAWN_TOTAL_DENOM = 100;
+const int NUM_ENEMY_TYPES = 6;
 static int enemy_spawn_rate = 100; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
 //static int chosen_map_size;
-static int max_enemies = 50;
+int max_enemies = 50;
+const std::string ENEMY_NAMES[] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
+const char ENEMY_SYMBOLS[] = {'W', 'U', 'G', 'T', 'O', 'B'};
 WINDOW *map_window;
 WINDOW *alert_window;
 WINDOW *player_status_window;
+/* End Globals */ 
 
 int computeAttackPower(int base_power, int power_range, double accuracy, double crit_chance) {
 	int power = base_power;
@@ -54,27 +59,27 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	if (player->speed > enemy->speed) {
 		//player attacks first
 		enemy->current_health -= player_attack_power;
-		wprintw(alert_window, "You hit %s for %d damage.\n", enemy->name, player_attack_power);
+		wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
 		if (enemy->current_health > 0) {
 			player->current_health -= enemy_attack_power;
-			wprintw(alert_window, "%s hits you for %d damage.\n", enemy->name, enemy_attack_power);
+			wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
 		}
 		else {
-			wprintw(alert_window, "You killed %s.\n", enemy->name);
+			wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
 		}
 	}
 	else {
 		//enemy attacks first
 		player->current_health -= enemy_attack_power;
-		wprintw(alert_window, "%s hits you for %d damage.\n", enemy->name, enemy_attack_power);
+		wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
 		if (player->current_health > 0) {
 			enemy->current_health -= player_attack_power;
-			wprintw(alert_window, "You hit %s for %d damage.\n", enemy->name, player_attack_power);
+			wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
 		}
 	}
 	if (player->current_health <= 0) {
 		//player died
-		wprintw(alert_window, "%s killed you. Game over.\n", enemy->name);
+		wprintw(alert_window, "%s killed you. Game over.\n", (enemy->name).c_str());
 		wrefresh(alert_window);
 		wrefresh(player_status_window);
 		usleep(3500000);
@@ -108,7 +113,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 			e.seek(player->getRow(), player->getCol());
 			if (e.alert_player) {
 				e.alert_player = false;
-				wprintw(alert_window, "%s has spotted you!\n", e.name);
+				wprintw(alert_window, "%s has spotted you!\n", (e.name).c_str());
 				wrefresh(alert_window);
 			}
 		}
@@ -139,7 +144,10 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	//Chance to spawn an enemy
 	rng = (rand() % SPAWN_TOTAL_DENOM);
 	if (rng <= enemy_spawn_rate && enemies->size() < max_enemies) {
-		enemies->push_back(*(new Enemy(player->getRow(), player->getCol(), player->vision, map->size)));
+		int enemy_index = (rand() % NUM_ENEMY_TYPES);
+		std::string e_name = ENEMY_NAMES[enemy_index];
+		char e_symbol = ENEMY_SYMBOLS[enemy_index];
+		enemies->push_back(*(new Enemy(e_name, e_symbol, player->getRow(), player->getCol(), player->vision, map->size)));
 	}
 
 	wattroff(alert_window, COLOR_PAIR(1));

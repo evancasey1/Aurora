@@ -5,14 +5,13 @@
 #include <string>
 #include "enemy.h"
 
-Enemy::Enemy(int p_row, int p_col, int p_vision, int map_size)
+Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_vision, int map_size)
 {
 	//TODO
 	//  cant spawn on another enemy
 	//  weight name (enemy type) percent chance
-	int index = (rand() % this->NUM_ENEMY_TYPES);
-	this->name = NAMES[index];
-	this->symbol = SYMBOLS[index];
+	this->name = e_name;
+	this->symbol = e_symbol;
 	this->vision = 5;
 	this->total_health = 10;
 	this->current_health = this->total_health;
