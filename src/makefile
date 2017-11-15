@@ -2,7 +2,7 @@
 
 CXX = g++
 CXXFLAGS = -g -Wall -std=c++14
-OBJS = main.o player.o map.o enemy.o
+OBJS = main.o player.o map.o enemy.o weapon.o
 
 aurora: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o aurora $(OBJS) -lncurses
@@ -15,6 +15,8 @@ map.o: map.cpp map.h enemy.h player.h
 	$(CXX) $(CXXFLAGS) -c map.cpp
 enemy.o: enemy.cpp enemy.h
 	$(CXX) $(CXXFLAGS) -c enemy.cpp
+weapon.o: weapon.cpp weapon.h
+	$(CXX) $(CXXFLAGS) -c weapon.cpp
 
 clean:
 	rm -f $(OBJS) aurora
