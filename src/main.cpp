@@ -23,7 +23,7 @@ const int SPAWN_TOTAL_DENOM = 100;
 const int NUM_ENEMY_TYPES = 6;
 static int enemy_spawn_rate = 100; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
 //static int chosen_map_size;
-int max_enemies = 50;
+unsigned int max_enemies = 50;
 const std::string ENEMY_NAMES[] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
 const char ENEMY_SYMBOLS[] = {'W', 'U', 'G', 'T', 'O', 'B'};
 WINDOW *map_window;
@@ -143,7 +143,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 
 	//Chance to spawn an enemy
 	rng = (rand() % SPAWN_TOTAL_DENOM);
-	if (rng <= enemy_spawn_rate && enemies->size() < max_enemies) {
+	if (rng <= enemy_spawn_rate && (enemies->size() < max_enemies)) {
 		int enemy_index = (rand() % NUM_ENEMY_TYPES);
 		std::string e_name = ENEMY_NAMES[enemy_index];
 		char e_symbol = ENEMY_SYMBOLS[enemy_index];
