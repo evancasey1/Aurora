@@ -1,7 +1,7 @@
 #Makefile for Aurora
 
 CXX = g++
-CXXFLAGS = -g -Wall -std=c++14
+CXXFLAGS = -g -Wall -pedantic -std=c++14
 OBJS = main.o player.o map.o enemy.o weapon.o
 
 aurora: $(OBJS)
