@@ -3,4 +3,5 @@ src/map.o
 src/cursorUtilities.o
 src/player.o
 src/main.o
+src/weapon.o
 src/aurora
