@@ -21,8 +21,7 @@ const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
 const int NUM_ENEMY_TYPES = 6;
-int enemy_spawn_rate = 100; // (enemy_spawn_rate/SPAWN_TOTAL_DENOM) chance to spawn per each 'tick'
-//static int chosen_map_size;
+int enemy_spawn_rate = 100;
 unsigned int max_enemies = 50;
 const std::string ENEMY_NAMES[] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
 const char ENEMY_SYMBOLS[] = {'W', 'U', 'G', 'T', 'O', 'B'};
@@ -93,6 +92,29 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 
 }
 
+void deleteDefeatedEnemies(std::vector<Enemy> *enemies) {
+	//loop through enemy vector and delete all dead enemies
+	std::vector<Enemy>::iterator iter;
+	for (iter = enemies->begin(); iter != enemies->end();) {
+		if (iter->current_health <= 0) {
+			iter = enemies->erase(iter);
+		}
+		else {
+			++iter;
+		}
+	}
+}
+
+void spawnEnemy(std::vector<Enemy> *enemies, Player *player, Map *map) {
+	int rng = (rand() % SPAWN_TOTAL_DENOM);
+	if (rng <= enemy_spawn_rate && (enemies->size() < max_enemies)) {
+		int enemy_index = (rand() % NUM_ENEMY_TYPES);
+		std::string e_name = ENEMY_NAMES[enemy_index];
+		char e_symbol = ENEMY_SYMBOLS[enemy_index];
+		enemies->push_back(*(new Enemy(e_name, e_symbol, player->getRow(), player->getCol(), player->vision, map->size)));
+	}
+}
+
 //get the distance between 2 points
 double getDistance(int a_x, int a_y, int b_x, int b_y)
 {
@@ -103,7 +125,6 @@ double getDistance(int a_x, int a_y, int b_x, int b_y)
 
 void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 {
-	int rng;
 	int index = 0;
 	double distance;
 	wattron(alert_window, COLOR_PAIR(5)); //turn on enemy color scheme while enemy events are active
@@ -130,25 +151,9 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 		}
 		index++;
 	}
-	//loop through enemy vector and delete all dead enemies
-	std::vector<Enemy>::iterator iter;
-	for (iter = enemies->begin(); iter != enemies->end();) {
-		if (iter->current_health <= 0) {
-			iter = enemies->erase(iter);
-		}
-		else {
-			++iter;
-		}
-	}
 
-	//Chance to spawn an enemy
-	rng = (rand() % SPAWN_TOTAL_DENOM);
-	if (rng <= enemy_spawn_rate && (enemies->size() < max_enemies)) {
-		int enemy_index = (rand() % NUM_ENEMY_TYPES);
-		std::string e_name = ENEMY_NAMES[enemy_index];
-		char e_symbol = ENEMY_SYMBOLS[enemy_index];
-		enemies->push_back(*(new Enemy(e_name, e_symbol, player->getRow(), player->getCol(), player->vision, map->size)));
-	}
+	deleteDefeatedEnemies(enemies);
+	spawnEnemy(enemies, player, map);
 
 	wattroff(alert_window, COLOR_PAIR(1));
 }
