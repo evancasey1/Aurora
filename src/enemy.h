@@ -1,4 +1,5 @@
 #include <string>
+#include "weapon.h"
 #ifndef ENEMY_H
 #define ENEMY_H
 
@@ -31,6 +32,10 @@ class Enemy
 		bool alert_player;
 		char symbol;
 		std::string name;
+
+		struct Equipment {
+			std::vector<Weapon> weapons;
+		};
 
 	private:		
 		int seek_moves;

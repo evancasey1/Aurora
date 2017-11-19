@@ -1,4 +1,5 @@
 #include <string>
+#include "weapon.h"
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -26,6 +27,11 @@ class Player
 		double accuracy;
 		int allowed_moves;
 		int used_moves;
+
+		//Will contain weapons, supplies, armor, etc
+		struct Equipment {
+			std::vector<Weapon> weapons;
+		};
 
 	private:
 		std::string name;

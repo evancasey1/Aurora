@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ncurses.h>
 #include <string>
+#include <vector>
 #include "enemy.h"
 
 Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_vision, int map_size)

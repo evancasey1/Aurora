@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <ncurses.h>
+#include <vector>
 #include "player.h"
 
 Player::Player()
