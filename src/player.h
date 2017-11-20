@@ -21,12 +21,13 @@ class Player
 
 		int vision;
 		int current_health, total_health;
-		int attack_power, attack_power_range;
 		double speed;
 		double crit_chance;
 		double accuracy;
 		int allowed_moves;
 		int used_moves;
+
+		Weapon *primary_weapon;
 
 		//Will contain weapons, supplies, armor, etc
 		struct Equipment {

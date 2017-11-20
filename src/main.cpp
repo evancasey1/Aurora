@@ -53,7 +53,7 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	int player_attack_power;
 	int enemy_attack_power;
 	Enemy *enemy = &(enemies->at(enemy_index));
-	player_attack_power = computeAttackPower(player->attack_power, player->attack_power_range, player->accuracy, player->crit_chance);
+	player_attack_power = computeAttackPower(player->primary_weapon->attack_power, player->primary_weapon->attack_power_range, player->accuracy, player->crit_chance);
 	enemy_attack_power  = computeAttackPower(enemy->attack_power, enemy->attack_power_range, enemy->accuracy, enemy->crit_chance);
 	if (player->speed > enemy->speed) {
 		//player attacks first
@@ -64,6 +64,7 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 			wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
 		}
 		else {
+			//enemy died
 			wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
 		}
 	}
@@ -89,7 +90,6 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	player->printStatus(player_status_window);
 	wrefresh(player_status_window);
 	wrefresh(alert_window);
-
 }
 
 void deleteDefeatedEnemies(std::vector<Enemy> *enemies) {

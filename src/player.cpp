@@ -9,14 +9,13 @@ Player::Player()
 	setName("Adventurer");
 	setRace("Undefined");
 	this->vision = 6;
+	this->primary_weapon = new Weapon("Short Sword", 3, 1);
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
 	this->total_health = 50;
 	this->current_health = this->total_health;
 	this->speed = 2.0;
-	this->attack_power = 3;
-	this->attack_power_range = 4;
 	this->crit_chance = 0.05;
 	this->allowed_moves = 1;
 	this->used_moves = 0;

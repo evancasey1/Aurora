@@ -11,9 +11,9 @@ class Weapon {
 		double piercing_mod, slashing_mod, crushing_mod;
 
 	private:
-		const double ENHANCED_CHANCE  	  = 0.35;
+		const double ENHANCED_CHANCE   = 0.35;
 		const double LEGENDARY_CHANCE  = 0.15;
-		const double ENHANCED_MOD 	      = 1.25;
+		const double ENHANCED_MOD 	   = 1.25;
 		const double LEGENDARY_MOD     = 1.5;
 };
 
