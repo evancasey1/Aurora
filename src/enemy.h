@@ -18,6 +18,7 @@ class Enemy
 		Enemy(std::string en, char es, int rw, int cl, int vi, int sz);
 		void seek(int p_row, int p_col);
 		void idle(int m_size);
+		int computeAttackPower();
 		int row;
 		int col;
 		int lifespan;

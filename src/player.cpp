@@ -124,6 +124,26 @@ void Player::printStatus(WINDOW *player_window)
 	wrefresh(player_window);
 }
 
+int Player::computeAttackPower() {
+	int power = this->primary_weapon->attack_power;
+	int power_range = this->primary_weapon->attack_power_range;
+	double crit_chance = this->primary_weapon->crit_chance;
+	double accuracy = this->primary_weapon->accuracy;
+	
+	double chance_to_hit  = ((double) rand() / RAND_MAX);
+	double chance_to_crit = ((double) rand() / RAND_MAX);
+	if (power_range != 0) {
+		power += (rand() % power_range);
+	}
+	if (crit_chance >= chance_to_crit) {
+		power *= 2;
+	}
+	if(accuracy >= chance_to_hit) {
+		return power;
+	}
+	return 0;
+}
+
 //Returns true if the movement was valid, false otherwise
 bool Player::moveSpace(int direction, int map_size)
 {

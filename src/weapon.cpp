@@ -8,6 +8,9 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
 	
 	this->is_poisonous = false;
 	this->poison_chance = 0.0;
+	this->crit_chance = 0.15;
+
+	/* Evaluate condition of weapon */
 	if (this->LEGENDARY_CHANCE >= condition_chance) {
 		this->name = "Legendary " + w_name;
 		this->attack_power = (int)((double)attack_pow * this->LEGENDARY_MOD);
@@ -23,22 +26,27 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
 		this->attack_power = attack_pow;
 		this->attack_power_range = attack_pow_range;
 	}
+	/* End evaluate */
+
 	if (w_name == "Sword") {
 		this->bleed_chance = 0.15;
 		this->piercing_mod = 1.1;
 		this->slashing_mod = 1.3;
 		this->crushing_mod = 1.0;
+		this->accuracy = 0.85;
 	}
 	else if (w_name == "Dagger") {
 		this->bleed_chance = 0.25;
 		this->piercing_mod = 1.4;
 		this->slashing_mod = 1.1;
 		this->crushing_mod = 1.0;
+		this->accuracy = 0.95;
 	}
 	else {
 		this->bleed_chance = 0.05;
 		this->piercing_mod = 1.0;
 		this->slashing_mod = 1.0;
 		this->crushing_mod = 1.8;
+		this->accuracy = 0.80;
 	}
 }

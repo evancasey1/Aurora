@@ -9,6 +9,7 @@ class Weapon {
 		bool is_poisonous;
 		double bleed_chance, poison_chance;
 		double piercing_mod, slashing_mod, crushing_mod;
+		double crit_chance, accuracy;
 
 	private:
 		const double ENHANCED_CHANCE   = 0.35;

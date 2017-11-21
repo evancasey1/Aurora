@@ -66,6 +66,26 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	//printw("Row: %d, Col: %d - ", e_row, e_col);
 }
 
+int Enemy::computeAttackPower() {
+	int power = this->attack_power;
+	int power_range = this->attack_power_range;
+	double crit_chance = this->crit_chance;
+	double accuracy = this->accuracy;
+	
+	double chance_to_hit  = ((double) rand() / RAND_MAX);
+	double chance_to_crit = ((double) rand() / RAND_MAX);
+	if (power_range != 0) {
+		power += (rand() % power_range);
+	}
+	if (crit_chance >= chance_to_crit) {
+		power *= 2;
+	}
+	if(accuracy >= chance_to_hit) {
+		return power;
+	}
+	return 0;
+}
+
 void Enemy::idle(int map_size)
 {
 	//move a random direction or stay still

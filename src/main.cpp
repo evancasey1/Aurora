@@ -53,8 +53,8 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	int player_attack_power;
 	int enemy_attack_power;
 	Enemy *enemy = &(enemies->at(enemy_index));
-	player_attack_power = computeAttackPower(player->primary_weapon->attack_power, player->primary_weapon->attack_power_range, player->accuracy, player->crit_chance);
-	enemy_attack_power  = computeAttackPower(enemy->attack_power, enemy->attack_power_range, enemy->accuracy, enemy->crit_chance);
+	player_attack_power = player->computeAttackPower();
+	enemy_attack_power  = enemy->computeAttackPower();
 	if (player->speed > enemy->speed) {
 		//player attacks first
 		enemy->current_health -= player_attack_power;

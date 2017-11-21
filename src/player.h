@@ -18,6 +18,7 @@ class Player
 		int getCol();
 		void setPosition(int r, int c);
 		void printStatus(WINDOW *player_window);
+		int computeAttackPower();
 
 		int vision;
 		int current_health, total_health;
