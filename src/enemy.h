@@ -19,6 +19,7 @@ class Enemy
 		void seek(int p_row, int p_col);
 		void idle(int m_size);
 		int computeAttackPower();
+		bool isValidMove(std::vector<Enemy> *enems, int p_row, int p_col);
 		int row;
 		int col;
 		int lifespan;

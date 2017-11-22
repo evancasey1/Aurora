@@ -12,10 +12,11 @@
 #include <vector>
 #include <math.h>
 #include "enemy.h"
+#include "wolf.h"
 #include "map.h"
 
 /* Begin globals */
-const int MAP_SIZES[3] = {45, 85, 125};
+const int MAP_SIZES[3] = {50, 100, 150};
 const int MAP_VERTICAL_PADDING = 3;
 const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;

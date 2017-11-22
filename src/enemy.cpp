@@ -49,9 +49,6 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 		default:
 			break;
 	}
-	//Basic spawn logic
-	//e_row = (rand() % map_size);
-	//e_col = (rand() % map_size);
 
 	e_row > (map_size - 1) ? e_row = (map_size - 1) : false;
 	e_row < 0 ? e_row = 0 : false;
@@ -60,7 +57,6 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 
 	this->row = e_row;
 	this->col = e_col;
-	//printw("Row: %d, Col: %d - ", e_row, e_col);
 }
 
 int Enemy::computeAttackPower() {
@@ -81,6 +77,21 @@ int Enemy::computeAttackPower() {
 		return power;
 	}
 	return 0;
+}
+
+bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col) {
+	std::vector<Enemy>::iterator iter;
+	for (iter = enemies->begin(); iter != enemies->end();) {
+		if (iter->row == this->row && iter->col == this->col) {
+			return false;
+		}
+		++iter;
+	}
+	if (this->row == p_row && this->col == p_col) {
+		return false;
+	}
+
+	return true;
 }
 
 void Enemy::idle(int map_size)
