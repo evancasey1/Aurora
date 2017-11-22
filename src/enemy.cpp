@@ -8,9 +8,6 @@
 
 Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_vision, int map_size)
 {
-	//TODO
-	//  cant spawn on another enemy
-	//  weight name (enemy type) percent chance
 	this->name = e_name;
 	this->symbol = e_symbol;
 	this->vision = 5;

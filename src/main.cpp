@@ -245,8 +245,6 @@ int main(int argc, char *argv[])
 	//	---
 	//	Add equipment class (food, supplies)
 	//	---
-	//	Add weapon class to be implemented by Player and Enemy both
-	//	---
 	//	Add new window for combat. Yet to be determined how this will be laid out.
 	//  ---
 	//	Figure out what to do if 2 different enemies reach the player at the same time.
