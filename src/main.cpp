@@ -30,22 +30,6 @@ WINDOW *alert_window;
 WINDOW *player_status_window;
 /* End Globals */ 
 
-int computeAttackPower(int base_power, int power_range, double accuracy, double crit_chance) {
-	int power = base_power;
-	double chance_to_hit  = ((double) rand() / RAND_MAX);
-	double chance_to_crit = ((double) rand() / RAND_MAX);
-	if (power_range != 0) {
-		power += (rand() % power_range);
-	}
-	if (crit_chance >= chance_to_crit) {
-		power *= 2;
-	}
-	if(accuracy >= chance_to_hit) {
-		return power;
-	}
-	return 0;
-}
-
 void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
 	//TODO:
