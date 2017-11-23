@@ -26,9 +26,18 @@ int enemy_spawn_rate = 100;
 unsigned int max_enemies = 50;
 const std::string ENEMY_NAMES[] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
 const char ENEMY_SYMBOLS[] = {'W', 'U', 'G', 'T', 'O', 'B'};
+
 WINDOW *map_window;
 WINDOW *alert_window;
 WINDOW *player_status_window;
+
+const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
+									 "       :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+:   :+: :+: ",
+									 "     +:+   +:+  +:+    +:+ +:+    +:+ +:+    +:+ +:+    +:+  +:+   +:+ ",
+									 "   +#++:++#++: +#+    +:+ +#++:++#:  +#+    +:+ +#++:++#:  +#++:++#++: ",
+									 "  +#+     +#+ +#+    +#+ +#+    +#+ +#+    +#+ +#+    +#+ +#+     +#+  ",
+									 " #+#     #+# #+#    #+# #+#    #+# #+#    #+# #+#    #+# #+#     #+#   ",
+									 "###     ###  ########  ###    ###  ########  ###    ### ###     ###    "};
 /* End Globals */ 
 
 void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
@@ -143,6 +152,16 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	wattroff(alert_window, COLOR_PAIR(1));
 }
 
+void printTitle()
+{
+	int titleLines = 6;
+	int horizontal_pad = 12;
+	for (int i = 0; i < titleLines; i++) {
+		mvprintw((i + 3), horizontal_pad, TITLE_TEXT[i].c_str());
+	}
+	refresh();
+}
+
 void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
@@ -196,13 +215,14 @@ Map* userCreateMap()
 	int horiz_pad = (int) ((COLS/2)-10);
 	int ch = 0;
 	attron(A_BOLD);
-	mvprintw(MAP_VERTICAL_PADDING-1, horiz_pad, "Select your map size:\n");
+	printTitle();
+	mvprintw(MAP_VERTICAL_PADDING + 10, horiz_pad, "Select your map size:\n");
 	attroff(A_BOLD);
 	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {
-			move(MAP_VERTICAL_PADDING + i, horiz_pad);
+			move(MAP_VERTICAL_PADDING + i + 11, horiz_pad);
 			clrtoeol();
 			if (i != chosen_index) {
 				addstr(options[i]);
@@ -276,6 +296,7 @@ int main(int argc, char *argv[])
 
 	Map *map = userCreateMap();
 
+	printTitle();
 	player.userCreatePlayer();
 	player.setPosition((int)map->size/2, (int)map->size/2);
 

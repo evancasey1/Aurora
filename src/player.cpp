@@ -43,13 +43,13 @@ void Player::userCreatePlayer()
 	int ch = 0;
 	
 	attron(A_BOLD);
-	mvprintw(vert_pad-1, horiz_pad, "Select your adventurer:\n");
+	mvprintw(vert_pad + 10, horiz_pad, "Select your adventurer:\n");
 	attroff(A_BOLD);
 	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {
-			move(vert_pad + i, horiz_pad);
+			move(vert_pad + i + 11, horiz_pad);
 			clrtoeol();
 			if (i != chosen_index) {
 				addstr(options[i]);
