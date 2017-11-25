@@ -4,7 +4,7 @@
 
 class Wolf : Enemy {
 	public:
-		Wolf();
+		Wolf() : Enemy() {this->XP = 45;};
 		int bite();
 		int tear();
 

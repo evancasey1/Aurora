@@ -12,8 +12,8 @@
 #include <vector>
 #include <math.h>
 #include "enemy.h"
-#include "wolf.h"
 #include "map.h"
+//#include "wolf.h"
 
 /* Begin globals */
 const int MAP_SIZES[3] = {50, 100, 150};
@@ -60,6 +60,11 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 		else {
 			//enemy died
 			wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
+			wattroff(alert_window, COLOR_PAIR(5));
+			wattron(alert_window, COLOR_PAIR(6));
+			wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
+			wattroff(alert_window, COLOR_PAIR(6));
+			wattron(alert_window, COLOR_PAIR(5));
 		}
 	}
 	else {
@@ -154,7 +159,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 
 void printTitle()
 {
-	int titleLines = 6;
+	int titleLines = 7;
 	int horizontal_pad = 12;
 	for (int i = 0; i < titleLines; i++) {
 		mvprintw((i + 3), horizontal_pad, TITLE_TEXT[i].c_str());
@@ -287,6 +292,7 @@ int main(int argc, char *argv[])
 	start_color();
 
 	// START COLORS //
+	init_pair(6, COLOR_GREEN, COLOR_BLACK);
 	init_pair(5, COLOR_RED, COLOR_BLACK); //enemy alert: MAIN
 	init_pair(4, COLOR_BLUE, COLOR_WHITE); //player: MAP
 	init_pair(3, COLOR_RED, COLOR_WHITE); //enemy: MAP

@@ -21,6 +21,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->idle_moves = 1;
 	this->seek_moves = 1;
 	this->accuracy = 0.5;
+	this->XP = 30;
 
 	int e_row = 0;
 	int e_col = 0;

@@ -28,6 +28,7 @@ class Enemy
 		int total_health;
 		int attack_power;
 		int attack_power_range;
+		int XP;
 		double speed;
 		double crit_chance;
 		double accuracy;
