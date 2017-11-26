@@ -22,7 +22,7 @@ const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
 const int NUM_ENEMY_TYPES = 6;
-int enemy_spawn_rate = 100;
+int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
 const std::string ENEMY_NAMES[] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
 const char ENEMY_SYMBOLS[] = {'W', 'U', 'G', 'T', 'O', 'B'};
@@ -65,6 +65,7 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 			wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
 			wattroff(alert_window, COLOR_PAIR(6));
 			wattron(alert_window, COLOR_PAIR(5));
+			player->gainExp(enemy->XP);
 		}
 	}
 	else {

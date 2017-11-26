@@ -19,6 +19,7 @@ class Player
 		void setPosition(int r, int c);
 		void printStatus(WINDOW *player_window);
 		int computeAttackPower();
+		void gainExp(int xp);
 
 		int vision;
 		int current_health, total_health;
@@ -27,6 +28,10 @@ class Player
 		double accuracy;
 		int allowed_moves;
 		int used_moves;
+		double xp_cap_multiplier;
+		int level;
+		int current_xp_cap;
+		int current_xp;
 
 		Weapon *primary_weapon;
 

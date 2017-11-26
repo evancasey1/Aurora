@@ -21,6 +21,10 @@ Player::Player()
 	this->used_moves = 0;
 	//Will be an attribute of weapon later
 	this->accuracy = 0.9;
+	this->xp_cap_multiplier = 1.2;
+	this->current_xp_cap = 100;
+	this->level = 1;
+	this->current_xp = 0;
 }
 Player::Player(std::string race, std::string name) 
 {
@@ -80,6 +84,15 @@ void Player::userCreatePlayer()
 	refresh();
 }
 
+void Player::gainExp(int xp) 
+{
+	this->current_xp += xp;
+	if (this->current_xp >= this->current_xp_cap) {
+		this->current_xp -= this->current_xp_cap;
+		this->level++;
+		this->current_xp_cap *= this->xp_cap_multiplier;
+	}
+}
 
 void Player::setPosition(int row, int col)
 {

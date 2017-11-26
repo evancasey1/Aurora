@@ -35,7 +35,7 @@ Map::MapSection Map::getMapSectionFromIndex(int row, int col)
 void Map::printPlayerInfo(Player player, WINDOW *map_window)
 {
 	wmove(map_window, 0, 0);
-	wprintw(map_window, "X: %d Y: %d --- Moves: %d/%d\n", player.getCol(), abs(player.getRow() - (this->size - 1)), player.used_moves, player.allowed_moves);
+	wprintw(map_window, "X: %d Y: %d --- Moves: %d/%d\nXP: %d/%d\n", player.getCol(), abs(player.getRow() - (this->size - 1)), player.used_moves, player.allowed_moves, player.current_xp, player.current_xp_cap);
 	wrefresh(map_window);
 }
 
@@ -44,7 +44,7 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, WINDO
 	//TODO:
 	//	reduce flicker
 
-	wmove(map_window, 1, 0);
+	wmove(map_window, 2, 0);
 	char to_add;
 	int row_max = player->getRow() + vision + 1;
 	int col_max = player->getCol() + vision + 1;
