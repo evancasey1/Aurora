@@ -65,7 +65,7 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 			wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
 			wattroff(alert_window, COLOR_PAIR(6));
 			wattron(alert_window, COLOR_PAIR(5));
-			player->gainExp(enemy->XP);
+			player->gainExp(enemy->XP, alert_window);
 		}
 	}
 	else {
@@ -293,6 +293,7 @@ int main(int argc, char *argv[])
 	start_color();
 
 	// START COLORS //
+	init_pair(7, COLOR_CYAN, COLOR_BLACK);
 	init_pair(6, COLOR_GREEN, COLOR_BLACK);
 	init_pair(5, COLOR_RED, COLOR_BLACK); //enemy alert: MAIN
 	init_pair(4, COLOR_BLUE, COLOR_WHITE); //player: MAP

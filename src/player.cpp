@@ -84,13 +84,19 @@ void Player::userCreatePlayer()
 	refresh();
 }
 
-void Player::gainExp(int xp) 
+void Player::gainExp(int xp, WINDOW *alert_win) 
 {
 	this->current_xp += xp;
 	if (this->current_xp >= this->current_xp_cap) {
 		this->current_xp -= this->current_xp_cap;
 		this->level++;
 		this->current_xp_cap *= this->xp_cap_multiplier;
+		wattroff(alert_win, COLOR_PAIR(5));
+		wattron(alert_win, COLOR_PAIR(7));
+		wprintw(alert_win, "Level up! %d -> %d\n", this->level - 1, this->level);
+		wrefresh(alert_win);
+		wattroff(alert_win, COLOR_PAIR(7));
+		wattron(alert_win, COLOR_PAIR(5));
 	}
 }
 

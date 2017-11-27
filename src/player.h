@@ -19,7 +19,7 @@ class Player
 		void setPosition(int r, int c);
 		void printStatus(WINDOW *player_window);
 		int computeAttackPower();
-		void gainExp(int xp);
+		void gainExp(int xp, WINDOW *window);
 
 		int vision;
 		int current_health, total_health;
