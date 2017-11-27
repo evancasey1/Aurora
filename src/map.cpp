@@ -34,8 +34,8 @@ Map::MapSection Map::getMapSectionFromIndex(int row, int col)
 
 void Map::printPlayerInfo(Player player, WINDOW *map_window)
 {
-	wmove(map_window, 0, 0);
-	wprintw(map_window, "X: %d Y: %d --- Moves: %d/%d\nXP: %d/%d\n", player.getCol(), abs(player.getRow() - (this->size - 1)), player.used_moves, player.allowed_moves, player.current_xp, player.current_xp_cap);
+	wmove(map_window, 1, 0);
+	wprintw(map_window, "X: %d Y: %d     Moves: %d/%d\n", player.getCol(), abs(player.getRow() - (this->size - 1)), player.used_moves, player.allowed_moves);
 	wrefresh(map_window);
 }
 

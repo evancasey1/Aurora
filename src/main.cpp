@@ -88,7 +88,6 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 		exit(0);
 	}
 	player->printStatus(player_status_window);
-	wrefresh(player_status_window);
 	wrefresh(alert_window);
 }
 
@@ -293,11 +292,11 @@ int main(int argc, char *argv[])
 	start_color();
 
 	// START COLORS //
-	init_pair(7, COLOR_CYAN, COLOR_BLACK);
-	init_pair(6, COLOR_GREEN, COLOR_BLACK);
-	init_pair(5, COLOR_RED, COLOR_BLACK); //enemy alert: MAIN
-	init_pair(4, COLOR_BLUE, COLOR_WHITE); //player: MAP
-	init_pair(3, COLOR_RED, COLOR_WHITE); //enemy: MAP
+	init_pair(7, COLOR_CYAN, COLOR_BLACK);  //Level up
+	init_pair(6, COLOR_GREEN, COLOR_BLACK); //XP gain
+	init_pair(5, COLOR_RED, COLOR_BLACK);   //enemy alert: MAIN
+	init_pair(4, COLOR_BLUE, COLOR_WHITE);  //player: MAP
+	init_pair(3, COLOR_RED, COLOR_WHITE);   //enemy: MAP
 	init_pair(2, COLOR_WHITE, COLOR_BLACK); //default night: MAP
 	init_pair(1, COLOR_BLACK, COLOR_WHITE); //default day: MAP
 	// END COLORS //
@@ -310,7 +309,7 @@ int main(int argc, char *argv[])
 
 	int map_height = 30, map_width = 50;
 	int com_height = 14, com_width = 50;
-	int ps_height  = 1 , ps_width = map_width + com_width;
+	int ps_height  = 2 , ps_width = map_width + com_width;
 
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
 	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING, map_width + (MAP_HORIZONTAL_PADDING * 2));

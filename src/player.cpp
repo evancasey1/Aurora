@@ -21,8 +21,8 @@ Player::Player()
 	this->used_moves = 0;
 	//Will be an attribute of weapon later
 	this->accuracy = 0.9;
-	this->xp_cap_multiplier = 1.2;
-	this->current_xp_cap = 100;
+	this->xp_cap_multiplier = 1.4;
+	this->current_xp_cap = 150;
 	this->level = 1;
 	this->current_xp = 0;
 }
@@ -139,7 +139,7 @@ void Player::printStatus(WINDOW *player_window)
 {
 	wmove(player_window, 0, 0);
 	wclrtoeol(player_window);
-	wprintw(player_window, "Health: %d/%d", this->current_health, this->total_health);
+	wprintw(player_window, "Health: %d/%d \nLevel: %d        XP: %d/%d\n", this->current_health, this->total_health, this->level, this->current_xp, this->current_xp_cap);
 	wrefresh(player_window);
 }
 
