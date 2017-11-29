@@ -13,8 +13,9 @@ Player::Player()
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
-	this->total_health = 50;
-	this->current_health = this->total_health;
+	this->base_total_health = 20;
+	this->current_total_health = this->base_total_health;
+	this->current_health = this->base_total_health;
 	this->speed = 2.0;
 	this->crit_chance = 0.05;
 	this->allowed_moves = 1;
@@ -25,6 +26,8 @@ Player::Player()
 	this->current_xp_cap = 150;
 	this->level = 1;
 	this->current_xp = 0;
+	this->level_up_multiplier_health = 1.2;
+	this->health_mod = 0;
 }
 Player::Player(std::string race, std::string name) 
 {
@@ -97,6 +100,8 @@ void Player::gainExp(int xp, WINDOW *alert_win)
 		wrefresh(alert_win);
 		wattroff(alert_win, COLOR_PAIR(7));
 		wattron(alert_win, COLOR_PAIR(5));
+		this->base_total_health *= this->level_up_multiplier_health;
+		this->current_total_health = this->base_total_health + this->health_mod;
 	}
 }
 
@@ -139,7 +144,7 @@ void Player::printStatus(WINDOW *player_window)
 {
 	wmove(player_window, 0, 0);
 	wclrtoeol(player_window);
-	wprintw(player_window, "Health: %d/%d \nLevel: %d        XP: %d/%d\n", this->current_health, this->total_health, this->level, this->current_xp, this->current_xp_cap);
+	wprintw(player_window, "Health: %d/%d \nLevel: %d        XP: %d/%d\n", this->current_health, this->current_total_health, this->level, this->current_xp, this->current_xp_cap);
 	wrefresh(player_window);
 }
 

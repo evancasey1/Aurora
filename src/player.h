@@ -22,7 +22,7 @@ class Player
 		void gainExp(int xp, WINDOW *window);
 
 		int vision;
-		int current_health, total_health;
+		int current_health, base_total_health, current_total_health;
 		double speed;
 		double crit_chance;
 		double accuracy;
@@ -32,6 +32,8 @@ class Player
 		int level;
 		int current_xp_cap;
 		int current_xp;
+		int health_mod;
+		double level_up_multiplier_health;
 
 		Weapon *primary_weapon;
 

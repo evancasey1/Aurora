@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
 	int ps_height  = 2 , ps_width = map_width + com_width;
 
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
-	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING, map_width + (MAP_HORIZONTAL_PADDING * 2));
+	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
 	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
 	scrollok(alert_window, true);
 
