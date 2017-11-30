@@ -28,6 +28,9 @@ Player::Player()
 	this->current_xp = 0;
 	this->level_up_multiplier_health = 1.2;
 	this->health_mod = 0;
+	this->passive_health_regen_counter = 0;
+	this->passive_health_regen_trigger = 10;
+	this->passive_health_regen_amount = 1;
 }
 Player::Player(std::string race, std::string name) 
 {
@@ -169,7 +172,7 @@ int Player::computeAttackPower() {
 }
 
 //Returns true if the movement was valid, false otherwise
-bool Player::moveSpace(int direction, int map_size)
+bool Player::moveSpace(int direction, int map_size, WINDOW *player_window)
 {
 	switch (direction) {
 		case KEY_UP:
@@ -191,6 +194,18 @@ bool Player::moveSpace(int direction, int map_size)
 		default:
 			break;
 	}
+	//Only passively regenerate on active moves (no skips)
+	//This promotes active gameplay
+	//Also only do if health is not capped
+	if (this->current_health < this->current_total_health) {
+		this->passive_health_regen_counter++;
+		if (this->passive_health_regen_counter == this->passive_health_regen_trigger) {
+			this->passive_health_regen_counter = 0;
+			this->current_health += this->passive_health_regen_amount;
+		}
+		this->printStatus(player_window);
+	}
+	
 	return true;
 }
 
