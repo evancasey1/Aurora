@@ -3,7 +3,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-
 //TODO:
 //	this will be the parent class to each subclass of enemies.
 //	Because enemies will have unique abilities/equipment/loot/stats
@@ -15,11 +14,19 @@
 class Enemy
 {
 	public:
+		struct Loot {
+			std::vector<Weapon> weapons;
+			//Food, equipment, etc later
+			int row;
+			int col;
+		};
 		Enemy(std::string en, char es, int rw, int cl, int vi, int sz);
 		void seek(int p_row, int p_col);
 		void idle(int m_size);
 		int computeAttackPower();
 		bool isValidMove(std::vector<Enemy> *enems, int p_row, int p_col);
+		void deathEvents(std::vector<Enemy::Loot> *loot);
+
 		int row;
 		int col;
 		int lifespan;
@@ -34,6 +41,7 @@ class Enemy
 		double accuracy;
 		bool alert_player;
 		char symbol;
+		double loot_drop_chance;
 		std::string name;
 
 		struct Equipment {

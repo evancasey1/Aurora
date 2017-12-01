@@ -22,6 +22,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->seek_moves = 1;
 	this->accuracy = 0.5;
 	this->XP = 30;
+	this->loot_drop_chance = 1;
 
 	int e_row = 0;
 	int e_col = 0;
@@ -78,6 +79,19 @@ int Enemy::computeAttackPower() {
 		return power;
 	}
 	return 0;
+}
+
+void Enemy::deathEvents(std::vector<Loot> *loot) {
+	//Loot calculations
+	double loot_chance_roll  = ((double) rand() / RAND_MAX);
+	if (this->loot_drop_chance >= loot_chance_roll) {
+		//Generate loot
+		//Drop loot on map
+		Loot *obj = new Loot();
+		obj->row = this->row;
+		obj->col = this->col;
+		loot->push_back(*obj);
+	}
 }
 
 bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col) {

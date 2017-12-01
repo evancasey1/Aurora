@@ -3,6 +3,7 @@
 
 class Weapon {
 	public:
+		Weapon();
 		Weapon(std::string name, int attack_power, int attack_power_range);
 		int attack_power, attack_power_range;
 		std::string name;

@@ -27,9 +27,13 @@ unsigned int max_enemies = 50;
 const std::string ENEMY_NAMES[] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
 const char ENEMY_SYMBOLS[] = {'W', 'U', 'G', 'T', 'O', 'B'};
 
+std::vector<Enemy::Loot> loot;
+
 WINDOW *map_window;
 WINDOW *alert_window;
 WINDOW *player_status_window;
+
+
 
 const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
 									 "       :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+:   :+: :+: ",
@@ -96,6 +100,7 @@ void deleteDefeatedEnemies(std::vector<Enemy> *enemies) {
 	std::vector<Enemy>::iterator iter;
 	for (iter = enemies->begin(); iter != enemies->end();) {
 		if (iter->current_health <= 0) {
+			iter->deathEvents(&loot);
 			iter = enemies->erase(iter);
 		}
 		else {
