@@ -29,7 +29,7 @@ class Map
 		Map();
 		Map(int s);
 		MapSection getMapSectionFromIndex(int row, int col);
-		void printMap(Player *player, int vision, std::vector<Enemy> e, WINDOW *win);
+		void printMap(Player *player, int vision, std::vector<Enemy> e, std::vector<Enemy::Loot> loot, WINDOW *win);
 		void printPlayerInfo(Player player, WINDOW *win);
 		int size;
 		MapSection *map;
@@ -40,6 +40,7 @@ class Map
 
 	private:
 		char player_symbol;
+		char loot_symbol;
 };
 
 #endif

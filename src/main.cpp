@@ -86,7 +86,7 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 		wprintw(alert_window, "%s killed you. Game over.\n", (enemy->name).c_str());
 		wrefresh(alert_window);
 		wrefresh(player_status_window);
-		usleep(3500000);
+		usleep(2500000);
 		endwin();
 		std::cout << "Game over.\n" << std::endl;
 		exit(0);
@@ -177,7 +177,7 @@ void mainGameLoop(Player *player, Map *map)
 	int ch;
 	std::vector<Enemy> enemies;	
 	map->printPlayerInfo(*player, map_window);
-	map->printMap(player, player->vision, enemies, map_window);
+	map->printMap(player, player->vision, enemies, loot, map_window);
 	player->printStatus(player_status_window);
 
 	while (true) {
@@ -190,7 +190,7 @@ void mainGameLoop(Player *player, Map *map)
 					map->printPlayerInfo(*player, map_window);
 					//only prints if enemies won't also update and force a map print
 					if (player->used_moves != player->allowed_moves) {
-						map->printMap(player, player->vision, enemies, map_window);
+						map->printMap(player, player->vision, enemies, loot, map_window);
 					}
 				}
 				break;
@@ -210,7 +210,7 @@ void mainGameLoop(Player *player, Map *map)
 			enemyEvents(player, map, &enemies);
 			player->used_moves = 0;
 			map->printPlayerInfo(*player, map_window);
-			map->printMap(player, player->vision, enemies, map_window);
+			map->printMap(player, player->vision, enemies, loot, map_window);
 		}
 	}
 	endwin();

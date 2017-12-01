@@ -11,6 +11,7 @@ Map::Map(int s)
 {
 	this->size = s;
 	this->player_symbol = '@';
+	this->loot_symbol = '*';
 	this->map = new MapSection[size * size];
 	
 	this->player_color = 4;
@@ -39,7 +40,7 @@ void Map::printPlayerInfo(Player player, WINDOW *map_window)
 	wrefresh(map_window);
 }
 
-void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, WINDOW *map_window) 
+void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, std::vector<Enemy::Loot> loot, WINDOW *map_window) 
 {
 	//TODO:
 	//	reduce flicker
@@ -60,13 +61,19 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, WINDO
 	int count = 0;
 	for (int i = row_min; i < row_max; i++) {
 		for (int j = col_min; j < col_max; j++) {
+			to_add = this->getMapSectionFromIndex(i, j).symbol;
+
+			for (int k = 0; k < loot.size(); k++) {
+				if (loot.at(k).row == i && loot.at(k).col == j) {
+					to_add = this->loot_symbol;
+				}
+			}	
+
 			if (player->getRow() == i && player->getCol() == j) {
 				to_add = this->player_symbol;
 				color_index = this->player_color;
-			}
-			else {
-				to_add = this->getMapSectionFromIndex(i, j).symbol;
-			}
+			}		
+
 			for (auto &e : enemies) {
 				if (e.row == i && e.col == j) {
 					to_add = e.symbol;
