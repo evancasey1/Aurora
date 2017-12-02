@@ -32,7 +32,7 @@ std::vector<Enemy::Loot> loot;
 WINDOW *map_window;
 WINDOW *alert_window;
 WINDOW *player_status_window;
-
+WINDOW *inventory_window;
 
 
 const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
@@ -175,6 +175,7 @@ void printTitle()
 void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
+	int loot_size;
 	std::vector<Enemy> enemies;	
 	map->printPlayerInfo(*player, map_window);
 	map->printMap(player, player->vision, enemies, loot, map_window);
@@ -194,13 +195,28 @@ void mainGameLoop(Player *player, Map *map)
 					}
 				}
 				break;
+			case 'e':
+				player->printInventory(inventory_window);
+				break;
+			case 'l':
+				//Temporary code for now. Just to test
+				loot_size = loot.size();
+				for (int k = 0; k < loot_size; k++) {
+					if (loot.at(k).row == player->getRow() && loot.at(k).col == player->getCol()) {
+						player->inventory.weapons.push_back(loot.at(k).weapons.at(0));
+						loot.erase(loot.begin() + k);
+						k--;
+						loot_size--;
+					}
+				}	
+				break;
 			//player skips a single move
-			case ' ':
+			case ',':
 				player->used_moves++;
 				map->printPlayerInfo(*player, map_window);
 				break;
 			//player skips all remaining moves for the turn
-			case '\n': case KEY_ENTER:
+			case '.':
 				player->used_moves = player->allowed_moves;
 				break;
 			default:
@@ -315,11 +331,15 @@ int main(int argc, char *argv[])
 	int map_height = 30, map_width = 50;
 	int com_height = 14, com_width = 50;
 	int ps_height  = 2 , ps_width = map_width + com_width;
+	int inv_height = 30, inv_width = 50;
+	int inv_row = 22, inv_col = MAP_HORIZONTAL_PADDING;
 
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
 	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
 	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
+	inventory_window = newwin(inv_height, inv_width, inv_row, inv_col);
 	scrollok(alert_window, true);
+	scrollok(inventory_window, true);
 
 	mainGameLoop(&player, map);
 

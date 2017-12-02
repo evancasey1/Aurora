@@ -13,7 +13,7 @@ Player::Player()
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
-	this->base_total_health = 20;
+	this->base_total_health = 50;
 	this->current_total_health = this->base_total_health;
 	this->current_health = this->base_total_health;
 	this->speed = 2.0;
@@ -36,6 +36,18 @@ Player::Player(std::string race, std::string name)
 {
 	setName(name);
 	setRace(race);
+}
+
+void Player::printInventory(WINDOW *inv_window)
+{
+	wclear(inv_window);
+	wprintw(inv_window, "WEAPONS:\n");
+	std::vector<Weapon>::iterator iter;
+	for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
+		wprintw(inv_window, "%s\n", (iter->name).c_str());
+		++iter;
+	}
+	wrefresh(inv_window);
 }
 
 void Player::userCreatePlayer()

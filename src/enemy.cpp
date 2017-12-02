@@ -90,6 +90,7 @@ void Enemy::deathEvents(std::vector<Loot> *loot) {
 		Loot *obj = new Loot();
 		obj->row = this->row;
 		obj->col = this->col;
+		obj->weapons.push_back(*(new Weapon()));
 		loot->push_back(*obj);
 	}
 }

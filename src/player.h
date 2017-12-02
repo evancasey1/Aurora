@@ -6,6 +6,11 @@
 class Player 
 {
 	public:
+		//Will contain weapons, supplies, armor, etc
+		struct Inventory {
+			std::vector<Weapon> weapons;
+		};
+
 		Player();
 		Player (std::string race, std::string name);
 		bool moveSpace(int direction, int map_size, WINDOW *player_window);
@@ -19,8 +24,10 @@ class Player
 		void setPosition(int r, int c);
 		void printStatus(WINDOW *player_window);
 		int computeAttackPower();
-		void gainExp(int xp, WINDOW *window);
+		void gainExp(int xp, WINDOW *p_window);
+		void printInventory(WINDOW *inv_window);
 
+		Inventory inventory;
 		int vision;
 		int current_health, base_total_health, current_total_health;
 		double speed;
@@ -40,11 +47,6 @@ class Player
 		int passive_health_regen_amount;  //amount of health gained on trigger
 
 		Weapon *primary_weapon;
-
-		//Will contain weapons, supplies, armor, etc
-		struct Equipment {
-			std::vector<Weapon> weapons;
-		};
 
 	private:
 		std::string name;
