@@ -81,18 +81,24 @@ int Enemy::computeAttackPower() {
 	return 0;
 }
 
-void Enemy::deathEvents(std::vector<Loot> *loot) {
+void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 	//Loot calculations
 	double loot_chance_roll  = ((double) rand() / RAND_MAX);
 	if (this->loot_drop_chance >= loot_chance_roll) {
 		//Generate loot
 		//Drop loot on map
+		wattroff(alert_win, COLOR_PAIR(5));
+		wattron(alert_win, COLOR_PAIR(6));
+		wprintw(alert_win, "%s dropped loot.", (this->name).c_str());
+		wattroff(alert_win, COLOR_PAIR(6));
+		wattron(alert_win, COLOR_PAIR(5));
 		Loot *obj = new Loot();
 		obj->row = this->row;
 		obj->col = this->col;
 		obj->weapons.push_back(*(new Weapon()));
 		loot->push_back(*obj);
 	}
+	wrefresh(alert_win);
 }
 
 bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col) {

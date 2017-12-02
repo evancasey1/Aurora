@@ -42,11 +42,14 @@ void Player::printInventory(WINDOW *inv_window)
 {
 	wclear(inv_window);
 	wprintw(inv_window, "WEAPONS:\n");
+	int counter = 0;
 	std::vector<Weapon>::iterator iter;
 	for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
-		wprintw(inv_window, "%s\n", (iter->name).c_str());
+		wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
 		++iter;
+		++counter;
 	}
+	counter = 0;
 	wrefresh(inv_window);
 }
 

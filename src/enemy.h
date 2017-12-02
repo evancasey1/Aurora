@@ -25,7 +25,7 @@ class Enemy
 		void idle(int m_size);
 		int computeAttackPower();
 		bool isValidMove(std::vector<Enemy> *enems, int p_row, int p_col);
-		void deathEvents(std::vector<Enemy::Loot> *loot);
+		void deathEvents(std::vector<Enemy::Loot> *loot, WINDOW *win);
 
 		int row;
 		int col;

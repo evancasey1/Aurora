@@ -100,7 +100,7 @@ void deleteDefeatedEnemies(std::vector<Enemy> *enemies) {
 	std::vector<Enemy>::iterator iter;
 	for (iter = enemies->begin(); iter != enemies->end();) {
 		if (iter->current_health <= 0) {
-			iter->deathEvents(&loot);
+			iter->deathEvents(&loot, alert_window);
 			iter = enemies->erase(iter);
 		}
 		else {
@@ -186,6 +186,8 @@ void mainGameLoop(Player *player, Map *map)
 		switch(ch) {
 			//player movement
 			case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
+				wclear(inventory_window);
+				wrefresh(inventory_window);
 				if(player->moveSpace(ch, map->size, player_status_window)) {
 					player->used_moves++;
 					map->printPlayerInfo(*player, map_window);
