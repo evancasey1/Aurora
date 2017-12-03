@@ -6,8 +6,6 @@
 
 Player::Player()
 {
-	setName("Adventurer");
-	setRace("Undefined");
 	this->vision = 6;
 	this->primary_weapon = new Weapon("Short Sword", 3, 1);
 
@@ -31,11 +29,6 @@ Player::Player()
 	this->passive_health_regen_counter = 0;
 	this->passive_health_regen_trigger = 10;
 	this->passive_health_regen_amount = 1;
-}
-Player::Player(std::string race, std::string name) 
-{
-	setName(name);
-	setRace(race);
 }
 
 void Player::printInventory(WINDOW *inv_window)
@@ -127,33 +120,6 @@ void Player::setPosition(int row, int col)
 {
 	this->row = row;
 	this->col = col;
-}
-
-int Player::getRow()
-{
-	return this->row;
-}
-
-int Player::getCol()
-{
-	return this->col;
-}
-
-std::string Player::getName() 
-{
-	return this->name;
-}
-void Player::setName(std::string n) 
-{
-	this->name = n;
-}
-std::string Player::getRace() 
-{
-	return this->race;
-}
-void Player::setRace(std::string r) 
-{
-	this->race = r;
 }
 
 //Will print things like player gold count, health, status, and 

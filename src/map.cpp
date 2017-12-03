@@ -36,7 +36,7 @@ Map::MapSection Map::getMapSectionFromIndex(int row, int col)
 void Map::printPlayerInfo(Player player, WINDOW *map_window)
 {
 	wmove(map_window, 1, 0);
-	wprintw(map_window, "X: %d Y: %d     Moves: %d/%d\n", player.getCol(), abs(player.getRow() - (this->size - 1)), player.used_moves, player.allowed_moves);
+	wprintw(map_window, "X: %d Y: %d     Moves: %d/%d\n", player.col, abs(player.row - (this->size - 1)), player.used_moves, player.allowed_moves);
 	wrefresh(map_window);
 }
 
@@ -47,10 +47,10 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, std::
 
 	wmove(map_window, 2, 0);
 	char to_add;
-	int row_max = player->getRow() + vision + 1;
-	int col_max = player->getCol() + vision + 1;
-	int row_min = player->getRow() - vision;
-	int col_min = player->getCol() - vision;
+	int row_max = player->row + vision + 1;
+	int col_max = player->col + vision + 1;
+	int row_min = player->row - vision;
+	int col_min = player->col - vision;
 	int color_index = this->daytime_color; //init to daytime for now
 
 	row_max > this->size ? row_max = this->size : false;
@@ -69,7 +69,7 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, std::
 				}
 			}	
 
-			if (player->getRow() == i && player->getCol() == j) {
+			if (player->row == i && player->col == j) {
 				to_add = this->player_symbol;
 				color_index = this->player_color;
 			}		
@@ -89,12 +89,12 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, std::
 		}
 		count++;
 		wprintw(map_window, "\n");
-		if (player->getRow() + vision > this->size - 1) {
-			wmove(map_window, player->getRow() + vision, 0);
+		if (player->row + vision > this->size - 1) {
+			wmove(map_window, player->row + vision, 0);
 			wclrtoeol(map_window);
 		}
-		else if (player->getRow() - vision < 0) {
-			wmove(map_window, player->getRow() - vision, 0);
+		else if (player->row - vision < 0) {
+			wmove(map_window, player->col - vision, 0);
 			wclrtoeol(map_window);
 		}
 		

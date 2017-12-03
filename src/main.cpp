@@ -115,7 +115,7 @@ void spawnEnemy(std::vector<Enemy> *enemies, Player *player, Map *map) {
 		int enemy_index = (rand() % NUM_ENEMY_TYPES);
 		std::string e_name = ENEMY_NAMES[enemy_index];
 		char e_symbol = ENEMY_SYMBOLS[enemy_index];
-		enemies->push_back(*(new Enemy(e_name, e_symbol, player->getRow(), player->getCol(), player->vision, map->size)));
+		enemies->push_back(*(new Enemy(e_name, e_symbol, player->row, player->col, player->vision, map->size)));
 	}
 }
 
@@ -133,9 +133,9 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	double distance;
 	wattron(alert_window, COLOR_PAIR(5)); //turn on enemy color scheme while enemy events are active
 	for (auto &e : *enemies) {
-		distance = getDistance(player->getCol(), player->getRow(), e.col, e.row);
+		distance = getDistance(player->col, player->row, e.col, e.row);
 		if (distance <= (double) e.vision) {
-			e.seek(player->getRow(), player->getCol());
+			e.seek(player->row, player->col);
 			if (e.alert_player) {
 				e.alert_player = false;
 				wprintw(alert_window, "%s has spotted you!\n", (e.name).c_str());
@@ -150,7 +150,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 			}
 			e.idle(map->size);
 		}
-		if (e.row == player->getRow() && e.col == player->getCol()) {
+		if (e.row == player->row && e.col == player->col) {
 			initiate_combat(player, enemies, index);
 		}
 		index++;
@@ -204,7 +204,7 @@ void mainGameLoop(Player *player, Map *map)
 				//Temporary code for now. Just to test
 				loot_size = loot.size();
 				for (int k = 0; k < loot_size; k++) {
-					if (loot.at(k).row == player->getRow() && loot.at(k).col == player->getCol()) {
+					if (loot.at(k).row == player->row && loot.at(k).col == player->col) {
 						player->inventory.weapons.push_back(loot.at(k).weapons.at(0));
 						loot.erase(loot.begin() + k);
 						k--;

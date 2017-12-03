@@ -89,7 +89,7 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 		//Drop loot on map
 		wattroff(alert_win, COLOR_PAIR(5));
 		wattron(alert_win, COLOR_PAIR(6));
-		wprintw(alert_win, "%s dropped loot.", (this->name).c_str());
+		wprintw(alert_win, "%s dropped loot.\n", (this->name).c_str());
 		wattroff(alert_win, COLOR_PAIR(6));
 		wattron(alert_win, COLOR_PAIR(5));
 		Loot *obj = new Loot();
