@@ -21,11 +21,16 @@ const int MAP_VERTICAL_PADDING = 3;
 const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
-const int NUM_ENEMY_TYPES = 6;
+const int NUM_ENEMY_TYPES = 2;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
+/*
 const std::string ENEMY_NAMES[] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
 const char ENEMY_SYMBOLS[] = {'W', 'U', 'G', 'T', 'O', 'B'};
+*/
+//For testing:
+const std::string ENEMY_NAMES[] = {"Wolf", "Goblin"};
+const char ENEMY_SYMBOLS[] = {'W', 'G'};
 
 std::vector<Enemy::Loot> loot;
 
@@ -204,7 +209,7 @@ void mainGameLoop(Player *player, Map *map)
 				//Temporary code for now. Just to test
 				loot_size = loot.size();
 				for (int k = 0; k < loot_size; k++) {
-					if (loot.at(k).row == player->row && loot.at(k).col == player->col) {
+					if (loot.at(k).row == player->row && loot.at(k).col == player->col && loot.at(k).dropped_by != "Wolf") {
 						player->inventory.weapons.push_back(loot.at(k).weapons.at(0));
 						loot.erase(loot.begin() + k);
 						k--;

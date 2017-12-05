@@ -16,6 +16,7 @@ class Enemy
 {
 	public:
 		struct Loot {
+			std::string dropped_by;
 			std::vector<Weapon> weapons;
 			std::vector<Food> food;
 			//Equipment, etc later

@@ -95,7 +95,15 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 		Loot *obj = new Loot();
 		obj->row = this->row;
 		obj->col = this->col;
-		obj->weapons.push_back(*(new Weapon()));
+		obj->dropped_by = this->name;
+		
+		if (this->name == "Wolf") {
+			//Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers);
+			obj->food.push_back(*(new Food("Wolf Meat", 4, 1, 5, 3)));
+		}
+		else {
+			obj->weapons.push_back(*(new Weapon()));
+		}
 		loot->push_back(*obj);
 	}
 	wrefresh(alert_win);
