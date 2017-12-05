@@ -1,5 +1,6 @@
 #include <string>
 #include "weapon.h"
+#include "food.h"
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -9,6 +10,7 @@ class Player
 		//Will contain weapons, supplies, armor, etc
 		struct Inventory {
 			std::vector<Weapon> weapons;
+			std::vector<Food> food;
 		};
 
 		Player();

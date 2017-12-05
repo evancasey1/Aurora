@@ -1,5 +1,6 @@
 #include <string>
 #include "weapon.h"
+#include "food.h"
 #ifndef ENEMY_H
 #define ENEMY_H
 
@@ -16,7 +17,8 @@ class Enemy
 	public:
 		struct Loot {
 			std::vector<Weapon> weapons;
-			//Food, equipment, etc later
+			std::vector<Food> food;
+			//Equipment, etc later
 			int row;
 			int col;
 		};
