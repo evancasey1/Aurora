@@ -13,7 +13,6 @@
 #include <math.h>
 #include "enemy.h"
 #include "map.h"
-//#include "wolf.h"
 
 /* Begin globals */
 const int MAP_SIZES[3] = {50, 100, 150};
@@ -21,16 +20,14 @@ const int MAP_VERTICAL_PADDING = 3;
 const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
-const int NUM_ENEMY_TYPES = 2;
+const int NUM_ENEMY_TYPES = 5;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
-/*
-const std::string ENEMY_NAMES[] = {"Wolf", "Undead", "Goblin", "Troll", "Orc", "Bear"};
-const char ENEMY_SYMBOLS[] = {'W', 'U', 'G', 'T', 'O', 'B'};
-*/
-//For testing:
-const std::string ENEMY_NAMES[] = {"Wolf", "Goblin"};
-const char ENEMY_SYMBOLS[] = {'W', 'G'};
+
+const std::string ENEMY_NAMES[] = {"Wolf", "Goblin", "Undead", "Troll", "Orc", "Bear"};
+const char ENEMY_SYMBOLS[] = {'W', 'G', 'U', 'T', 'O', 'B'};
+
+
 
 std::vector<Enemy::Loot> loot;
 
@@ -191,8 +188,6 @@ void mainGameLoop(Player *player, Map *map)
 		switch(ch) {
 			//player movement
 			case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
-				wclear(inventory_window);
-				wrefresh(inventory_window);
 				if(player->moveSpace(ch, map->size, player_status_window)) {
 					player->used_moves++;
 					map->printPlayerInfo(*player, map_window);
@@ -203,7 +198,7 @@ void mainGameLoop(Player *player, Map *map)
 				}
 				break;
 			case 'e':
-				player->printInventory(inventory_window);
+				player->manageInventory(inventory_window);
 				break;
 			case 'l':
 				//Temporary code for now. Just to test

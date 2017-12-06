@@ -18,11 +18,12 @@ Player::Player()
 	this->crit_chance = 0.05;
 	this->allowed_moves = 1;
 	this->used_moves = 0;
-	//Will be an attribute of weapon later
+	//Will be an attribute of weapon later, or a calculation between player and weapon
 	this->accuracy = 0.9;
 	this->xp_cap_multiplier = 1.4;
 	this->current_xp_cap = 150;
 	this->level = 1;
+	this->level_points = 0;
 	this->current_xp = 0;
 	this->level_up_multiplier_health = 1.2;
 	this->health_mod = 0;
@@ -31,19 +32,56 @@ Player::Player()
 	this->passive_health_regen_amount = 1;
 }
 
-void Player::printInventory(WINDOW *inv_window)
+void Player::printInventory(WINDOW *inv_window, int index) 
 {
 	wclear(inv_window);
 	wprintw(inv_window, "WEAPONS:\n");
 	int counter = 0;
 	std::vector<Weapon>::iterator iter;
 	for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
-		wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+		if (counter == index) {
+			wattron(inv_window, A_STANDOUT);
+			wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+			wattroff(inv_window, A_STANDOUT);
+		}
+		else {
+			wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+		}
 		++iter;
 		++counter;
 	}
-	counter = 0;
 	wrefresh(inv_window);
+	
+}
+
+void Player::manageInventory(WINDOW *inv_window)
+{
+	int ch;
+	int index = 0;
+
+	while (true) {
+		printInventory(inv_window, index);
+		ch = getch();
+		switch(ch) {
+			//player movement
+			case KEY_UP:
+				if (index > 0) {
+					index--;
+				}
+				break;
+			case KEY_DOWN:
+				if (index < this->inventory.weapons.size() - 1) {
+					index++;
+				}
+				break;
+			case 'e': case 27:
+				wclear(inv_window);
+				wrefresh(inv_window);
+				return;
+			default:
+				break;
+		}
+	}
 }
 
 void Player::userCreatePlayer()
@@ -113,6 +151,7 @@ void Player::gainExp(int xp, WINDOW *alert_win)
 		wattron(alert_win, COLOR_PAIR(5));
 		this->base_total_health *= this->level_up_multiplier_health;
 		this->current_total_health = this->base_total_health + this->health_mod;
+		this->level_points++;
 	}
 }
 

@@ -23,7 +23,8 @@ class Player
 		void printStatus(WINDOW *player_window);
 		int computeAttackPower();
 		void gainExp(int xp, WINDOW *p_window);
-		void printInventory(WINDOW *inv_window);
+		void printInventory(WINDOW *inv_window, int index);
+		void manageInventory(WINDOW *inv_window);
 
 		Inventory inventory;
 		int vision;
@@ -35,6 +36,7 @@ class Player
 		int used_moves;
 		double xp_cap_multiplier;
 		int level;
+		int level_points;
 		int current_xp_cap;
 		int current_xp;
 		int health_mod;
