@@ -2,7 +2,6 @@
 #include <string>
 #include <ncurses.h>
 #include <vector>
-#include <algorithm>
 #include "player.h"
 
 Player::Player()
@@ -189,7 +188,7 @@ int Player::computeAttackPower() {
 	int power = this->primary_weapon->attack_power;
 	int power_range = this->primary_weapon->attack_power_range;
 	double crit_chance = this->primary_weapon->crit_chance;
-	//double acc = this->primary_weapon->accuracy;
+	double acc = this->primary_weapon->accuracy;
 
 	double chance_to_hit  = ((double) rand() / RAND_MAX);
 	double chance_to_crit = ((double) rand() / RAND_MAX);
@@ -199,7 +198,7 @@ int Player::computeAttackPower() {
 	if (crit_chance >= chance_to_crit) {
 		power *= 2;
 	}
-	if(this->accuracy >= chance_to_hit) {
+	if(acc >= chance_to_hit) {
 		return power;
 	}
 	return 0;

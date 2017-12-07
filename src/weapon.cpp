@@ -62,7 +62,6 @@ Weapon::Weapon() {
 		this->crushing_mod = 1.8;
 		this->accuracy = 0.80;
 	}
-	this->accuracy = 0.93;
 }
 
 Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
@@ -111,10 +110,4 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
 		this->crushing_mod = 1.8;
 		this->accuracy = 0.80;
 	}
-	this->accuracy = 0.94;
-}
-
-double Weapon::getAccuracy() 
-{
-	return (double)this->accuracy;
 }
