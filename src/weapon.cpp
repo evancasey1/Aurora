@@ -5,6 +5,11 @@
 
 Weapon::Weapon() {
 	//Random weapon generation
+	this->ENHANCED_CHANCE = 0.35;
+	this->LEGENDARY_CHANCE = 0.15;
+	this->ENHANCED_MOD = 1.25;
+	this->LEGENDARY_MOD = 1.5;
+
 	std::string names[] = {"Sword", "Dagger", "Mace", "Club"};
 	int name_index = rand() % 4;
 	//Temporary values. Will be dependent on level later
@@ -57,6 +62,7 @@ Weapon::Weapon() {
 		this->crushing_mod = 1.8;
 		this->accuracy = 0.80;
 	}
+	this->accuracy = 0.93;
 }
 
 Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
@@ -105,4 +111,10 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
 		this->crushing_mod = 1.8;
 		this->accuracy = 0.80;
 	}
+	this->accuracy = 0.94;
+}
+
+double Weapon::getAccuracy() 
+{
+	return (double)this->accuracy;
 }

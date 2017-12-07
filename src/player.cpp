@@ -2,6 +2,7 @@
 #include <string>
 #include <ncurses.h>
 #include <vector>
+#include <algorithm>
 #include "player.h"
 
 Player::Player()
@@ -32,6 +33,11 @@ Player::Player()
 	this->passive_health_regen_amount = 1;
 }
 
+void Player::setPrimaryWeapon(Weapon weapon) 
+{
+	*this->primary_weapon = weapon;
+}
+
 void Player::printInventory(WINDOW *inv_window, int index) 
 {
 	wclear(inv_window);
@@ -58,8 +64,10 @@ void Player::manageInventory(WINDOW *inv_window)
 {
 	int ch;
 	int index = 0;
-
+	Weapon temp;
+	std::vector<Weapon> *weapon_vect;
 	while (true) {
+		//temp = NULL;
 		printInventory(inv_window, index);
 		ch = getch();
 		switch(ch) {
@@ -74,7 +82,13 @@ void Player::manageInventory(WINDOW *inv_window)
 					index++;
 				}
 				break;
-			case 'e': case 27:
+			case KEY_ENTER: case '\n':
+				weapon_vect = &this->inventory.weapons;
+				temp = weapon_vect->at(index);
+				weapon_vect->at(index) = *this->primary_weapon;
+				this->setPrimaryWeapon(temp);
+				break;
+			case 'e':
 				wclear(inv_window);
 				wrefresh(inv_window);
 				return;
@@ -175,8 +189,8 @@ int Player::computeAttackPower() {
 	int power = this->primary_weapon->attack_power;
 	int power_range = this->primary_weapon->attack_power_range;
 	double crit_chance = this->primary_weapon->crit_chance;
-	double accuracy = this->primary_weapon->accuracy;
-	
+	//double acc = this->primary_weapon->accuracy;
+
 	double chance_to_hit  = ((double) rand() / RAND_MAX);
 	double chance_to_crit = ((double) rand() / RAND_MAX);
 	if (power_range != 0) {
@@ -185,7 +199,7 @@ int Player::computeAttackPower() {
 	if (crit_chance >= chance_to_crit) {
 		power *= 2;
 	}
-	if(accuracy >= chance_to_hit) {
+	if(this->accuracy >= chance_to_hit) {
 		return power;
 	}
 	return 0;

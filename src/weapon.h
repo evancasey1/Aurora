@@ -5,18 +5,21 @@ class Weapon {
 	public:
 		Weapon();
 		Weapon(std::string name, int attack_power, int attack_power_range);
+		double getAccuracy();
 		int attack_power, attack_power_range;
 		std::string name;
 		bool is_poisonous;
 		double bleed_chance, poison_chance;
 		double piercing_mod, slashing_mod, crushing_mod;
-		double crit_chance, accuracy;
+		double crit_chance;
+		double accuracy;
+
 
 	private:
-		const double ENHANCED_CHANCE   = 0.35;
-		const double LEGENDARY_CHANCE  = 0.15;
-		const double ENHANCED_MOD 	   = 1.25;
-		const double LEGENDARY_MOD     = 1.5;
+		double ENHANCED_CHANCE;
+		double LEGENDARY_CHANCE;
+		double ENHANCED_MOD;
+		double LEGENDARY_MOD;
 };
 
 #endif
