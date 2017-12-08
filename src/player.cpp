@@ -43,17 +43,22 @@ void Player::printInventory(WINDOW *inv_window, int index)
 	wprintw(inv_window, "WEAPONS:\n");
 	int counter = 0;
 	std::vector<Weapon>::iterator iter;
-	for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
-		if (counter == index) {
-			wattron(inv_window, A_STANDOUT);
-			wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-			wattroff(inv_window, A_STANDOUT);
+	if (this->inventory.weapons.size() == 0) {
+		wprintw(inv_window, "<EMPTY>");
+	}
+	else {
+		for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
+			if (counter == index) {
+				wattron(inv_window, A_STANDOUT);
+				wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+				wattroff(inv_window, A_STANDOUT);
+			}
+			else {
+				wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+			}
+			++iter;
+			++counter;
 		}
-		else {
-			wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-		}
-		++iter;
-		++counter;
 	}
 	wrefresh(inv_window);
 	
@@ -82,10 +87,12 @@ void Player::manageInventory(WINDOW *inv_window)
 				}
 				break;
 			case KEY_ENTER: case '\n':
-				weapon_vect = &this->inventory.weapons;
-				temp = weapon_vect->at(index);
-				weapon_vect->at(index) = *this->primary_weapon;
-				this->setPrimaryWeapon(temp);
+				if (this->inventory.weapons.size() > 0) {
+					weapon_vect = &this->inventory.weapons;
+					temp = weapon_vect->at(index);
+					weapon_vect->at(index) = *this->primary_weapon;
+					this->setPrimaryWeapon(temp);
+				}
 				break;
 			case 'e':
 				wclear(inv_window);
