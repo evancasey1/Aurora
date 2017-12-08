@@ -26,6 +26,7 @@ class Player
 		void printInventory(WINDOW *inv_window, int index);
 		void manageInventory(WINDOW *inv_window);
 		void setPrimaryWeapon(Weapon weapon);
+		void eatFood(Food *food);
 
 		Inventory inventory;
 		int vision;
@@ -45,6 +46,8 @@ class Player
 		std::string race;
 		int row;
 		int col;
+		int inventory_index;
+		int max_inventory_index;
 
 		int passive_health_regen_counter;   //count of number of moves. Rolls back to 0 when equal to trigger.
 		int passive_health_regen_trigger; //number of moves before passive health regeneration happens

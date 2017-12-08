@@ -30,6 +30,12 @@ Player::Player()
 	this->passive_health_regen_counter = 0;
 	this->passive_health_regen_trigger = 10;
 	this->passive_health_regen_amount = 1;
+	this->inventory_index = 0;
+	this->max_inventory_index = 1;
+}
+
+void Player::eatFood(Food *food) {
+	return;
 }
 
 void Player::setPrimaryWeapon(Weapon weapon) 
@@ -40,24 +46,52 @@ void Player::setPrimaryWeapon(Weapon weapon)
 void Player::printInventory(WINDOW *inv_window, int index) 
 {
 	wclear(inv_window);
-	wprintw(inv_window, "WEAPONS:\n");
 	int counter = 0;
-	std::vector<Weapon>::iterator iter;
-	if (this->inventory.weapons.size() == 0) {
-		wprintw(inv_window, "<EMPTY>");
+
+	if (this->inventory_index == 0) {
+		std::vector<Weapon>::iterator iter;
+		wattron(inv_window, A_BOLD);
+		wprintw(inv_window, "WEAPONS\n");
+		wattroff(inv_window, A_BOLD);
+		if (this->inventory.weapons.size() == 0) {
+			wprintw(inv_window, "<EMPTY>");
+		}
+		else {
+			for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
+				if (counter == index) {
+					wattron(inv_window, A_STANDOUT);
+					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+					wattroff(inv_window, A_STANDOUT);
+				}
+				else {
+					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+				}
+				++iter;
+				++counter;
+			}
+		}
 	}
-	else {
-		for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
-			if (counter == index) {
-				wattron(inv_window, A_STANDOUT);
-				wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-				wattroff(inv_window, A_STANDOUT);
+	else if (this->inventory_index == 1) {
+		std::vector<Food>::iterator iter;
+		wattron(inv_window, A_BOLD);
+		wprintw(inv_window, "FOOD\n");
+		wattroff(inv_window, A_BOLD);
+		if (this->inventory.food.size() == 0) {
+			wprintw(inv_window, "<EMPTY>");
+		}
+		else {
+			for (iter = this->inventory.food.begin(); iter != this->inventory.food.end();) {
+				if (counter == index) {
+					wattron(inv_window, A_STANDOUT);
+					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+					wattroff(inv_window, A_STANDOUT);
+				}
+				else {
+					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+				}
+				++iter;
+				++counter;
 			}
-			else {
-				wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-			}
-			++iter;
-			++counter;
 		}
 	}
 	wrefresh(inv_window);
@@ -82,16 +116,33 @@ void Player::manageInventory(WINDOW *inv_window)
 				}
 				break;
 			case KEY_DOWN:
-				if (index < this->inventory.weapons.size() - 1) {
+				if (this->inventory_index == 0 && index < this->inventory.weapons.size() - 1) {
+					index++;
+				}
+				else if (this->inventory_index == 1 && index < this->inventory.food.size() - 1) {
 					index++;
 				}
 				break;
+			case KEY_RIGHT:
+				if (this->inventory_index < this->max_inventory_index) {
+					this->inventory_index++;
+					index = 0;
+				}
+				break;
+			case KEY_LEFT:
+				if (this->inventory_index > 0) {
+					this->inventory_index--;
+				}
+				break;
 			case KEY_ENTER: case '\n':
-				if (this->inventory.weapons.size() > 0) {
+				if (this->inventory_index == 0 && this->inventory.weapons.size() > 0) {
 					weapon_vect = &this->inventory.weapons;
 					temp = weapon_vect->at(index);
 					weapon_vect->at(index) = *this->primary_weapon;
 					this->setPrimaryWeapon(temp);
+				}
+				else if (this->inventory_index == 1 && this->inventory.food.size() > 0) {
+					this->eatFood(&this->inventory.food.at(index));
 				}
 				break;
 			case 'e':
@@ -107,11 +158,7 @@ void Player::manageInventory(WINDOW *inv_window)
 void Player::userCreatePlayer()
 {
 	//TODO:
-	// 	Name selection
 	//	Attribute selection
-	//  break into 3 helper functions
-	//		get name, get race, get attrs
-	//	make this menu selection a reusable function
 	int chosen_index = 0;
 	const char *options[] = {"Human", "Elf", "Dwarf"};
 	int horiz_pad = (int) ((COLS/2)-10);
