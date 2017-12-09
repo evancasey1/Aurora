@@ -97,7 +97,7 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	wrefresh(alert_window);
 }
 
-void printLoot(int current_item_index, int current_vect_index, std::vector<Enemy::Loot> *loot_at_loc) 
+void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc) 
 {
 	wclear(inventory_window);
 	int counter = 0;
@@ -114,15 +114,26 @@ void printLoot(int current_item_index, int current_vect_index, std::vector<Enemy
 			wattron(inventory_window, A_BOLD);
 			wprintw(inventory_window, "%s\n", (loot_iter->dropped_by).c_str());
 			wattroff(inventory_window, A_BOLD);
+
+			if (counter == item_index) {
+				wattron(inventory_window, A_STANDOUT);
+			}
 			
 			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
 				wprintw(inventory_window, "> [%d] %s\n", counter, (weapon_iter->name).c_str());
+				if (counter == item_index) {
+					wattroff(inventory_window, A_STANDOUT);
+				}
 				counter++;
 			}
 			for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
 				wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
+				if (counter == item_index) {
+					wattroff(inventory_window, A_STANDOUT);
+				}
 				counter++;
 			}
+			
 		}
 	}
 	wrefresh(inventory_window);
@@ -134,12 +145,16 @@ void manageLoot(int loot_row, int loot_col) {
 	std::vector<Enemy::Loot> loot_at_loc;
 	int current_item_index = 0;
 	int current_vect_index = 0;
+	int current_total_index = 0;
 	int total_size = 0;
+	int combined_size = 0;
 
 	for (int i = 0; i < loot.size(); i++) {
 		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
-			total_size = (loot.at(i).weapons.size() + loot.at(i).food.size()) - 1;
-			loot_indices.push_back(total_size);
+			total_size++;
+			combined_size = (loot.at(i).weapons.size() + loot.at(i).food.size()) - 1;
+			total_size += combined_size;
+			loot_indices.push_back(combined_size);
 			loot_at_loc.push_back(loot.at(i));
 		}
 	}
@@ -149,7 +164,7 @@ void manageLoot(int loot_row, int loot_col) {
 	}
 
 	while(true) {
-		printLoot(current_item_index, current_vect_index, &loot_at_loc);
+		printLoot(current_total_index, &loot_at_loc);
 		ch = getch();
 		switch(ch) {
 			case KEY_UP:
@@ -160,17 +175,25 @@ void manageLoot(int loot_row, int loot_col) {
 					current_vect_index--;
 					current_item_index = loot_indices.at(current_vect_index);
 				}
+
+				if (current_total_index != 0) {
+					current_total_index--;
+				}
 				break;
 			case KEY_DOWN:
-				if (current_item_index == loot_indices.at(current_vect_index) && current_vect_index < loot_indices.size()) {
+				if (current_item_index == loot_indices.at(current_vect_index) && current_vect_index < (loot_indices.size() - 1)) {
 					current_vect_index++;
 					current_item_index = 0;
 				}
 				else if (current_item_index < loot_indices.at(current_vect_index)) {
 					current_item_index++;
 				}
+
+				if (current_total_index < (total_size) - 1) {
+					current_total_index++;
+				}
 				break;
-			case 'l':
+			case 'l': case 'e':
 				wclear(inventory_window);
 				wrefresh(inventory_window);
 				return;
