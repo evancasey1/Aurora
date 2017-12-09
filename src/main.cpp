@@ -100,30 +100,28 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 void printLoot(int current_item_index, int current_vect_index, std::vector<Enemy::Loot> *loot_at_loc) 
 {
 	wclear(inventory_window);
-	int counter;
+	int counter = 0;
 
 	std::vector<Enemy::Loot>::iterator loot_iter;
 	std::vector<Weapon>::iterator weapon_iter;
 	std::vector<Food>::iterator food_iter;
+
 	if (loot_at_loc->size() == 0) {
 		wprintw(inventory_window, "<EMPTY>");
 	}
 	else {
-		for (int i = 0; i < loot_at_loc->size(); i++) {
+		for (loot_iter = loot_at_loc->begin(); loot_iter != loot_at_loc->end(); loot_iter++) {
 			wattron(inventory_window, A_BOLD);
-			wprintw(inventory_window, "%s\n", (loot_at_loc->at(i).dropped_by).c_str());
+			wprintw(inventory_window, "%s\n", (loot_iter->dropped_by).c_str());
 			wattroff(inventory_window, A_BOLD);
-			for (loot_iter = loot_at_loc->begin(); loot_iter != loot_at_loc->end();) {
-				counter = 0;
-				for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
-					wprintw(inventory_window, "> [%d] %s\n", counter, (weapon_iter->name).c_str());
-					counter++;
-				}
-				for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
-					wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
-					counter++;
-				}
-				loot_iter++;
+			
+			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
+				wprintw(inventory_window, "> [%d] %s\n", counter, (weapon_iter->name).c_str());
+				counter++;
+			}
+			for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
+				wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
+				counter++;
 			}
 		}
 	}
