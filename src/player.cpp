@@ -43,6 +43,8 @@ void Player::setPrimaryWeapon(Weapon weapon)
 	*this->primary_weapon = weapon;
 }
 
+//Need to find a more elegant solution and not be repetitive within the loop
+//Some sort of generic pointer would be very useful
 void Player::printInventory(WINDOW *inv_window, int index) 
 {
 	wclear(inv_window);

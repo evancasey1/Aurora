@@ -24,8 +24,8 @@ const int NUM_ENEMY_TYPES = 5;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
 
-const std::string ENEMY_NAMES[] = {"Wolf", "Goblin", "Undead", "Troll", "Orc", "Bear"};
-const char ENEMY_SYMBOLS[] = {'W', 'G', 'U', 'T', 'O', 'B'};
+const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "Wolf"};
+const char ENEMY_SYMBOLS[] = {'G', 'U', 'T', 'O', 'B', 'W'};
 
 
 
@@ -35,7 +35,7 @@ WINDOW *map_window;
 WINDOW *alert_window;
 WINDOW *player_status_window;
 WINDOW *inventory_window;
-
+WINDOW *loot_window;
 
 const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
 									 "       :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+:   :+: :+: ",
@@ -95,6 +95,91 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	}
 	player->printStatus(player_status_window);
 	wrefresh(alert_window);
+}
+
+void printLoot(int current_item_index, int current_vect_index, std::vector<Enemy::Loot> *loot_at_loc) 
+{
+	wclear(inventory_window);
+	int counter;
+
+	std::vector<Enemy::Loot>::iterator loot_iter;
+	std::vector<Weapon>::iterator weapon_iter;
+	std::vector<Food>::iterator food_iter;
+	if (loot_at_loc->size() == 0) {
+		wprintw(inventory_window, "<EMPTY>");
+	}
+	else {
+		for (int i = 0; i < loot_at_loc->size(); i++) {
+			wattron(inventory_window, A_BOLD);
+			wprintw(inventory_window, "%s\n", (loot_at_loc->at(i).dropped_by).c_str());
+			wattroff(inventory_window, A_BOLD);
+			for (loot_iter = loot_at_loc->begin(); loot_iter != loot_at_loc->end();) {
+				counter = 0;
+				for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
+					wprintw(inventory_window, "> [%d] %s\n", counter, (weapon_iter->name).c_str());
+					counter++;
+				}
+				for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
+					wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
+					counter++;
+				}
+				loot_iter++;
+			}
+		}
+	}
+	wrefresh(inventory_window);
+}
+
+void manageLoot(int loot_row, int loot_col) {
+	int ch;
+	std::vector<int> loot_indices;
+	std::vector<Enemy::Loot> loot_at_loc;
+	int current_item_index = 0;
+	int current_vect_index = 0;
+	int total_size = 0;
+
+	for (int i = 0; i < loot.size(); i++) {
+		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
+			total_size = (loot.at(i).weapons.size() + loot.at(i).food.size()) - 1;
+			loot_indices.push_back(total_size);
+			loot_at_loc.push_back(loot.at(i));
+		}
+	}
+
+	if (loot_at_loc.size() == 0) {
+		return;
+	}
+
+	while(true) {
+		printLoot(current_item_index, current_vect_index, &loot_at_loc);
+		ch = getch();
+		switch(ch) {
+			case KEY_UP:
+				if (current_item_index != 0) {
+					current_item_index--;
+				}
+				else if (current_item_index == 0 && current_vect_index > 0) {
+					current_vect_index--;
+					current_item_index = loot_indices.at(current_vect_index);
+				}
+				break;
+			case KEY_DOWN:
+				if (current_item_index == loot_indices.at(current_vect_index) && current_vect_index < loot_indices.size()) {
+					current_vect_index++;
+					current_item_index = 0;
+				}
+				else if (current_item_index < loot_indices.at(current_vect_index)) {
+					current_item_index++;
+				}
+				break;
+			case 'l':
+				wclear(inventory_window);
+				wrefresh(inventory_window);
+				return;
+			default:
+				break;
+		}
+	}
 }
 
 void deleteDefeatedEnemies(std::vector<Enemy> *enemies) {
@@ -177,7 +262,7 @@ void printTitle()
 void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
-	int loot_size;
+	//int loot_size;
 	std::vector<Enemy> enemies;	
 	map->printPlayerInfo(*player, map_window);
 	map->printMap(player, player->vision, enemies, loot, map_window);
@@ -202,6 +287,8 @@ void mainGameLoop(Player *player, Map *map)
 				break;
 			case 'l':
 				//Temporary code for now. Just to test
+				manageLoot(player->row, player->col);
+				/*
 				loot_size = loot.size();
 				for (int k = 0; k < loot_size; k++) {
 					if (loot.at(k).row == player->row && loot.at(k).col == player->col && loot.at(k).dropped_by != "Wolf") {
@@ -211,6 +298,7 @@ void mainGameLoop(Player *player, Map *map)
 						loot_size--;
 					}
 				}	
+				*/
 				break;
 			//player skips a single move
 			case ',':
@@ -340,8 +428,11 @@ int main(int argc, char *argv[])
 	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
 	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
 	inventory_window = newwin(inv_height, inv_width, inv_row, inv_col);
+	loot_window = newwin(inv_height, inv_width, inv_row, inv_col);
+	
 	scrollok(alert_window, true);
 	scrollok(inventory_window, true);
+	scrollok(loot_window, true);
 
 	mainGameLoop(&player, map);
 
