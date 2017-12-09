@@ -11,6 +11,7 @@
 #include <ctime>
 #include <vector>
 #include <math.h>
+#include <typeinfo>
 #include "enemy.h"
 #include "map.h"
 
@@ -139,10 +140,12 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc)
 	wrefresh(inventory_window);
 }
 
-void manageLoot(int loot_row, int loot_col) {
+void manageLoot(Player *player, int loot_row, int loot_col) {
 	int ch;
 	std::vector<int> loot_indices;
 	std::vector<Enemy::Loot> loot_at_loc;
+
+	std::string obj_name;
 	int current_item_index = 0;
 	int current_vect_index = 0;
 	int current_total_index = 0;
@@ -192,6 +195,12 @@ void manageLoot(int loot_row, int loot_col) {
 				if (current_total_index < (total_size) - 1) {
 					current_total_index++;
 				}
+				break;
+			case KEY_ENTER: case '\n':
+				//Temporary. Need to figure out how to check for type
+				//of object and react accordingly
+				player->inventory.weapons.push_back(loot_at_loc.at(current_vect_index).weapons.at(current_item_index));
+
 				break;
 			case 'l': case 'e':
 				wclear(inventory_window);
@@ -308,18 +317,7 @@ void mainGameLoop(Player *player, Map *map)
 				break;
 			case 'l':
 				//Temporary code for now. Just to test
-				manageLoot(player->row, player->col);
-				/*
-				loot_size = loot.size();
-				for (int k = 0; k < loot_size; k++) {
-					if (loot.at(k).row == player->row && loot.at(k).col == player->col && loot.at(k).dropped_by != "Wolf") {
-						player->inventory.weapons.push_back(loot.at(k).weapons.at(0));
-						loot.erase(loot.begin() + k);
-						k--;
-						loot_size--;
-					}
-				}	
-				*/
+				manageLoot(player, player->row, player->col);
 				break;
 			//player skips a single move
 			case ',':
