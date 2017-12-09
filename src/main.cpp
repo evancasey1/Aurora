@@ -140,10 +140,14 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc)
 	wrefresh(inventory_window);
 }
 
+//There is probably a more efficient way to handle deletion. 
+//Will worry about that later
+//"Premature optimization is the root of all evil"
 void manageLoot(Player *player, int loot_row, int loot_col) {
 	int ch;
 	std::vector<int> loot_indices;
 	std::vector<Enemy::Loot> loot_at_loc;
+	std::vector<Enemy::Loot>::iterator loot_iter;
 
 	std::string obj_name;
 	int current_item_index = 0;
@@ -151,6 +155,7 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 	int current_total_index = 0;
 	int total_size = 0;
 	int combined_size = 0;
+	int deletion_counter = 0;
 
 	for (int i = 0; i < loot.size(); i++) {
 		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
@@ -169,6 +174,7 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 	while(true) {
 		printLoot(current_total_index, &loot_at_loc);
 		ch = getch();
+		
 		switch(ch) {
 			case KEY_UP:
 				if (current_item_index != 0) {
@@ -199,8 +205,30 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 			case KEY_ENTER: case '\n':
 				//Temporary. Need to figure out how to check for type
 				//of object and react accordingly
+				//Only handles weapons right now
+				//TODO:
+				//	More intuitive "index saving" for lack of a better term.
+				//	Delete the values in the true loot vector as well.
+			
+				deletion_counter = 0;
+				loot_iter = loot_at_loc.begin();
+				while (deletion_counter != current_total_index) {
+					loot_iter++;
+					deletion_counter++;
+				}
 				player->inventory.weapons.push_back(loot_at_loc.at(current_vect_index).weapons.at(current_item_index));
-
+				loot_iter->weapons.erase(loot_iter->weapons.begin() + current_item_index);
+				if (loot_iter->weapons.size() == 0) {
+					loot_at_loc.erase(loot_iter);
+				}
+				if (loot_at_loc.size() == 0) {
+					wclear(inventory_window);
+					wrefresh(inventory_window);
+					return;
+				}
+				current_item_index = 0;
+				current_vect_index = 0;
+				current_total_index = 0;
 				break;
 			case 'l': case 'e':
 				wclear(inventory_window);
@@ -209,6 +237,7 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 			default:
 				break;
 		}
+		
 	}
 }
 
