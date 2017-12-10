@@ -8,6 +8,10 @@ Player::Player()
 {
 	this->vision = 6;
 	this->primary_weapon = new Weapon("Short Sword", 3, 1);
+	Food *start_food = new Food("Meat", 3, 1, 2, 2);
+	for (int i = 0; i < 3; i++) {
+		this->inventory.food.push_back(*start_food);
+	}
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
@@ -28,17 +32,19 @@ Player::Player()
 	this->level_up_multiplier_health = 1.2;
 	this->health_mod = 0;
 	this->passive_health_regen_counter = 0;
-	this->passive_health_regen_trigger = 10;
+	this->passive_health_regen_trigger = 50;
 	this->passive_health_regen_amount = 1;
 	this->inventory_index = 0;
 	this->max_inventory_index = 1;
 }
 
-void Player::eatFood(Food *food) {
+void Player::eatFood(Food *food, WINDOW *player_status_window) {
 	this->current_health += food->initial_health_gain;
 	if (this->current_health > this->current_total_health) {
 		this->current_health = this->current_total_health;
 	}
+
+	this->printStatus(player_status_window);
 	return;
 }
 
@@ -104,7 +110,7 @@ void Player::printInventory(WINDOW *inv_window, int index)
 	
 }
 
-void Player::manageInventory(WINDOW *inv_window)
+void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window)
 {
 	int ch;
 	int index = 0;
@@ -148,7 +154,7 @@ void Player::manageInventory(WINDOW *inv_window)
 					this->setPrimaryWeapon(temp);
 				}
 				else if (this->inventory_index == 1 && this->inventory.food.size() > 0) {
-					this->eatFood(&this->inventory.food.at(index));
+					this->eatFood(&this->inventory.food.at(index), player_status_window);
 				}
 				break;
 			case 'e':

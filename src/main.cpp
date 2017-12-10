@@ -342,7 +342,8 @@ void mainGameLoop(Player *player, Map *map)
 				}
 				break;
 			case 'e':
-				player->manageInventory(inventory_window);
+				player->manageInventory(inventory_window, player_status_window);
+				player->printStatus(player_status_window);
 				break;
 			case 'l':
 				//Temporary code for now. Just to test

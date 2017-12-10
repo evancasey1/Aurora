@@ -24,9 +24,9 @@ class Player
 		int computeAttackPower();
 		void gainExp(int xp, WINDOW *p_window);
 		void printInventory(WINDOW *inv_window, int index);
-		void manageInventory(WINDOW *inv_window);
+		void manageInventory(WINDOW *inv_window, WINDOW *player_window);
 		void setPrimaryWeapon(Weapon weapon);
-		void eatFood(Food *food);
+		void eatFood(Food *food, WINDOW *player_window);
 
 		Inventory inventory;
 		int vision;
