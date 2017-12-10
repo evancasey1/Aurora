@@ -35,6 +35,10 @@ Player::Player()
 }
 
 void Player::eatFood(Food *food) {
+	this->current_health += food->initial_health_gain;
+	if (this->current_health > this->current_total_health) {
+		this->current_health = this->current_total_health;
+	}
 	return;
 }
 

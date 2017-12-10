@@ -50,8 +50,8 @@ class Player
 		int max_inventory_index;
 
 		int passive_health_regen_counter;   //count of number of moves. Rolls back to 0 when equal to trigger.
-		int passive_health_regen_trigger; //number of moves before passive health regeneration happens
-		int passive_health_regen_amount;  //amount of health gained on trigger
+		int passive_health_regen_trigger;   //number of moves before passive health regeneration happens
+		int passive_health_regen_amount;    //amount of health gained on trigger
 
 		Weapon *primary_weapon;
 };
