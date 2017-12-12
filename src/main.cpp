@@ -28,8 +28,6 @@ unsigned int max_enemies = 50;
 const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "Wolf"};
 const char ENEMY_SYMBOLS[] = {'G', 'U', 'T', 'O', 'B', 'W'};
 
-
-
 std::vector<Enemy::Loot> loot;
 
 WINDOW *map_window;

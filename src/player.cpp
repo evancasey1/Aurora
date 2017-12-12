@@ -172,7 +172,8 @@ void Player::userCreatePlayer()
 	//TODO:
 	//	Attribute selection
 	int chosen_index = 0;
-	const char *options[] = {"Human", "Elf", "Dwarf"};
+	std::string options[3] = {"Rogue", "Swordsman", "Warrior"};
+	std::string descriptions[3] = {"Rogue description", "Swordsman description", "Warrior description"};
 	int horiz_pad = (int) ((COLS/2)-10);
 	int vert_pad = 3;
 	int ch = 0;
@@ -183,15 +184,18 @@ void Player::userCreatePlayer()
 	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
+		move(vert_pad + 25, horiz_pad);
+		clrtoeol();
+		printw(descriptions[chosen_index].c_str());
 		for (int i = 0; i < 3; i++) {
 			move(vert_pad + i + 11, horiz_pad);
 			clrtoeol();
 			if (i != chosen_index) {
-				addstr(options[i]);
+				addstr(options[i].c_str());
 			}
 			else {
 				attron(A_STANDOUT);
-				addstr(options[i]);
+				addstr(options[i].c_str());
 				attroff(A_STANDOUT);	
 			}
 		}
