@@ -250,7 +250,14 @@ void Player::printStatus(WINDOW *player_window)
 {
 	wmove(player_window, 0, 0);
 	wclrtoeol(player_window);
-	wprintw(player_window, "Health: %d/%d \nLevel: %d        XP: %d/%d\n", this->current_health, this->current_total_health, this->level, this->current_xp, this->current_xp_cap);
+	wprintw(player_window, "Health: ");
+	//If health is below a certain threshold display it in red
+	if (this->current_health <= (int)(0.25 * this->current_total_health)) {
+		wattron(player_window, COLOR_PAIR(5));
+	}
+	wprintw(player_window, "%d/%d\n", this->current_health, this->current_total_health);
+	wattroff(player_window, COLOR_PAIR(5));
+	wprintw(player_window, "Level: %d        XP: %d/%d\n", this->level, this->current_xp, this->current_xp_cap);
 	wrefresh(player_window);
 }
 
