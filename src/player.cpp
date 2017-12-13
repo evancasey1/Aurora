@@ -38,12 +38,11 @@ Player::Player()
 	this->max_inventory_index = 1;
 }
 
-void Player::eatFood(Food *food, WINDOW *player_status_window) {
-	this->current_health += food->initial_health_gain;
+void Player::eatFood(Food *food_item, WINDOW *player_status_window) {
+	this->current_health += food_item->initial_health_gain;
 	if (this->current_health > this->current_total_health) {
 		this->current_health = this->current_total_health;
 	}
-
 	this->printStatus(player_status_window);
 	return;
 }
@@ -63,7 +62,7 @@ void Player::printInventory(WINDOW *inv_window, int index)
 	if (this->inventory_index == 0) {
 		std::vector<Weapon>::iterator iter;
 		wattron(inv_window, A_BOLD);
-		wprintw(inv_window, "WEAPONS\n");
+		wprintw(inv_window, "WEAPONS ->\n");
 		wattroff(inv_window, A_BOLD);
 		if (this->inventory.weapons.size() == 0) {
 			wprintw(inv_window, "<EMPTY>");
@@ -86,7 +85,7 @@ void Player::printInventory(WINDOW *inv_window, int index)
 	else if (this->inventory_index == 1) {
 		std::vector<Food>::iterator iter;
 		wattron(inv_window, A_BOLD);
-		wprintw(inv_window, "FOOD\n");
+		wprintw(inv_window, "<- FOOD\n");
 		wattroff(inv_window, A_BOLD);
 		if (this->inventory.food.size() == 0) {
 			wprintw(inv_window, "<EMPTY>");
@@ -155,6 +154,8 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window)
 				}
 				else if (this->inventory_index == 1 && this->inventory.food.size() > 0) {
 					this->eatFood(&this->inventory.food.at(index), player_status_window);
+					this->inventory.food.erase(this->inventory.food.begin() + index);
+					index = 0;
 				}
 				break;
 			case 'e':
@@ -173,7 +174,9 @@ void Player::userCreatePlayer()
 	//	Attribute selection
 	int chosen_index = 0;
 	std::string options[3] = {"Rogue", "Swordsman", "Warrior"};
-	std::string descriptions[3] = {"Rogue description", "Swordsman description", "Warrior description"};
+	std::string descriptions[3] = {"Rogue description", 
+								   "Swordsman description", 
+								   "Warrior description"};
 	int horiz_pad = (int) ((COLS/2)-10);
 	int vert_pad = 3;
 	int ch = 0;
@@ -184,7 +187,7 @@ void Player::userCreatePlayer()
 	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
-		move(vert_pad + 25, horiz_pad);
+		move(vert_pad + 25, horiz_pad - 10);
 		clrtoeol();
 		printw(descriptions[chosen_index].c_str());
 		for (int i = 0; i < 3; i++) {
