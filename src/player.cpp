@@ -109,7 +109,7 @@ void Player::printInventory(WINDOW *inv_window, int index)
 	
 }
 
-void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window)
+void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, WINDOW *alert_win)
 {
 	int ch;
 	int index = 0;
@@ -151,6 +151,8 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window)
 					temp = weapon_vect->at(index);
 					weapon_vect->at(index) = *this->primary_weapon;
 					this->setPrimaryWeapon(temp);
+					wprintw(alert_win, "Equipped %s\n", (this->primary_weapon->name).c_str());
+					wrefresh(alert_win);
 				}
 				else if (this->inventory_index == 1 && this->inventory.food.size() > 0) {
 					this->eatFood(&this->inventory.food.at(index), player_status_window);
