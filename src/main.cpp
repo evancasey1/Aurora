@@ -22,6 +22,10 @@ const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
 const int NUM_ENEMY_TYPES = 5;
+bool is_daytime = true;
+int day_turns = 20;
+int night_turns = 10;
+int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
 
@@ -360,6 +364,19 @@ void mainGameLoop(Player *player, Map *map)
 				break;
 		}
 		if (player->used_moves == player->allowed_moves) {
+			turn_counter++;
+			if (is_daytime && turn_counter > day_turns) {
+				is_daytime = false;
+				turn_counter = 0;
+				wprintw(alert_window, "Night is falling.\n");
+				wrefresh(alert_window);
+			}
+			else if (!is_daytime && turn_counter > night_turns) {
+				is_daytime = true;
+				turn_counter = 0;
+				wprintw(alert_window, "The sun rises.\n");
+				wrefresh(alert_window);
+			}
 			enemyEvents(player, map, &enemies);
 			player->used_moves = 0;
 			map->printPlayerInfo(*player, map_window);
