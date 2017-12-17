@@ -56,7 +56,9 @@ void Player::setPrimaryWeapon(Weapon weapon)
 //Some sort of generic pointer would be very useful
 void Player::printInventory(WINDOW *inv_window, int index) 
 {
+	WINDOW *item_description_window = newwin(30, 30, 22, 60);
 	wclear(inv_window);
+	//wclear(item_description_window2);
 	int counter = 0;
 
 	if (this->inventory_index == 0) {
@@ -68,6 +70,9 @@ void Player::printInventory(WINDOW *inv_window, int index)
 			wprintw(inv_window, "<EMPTY>");
 		}
 		else {
+			wclrtoeol(item_description_window);
+			wprintw(item_description_window, "Attack: %d - %d\n", this->inventory.weapons.at(index).attack_power, this->inventory.weapons.at(index).attack_power + this->inventory.weapons.at(index).attack_power_range);
+			wrefresh(item_description_window);
 			for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
 				if (counter == index) {
 					wattron(inv_window, A_STANDOUT);
