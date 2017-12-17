@@ -11,6 +11,11 @@ class Player
 		struct Inventory {
 			std::vector<Weapon> weapons;
 			std::vector<Food> food;
+
+			int weapon_capacity;
+			int food_capacity;
+			int weapon_count;
+			int food_count;
 		};
 
 		Player();

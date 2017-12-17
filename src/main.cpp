@@ -211,26 +211,32 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 				//TODO:
 				//	More intuitive "index saving" for lack of a better term.
 				//	Delete the values in the true loot vector as well.
-			
-				deletion_counter = 0;
-				loot_iter = loot_at_loc.begin();
-				while (deletion_counter != current_total_index) {
-					loot_iter++;
-					deletion_counter++;
+				if (player->inventory.weapon_count == player->inventory.weapon_capacity) {
+					wprintw(alert_window, "Insufficient space in weapon pouch\n");
+					wrefresh(alert_window);
 				}
-				player->inventory.weapons.push_back(loot_at_loc.at(current_vect_index).weapons.at(current_item_index));
-				loot_iter->weapons.erase(loot_iter->weapons.begin() + current_item_index);
-				if (loot_iter->weapons.size() == 0) {
-					loot_at_loc.erase(loot_iter);
+				else {
+					deletion_counter = 0;
+					loot_iter = loot_at_loc.begin();
+					while (deletion_counter != current_total_index) {
+						loot_iter++;
+						deletion_counter++;
+					}
+					player->inventory.weapons.push_back(loot_at_loc.at(current_vect_index).weapons.at(current_item_index));
+					player->inventory.weapon_count++;
+					loot_iter->weapons.erase(loot_iter->weapons.begin() + current_item_index);
+					if (loot_iter->weapons.size() == 0) {
+						loot_at_loc.erase(loot_iter);
+					}
+					if (loot_at_loc.size() == 0) {
+						wclear(inventory_window);
+						wrefresh(inventory_window);
+						return;
+					}
+					current_item_index = 0;
+					current_vect_index = 0;
+					current_total_index = 0;
 				}
-				if (loot_at_loc.size() == 0) {
-					wclear(inventory_window);
-					wrefresh(inventory_window);
-					return;
-				}
-				current_item_index = 0;
-				current_vect_index = 0;
-				current_total_index = 0;
 				break;
 			case 'l': case 'e':
 				wclear(inventory_window);

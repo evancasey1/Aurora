@@ -12,6 +12,10 @@ Player::Player()
 	for (int i = 0; i < 3; i++) {
 		this->inventory.food.push_back(*start_food);
 	}
+	this->inventory.food_capacity = 3;
+	this->inventory.weapon_capacity = 3;
+	this->inventory.weapon_count = 0;
+	this->inventory.food_count = 0;
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
