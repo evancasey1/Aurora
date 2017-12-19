@@ -185,11 +185,12 @@ void Player::userCreatePlayer()
 	//	Attribute selection
 	int chosen_index = 0;
 	std::string options[3] = {"Rogue", "Swordsman", "Warrior"};
-	std::string descriptions[3] = {"Rogue description", 
-								   "Swordsman description", 
-								   "Warrior description"};
+	std::string descriptions[3] = {"The Rogue strikes swiftly and relies on shadows for concealment to compensate   for weak constitution.", 
+								   "The Swordsman is a balanced fighter,    well suited for bladed weapons and      medium armor.", 
+								   "The Warrior is a tanky brute that       specializes in blunt force weapons and  heavy armor."};
 	int horiz_pad = (int) ((COLS/2)-10);
 	int vert_pad = 3;
+	WINDOW *player_description_window = newwin(30, 40, vert_pad + 25, horiz_pad - 10);
 	int ch = 0;
 	
 	attron(A_BOLD);
@@ -198,9 +199,9 @@ void Player::userCreatePlayer()
 	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
-		move(vert_pad + 25, horiz_pad - 10);
-		clrtoeol();
-		printw(descriptions[chosen_index].c_str());
+		wclear(player_description_window);
+		wprintw(player_description_window, "%s", descriptions[chosen_index].c_str());
+		wrefresh(player_description_window);
 		for (int i = 0; i < 3; i++) {
 			move(vert_pad + i + 11, horiz_pad);
 			clrtoeol();
@@ -231,6 +232,7 @@ void Player::userCreatePlayer()
 	this->race = options[chosen_index];
 	clear();
 	refresh();
+	free(player_description_window);
 }
 
 void Player::gainExp(int xp, WINDOW *alert_win) 
