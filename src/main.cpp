@@ -145,12 +145,16 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc)
 
 //There is probably a more efficient way to handle deletion. 
 //Will worry about that later, after I nail down a way to do it at all
+//Will be really important to clean up this function later for readability 
+//	Have to break it down in a smaller, more modular fashion
+
 void manageLoot(Player *player, int loot_row, int loot_col) {
 	int ch;
 	std::vector<int> loot_indices;
 	std::vector<Enemy::Loot> loot_at_loc;
 	std::vector<Enemy::Loot>::iterator loot_iter;
 	std::vector<Equipment> equipment_at_loc;
+	std::vector<Equipment>::iterator equipment_iter;
 
 	std::string obj_name;
 	int current_item_index = 0;
@@ -213,23 +217,18 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 				}
 				break;
 			case KEY_ENTER: case '\n':
-				//Temporary. Need to figure out how to check for type
-				//of object and react accordingly
-				//Only handles weapons right now
-				//TODO:
-				//	More intuitive "index saving" for lack of a better term.
 				//	Delete the values in the true loot vector as well.
-				endwin();
-				std::cout << "item_index: " << current_item_index << "\nvect_index: " << current_vect_index << "\ntotal_index: " << current_total_index << std::endl;
-				std::cout << equipment_at_loc.at(current_total_index).equipment_id << std::endl;
 				loot_iter = loot_at_loc.begin();
-				while (std::distance(loot_at_loc.begin(), loot_iter) < current_total_index) {
+				equipment_iter = equipment_at_loc.begin();
+				while (std::distance(loot_at_loc.begin(), loot_iter) < current_vect_index) {
 					loot_iter++;
+				}
+				while (std::distance(equipment_at_loc.begin(), equipment_iter) < current_total_index) {
+					equipment_iter++;
 				}
 
 				//WEAPON
 				if (equipment_at_loc.at(current_total_index).equipment_id == 0) {
-					std::cout << "Weapon\n";
 					if (player->inventory.weapon_count == player->inventory.weapon_capacity) {
 						wprintw(alert_window, "Insufficient space in weapon pouch\n");
 						wrefresh(alert_window);
@@ -237,18 +236,16 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 					else {
 						player->inventory.weapons.push_back(loot_at_loc.at(current_vect_index).weapons.at(current_item_index));
 						player->inventory.weapon_count++;
-
 						loot_iter->weapons.erase(loot_iter->weapons.begin() + current_item_index);
 						if (loot_iter->weapons.size() == 0) {
 							loot_at_loc.erase(loot_iter);
 						}
 						loot_indices.at(current_vect_index)--;
-						equipment_at_loc.erase(equipment_at_loc.begin() + current_item_index);
+						equipment_at_loc.erase(equipment_iter);
 					}
 				}
 				//FOOD
 				else if (equipment_at_loc.at(current_total_index).equipment_id == 1) {
-					std::cout << "Food\n";
 					if (player->inventory.food_count == player->inventory.food_capacity) {
 						wprintw(alert_window, "Insufficient space in food reserves\n");
 						wrefresh(alert_window);
@@ -256,17 +253,18 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 					else {
 						player->inventory.food.push_back(loot_at_loc.at(current_vect_index).food.at(current_item_index));
 						player->inventory.food_count++;
-
 						loot_iter->food.erase(loot_iter->food.begin() + current_item_index);
 						if (loot_iter->food.size() == 0) {
 							loot_at_loc.erase(loot_iter);
 						}
 						loot_indices.at(current_vect_index)--;
-						equipment_at_loc.erase(equipment_at_loc.begin() + current_item_index);
+						equipment_at_loc.erase(equipment_iter);
 					}
 				}
-				std::cout << std::endl;
 
+				if (loot_indices.at(current_vect_index) == 0) {
+					loot_indices.erase(loot_indices.begin() + current_vect_index);
+				}
 				current_item_index = 0;
 				current_vect_index = 0;
 				current_total_index = 0;
