@@ -1,7 +1,9 @@
 #ifndef WEAPON_H
 #define WEAPON_H
+#include "equipment.h"
 
-class Weapon {
+class Weapon : public Equipment 
+{
 	public:
 		Weapon();
 		Weapon(std::string name, int attack_power, int attack_power_range);

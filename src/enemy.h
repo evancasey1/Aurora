@@ -1,6 +1,7 @@
 #include <string>
 #include "weapon.h"
 #include "food.h"
+#include "equipment.h"
 #ifndef ENEMY_H
 #define ENEMY_H
 

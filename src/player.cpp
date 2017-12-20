@@ -19,7 +19,7 @@ Player::Player()
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
-	this->base_total_health = 50;
+	this->base_total_health = 5000;
 	this->current_total_health = this->base_total_health;
 	this->current_health = this->base_total_health;
 	this->speed = 2.0;
@@ -48,6 +48,7 @@ void Player::eatFood(Food *food_item, WINDOW *player_status_window) {
 		this->current_health = this->current_total_health;
 	}
 	this->printStatus(player_status_window);
+	this->inventory.food_count--;
 	return;
 }
 
