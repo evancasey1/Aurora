@@ -59,11 +59,10 @@ void Player::setPrimaryWeapon(Weapon weapon)
 
 //Need to find a more elegant solution and not be repetitive within the loop
 //Some sort of generic pointer would be very useful
-void Player::printInventory(WINDOW *inv_window, int index) 
+void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_description_window) 
 {
-	WINDOW *item_description_window = newwin(30, 30, 22, 60);
 	wclear(inv_window);
-	//wclear(item_description_window2);
+	wclear(item_description_window);
 	int counter = 0;
 
 	if (this->inventory_index == 0) {
@@ -125,9 +124,10 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 	int index = 0;
 	Weapon temp;
 	std::vector<Weapon> *weapon_vect;
+	WINDOW *item_description_window = newwin(30, 30, 22, 60);
 	while (true) {
 		//temp = NULL;
-		printInventory(inv_window, index);
+		printInventory(inv_window, index, item_description_window);
 		ch = getch();
 		switch(ch) {
 			//player movement
@@ -148,11 +148,15 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 				if (this->inventory_index < this->max_inventory_index) {
 					this->inventory_index++;
 					index = 0;
+					wclear(item_description_window);
+					wrefresh(item_description_window);
 				}
 				break;
 			case KEY_LEFT:
 				if (this->inventory_index > 0) {
 					this->inventory_index--;
+					wclear(item_description_window);
+					wrefresh(item_description_window);
 				}
 				break;
 			case KEY_ENTER: case '\n':
@@ -172,7 +176,9 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 				break;
 			case 'e':
 				wclear(inv_window);
+				wclear(item_description_window);
 				wrefresh(inv_window);
+				wrefresh(item_description_window);
 				return;
 			default:
 				break;
