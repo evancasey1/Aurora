@@ -160,14 +160,11 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 	int current_item_index = 0;
 	int current_vect_index = 0;
 	int current_total_index = 0;
-	int total_size = 0;
 	int combined_size = 0;
 
 	for (int i = 0; i < loot.size(); i++) {
 		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
-			total_size++;
 			combined_size = (loot.at(i).weapons.size() + loot.at(i).food.size()) - 1;
-			total_size += combined_size;
 			loot_indices.push_back(combined_size);
 			loot_at_loc.push_back(loot.at(i));
 		}
@@ -217,7 +214,7 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 				}
 				break;
 			case KEY_ENTER: case '\n':
-				//	Delete the values in the true loot vector as well.
+				//	TODO: Delete the values in the true loot vector as well.
 				loot_iter = loot_at_loc.begin();
 				equipment_iter = equipment_at_loc.begin();
 				while (std::distance(loot_at_loc.begin(), loot_iter) < current_vect_index) {
@@ -262,7 +259,7 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 					}
 				}
 
-				if (loot_indices.at(current_vect_index) == 0) {
+				if (loot_indices.at(current_vect_index) == -1) {
 					loot_indices.erase(loot_indices.begin() + current_vect_index);
 				}
 				current_item_index = 0;
