@@ -75,7 +75,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 		}
 		else {
 			wclrtoeol(item_description_window);
-			wprintw(item_description_window, "Attack: %d - %d\n", this->inventory.weapons.at(index).attack_power, this->inventory.weapons.at(index).attack_power + this->inventory.weapons.at(index).attack_power_range);
+			wprintw(item_description_window, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->inventory.weapons.at(index).attack_power, this->inventory.weapons.at(index).attack_power + this->inventory.weapons.at(index).attack_power_range, this->inventory.weapons.at(index).accuracy, this->inventory.weapons.at(index).crit_chance);
 			wrefresh(item_description_window);
 			for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
 				if (counter == index) {
@@ -100,6 +100,9 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 			wprintw(inv_window, "<EMPTY>");
 		}
 		else {
+			wclrtoeol(item_description_window);
+			wprintw(item_description_window, "Health Gain: %d\nHeal Over Time: %d:%d:%d", this->inventory.food.at(index).initial_health_gain, this->inventory.food.at(index).health_gain_per_trigger, this->inventory.food.at(index).total_triggers, this->inventory.food.at(index).turns_until_trigger);
+			wrefresh(item_description_window);
 			for (iter = this->inventory.food.begin(); iter != this->inventory.food.end();) {
 				if (counter == index) {
 					wattron(inv_window, A_STANDOUT);
