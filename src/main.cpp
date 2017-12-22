@@ -101,8 +101,9 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	wrefresh(alert_window);
 }
 
-void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc) 
+void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *item_description_window) 
 {
+	wclear(item_description_window);
 	wclear(inventory_window);
 	int counter = 0;
 
@@ -126,6 +127,7 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc)
 			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
 				wprintw(inventory_window, "> [%d] %s\n", counter, (weapon_iter->name).c_str());
 				if (counter == item_index) {
+					wprintw(item_description_window, "%s\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", (weapon_iter->name).c_str(), weapon_iter->attack_power, weapon_iter->attack_power + weapon_iter->attack_power_range, weapon_iter->accuracy, weapon_iter->crit_chance);
 					wattroff(inventory_window, A_STANDOUT);
 				}
 				counter++;
@@ -133,13 +135,14 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc)
 			for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
 				wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
 				if (counter == item_index) {
+					wprintw(item_description_window, "%s\nHealth Gain: %d\nHeal Over Time: %d:%d:%d", (food_iter->name).c_str(), food_iter->initial_health_gain, food_iter->health_gain_per_trigger, food_iter->total_triggers, food_iter->turns_until_trigger);
 					wattroff(inventory_window, A_STANDOUT);
 				}
 				counter++;
 			}
-			
 		}
 	}
+	wrefresh(item_description_window);
 	wrefresh(inventory_window);
 }
 
@@ -155,6 +158,7 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 	std::vector<Enemy::Loot>::iterator loot_iter;
 	std::vector<Equipment> equipment_at_loc;
 	std::vector<Equipment>::iterator equipment_iter;
+	WINDOW *item_description_window = newwin(30, 30, 22, 60);
 
 	std::string obj_name;
 	int current_item_index = 0;
@@ -183,7 +187,7 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 	}
 
 	while(true) {
-		printLoot(current_total_index, &loot_at_loc);
+		printLoot(current_total_index, &loot_at_loc, item_description_window);
 		ch = getch();
 		
 		switch(ch) {
