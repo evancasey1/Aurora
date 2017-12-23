@@ -40,6 +40,7 @@ WINDOW *alert_window;
 WINDOW *player_status_window;
 WINDOW *inventory_window;
 WINDOW *loot_window;
+WINDOW *power_status_window;
 
 const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
 									 "       :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+:   :+: :+: ",
@@ -76,6 +77,9 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 			wattroff(alert_window, COLOR_PAIR(6));
 			wattron(alert_window, COLOR_PAIR(5));
 			player->gainExp(enemy->XP, alert_window);
+			player->gainSouls(enemy->souls, alert_window);
+			wprintw(power_status_window, "SOULS: %d/%d", player->souls, player->souls_cap);
+			wrefresh(power_status_window);
 		}
 	}
 	else {
@@ -372,6 +376,8 @@ void mainGameLoop(Player *player, Map *map)
 	map->printPlayerInfo(*player, map_window);
 	map->printMap(player, player->vision, enemies, loot, map_window);
 	player->printStatus(player_status_window);
+	wprintw(power_status_window, "SOULS: %d/%d", player->souls, player->souls_cap);
+	wrefresh(power_status_window);
 
 	while (true) {
 		ch = getch();
@@ -529,7 +535,7 @@ int main(int argc, char *argv[])
 	int map_height = 30, map_width = 50;
 	int com_height = 14, com_width = 50;
 	int ps_height  = 2 , ps_width = map_width + com_width;
-	int inv_height = 30, inv_width = 50;
+	int inv_height = 20, inv_width = 30;
 	int inv_row = 22, inv_col = MAP_HORIZONTAL_PADDING;
 
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
@@ -537,7 +543,8 @@ int main(int argc, char *argv[])
 	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
 	inventory_window = newwin(inv_height, inv_width, inv_row, inv_col);
 	loot_window = newwin(inv_height, inv_width, inv_row, inv_col);
-	
+	power_status_window = newwin(1, 30, 50, MAP_HORIZONTAL_PADDING);
+
 	scrollok(alert_window, true);
 	scrollok(inventory_window, true);
 	scrollok(loot_window, true);

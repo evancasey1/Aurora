@@ -28,6 +28,7 @@ class Player
 		void printStatus(WINDOW *player_window);
 		int computeAttackPower();
 		void gainExp(int xp, WINDOW *p_window);
+		void gainSouls(int souls_to_gain, WINDOW *p_window);
 		void printInventory(WINDOW *inv_window, int index, WINDOW *item_window);
 		void manageInventory(WINDOW *inv_window, WINDOW *player_window, WINDOW *alert_win);
 		void setPrimaryWeapon(Weapon weapon);
@@ -53,6 +54,8 @@ class Player
 		int col;
 		int inventory_index;
 		int max_inventory_index;
+		int souls;
+		int souls_cap;
 
 		int passive_health_regen_counter;   //count of number of moves. Rolls back to 0 when equal to trigger.
 		int passive_health_regen_trigger;   //number of moves before passive health regeneration happens

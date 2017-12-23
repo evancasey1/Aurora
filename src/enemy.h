@@ -32,6 +32,7 @@ class Enemy
 		void deathEvents(std::vector<Enemy::Loot> *loot, WINDOW *win);
 
 		int row;
+		int souls;
 		int col;
 		int lifespan;
 		int vision;

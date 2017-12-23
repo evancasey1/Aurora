@@ -40,6 +40,8 @@ Player::Player()
 	this->passive_health_regen_amount = 1;
 	this->inventory_index = 0;
 	this->max_inventory_index = 1;
+	this->souls_cap = 10;
+	this->souls = 0;
 }
 
 void Player::eatFood(Food *food_item, WINDOW *player_status_window) {
@@ -243,6 +245,21 @@ void Player::userCreatePlayer()
 	clear();
 	refresh();
 	free(player_description_window);
+}
+
+
+void Player::gainSouls(int souls_to_gain, WINDOW *alert_win)
+{
+	this->souls += souls_to_gain;
+	if (this->souls > souls_cap) {
+		this->souls = souls_cap;
+	}
+	wattroff(alert_win, COLOR_PAIR(5));
+	wattron(alert_win, COLOR_PAIR(6));
+	wprintw(alert_win, "Acquired %d souls.\n", souls_to_gain);
+	wrefresh(alert_win);
+	wattroff(alert_win, COLOR_PAIR(6));
+	wattron(alert_win, COLOR_PAIR(5));
 }
 
 void Player::gainExp(int xp, WINDOW *alert_win) 
