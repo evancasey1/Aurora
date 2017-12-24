@@ -51,6 +51,17 @@ const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::
 									 "###     ###  ########  ###    ###  ########  ###    ### ###     ###    "};
 /* End Globals */ 
 
+void printSouls(Player *player) 
+{
+	wclear(power_status_window);
+	if (player->souls == player->souls_cap) {
+		wattron(power_status_window, COLOR_PAIR(8));
+	}
+	wprintw(power_status_window, "SOULS: %d/%d", player->souls, player->souls_cap);
+	wrefresh(power_status_window);
+	wattroff(power_status_window, COLOR_PAIR(8));
+}
+
 void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
 	//TODO:
@@ -76,10 +87,9 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 			wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
 			wattroff(alert_window, COLOR_PAIR(6));
 			wattron(alert_window, COLOR_PAIR(5));
+			printSouls(player);
 			player->gainExp(enemy->XP, alert_window);
 			player->gainSouls(enemy->souls, alert_window);
-			wprintw(power_status_window, "SOULS: %d/%d", player->souls, player->souls_cap);
-			wrefresh(power_status_window);
 		}
 	}
 	else {
@@ -376,8 +386,7 @@ void mainGameLoop(Player *player, Map *map)
 	map->printPlayerInfo(*player, map_window);
 	map->printMap(player, player->vision, enemies, loot, map_window);
 	player->printStatus(player_status_window);
-	wprintw(power_status_window, "SOULS: %d/%d", player->souls, player->souls_cap);
-	wrefresh(power_status_window);
+	printSouls(player);
 
 	while (true) {
 		ch = getch();
@@ -517,6 +526,7 @@ int main(int argc, char *argv[])
 	start_color();
 
 	// START COLORS //
+	init_pair(8, COLOR_YELLOW, COLOR_BLACK);//full souls
 	init_pair(7, COLOR_CYAN, COLOR_BLACK);  //Level up
 	init_pair(6, COLOR_GREEN, COLOR_BLACK); //XP gain
 	init_pair(5, COLOR_RED, COLOR_BLACK);   //enemy alert: MAIN

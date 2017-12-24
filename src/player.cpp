@@ -318,8 +318,11 @@ int Player::computeAttackPower() {
 	if (crit_chance >= chance_to_crit) {
 		power *= 2;
 	}
+	if (this->souls == this->souls_cap) {
+		power *= 1.15;
+	}
 	if(acc >= chance_to_hit) {
-		return power;
+		return (int) power;
 	}
 	return 0;
 }

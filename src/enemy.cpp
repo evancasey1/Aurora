@@ -23,7 +23,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->accuracy = 0.5;
 	this->XP = 30;
 	this->loot_drop_chance = 1;
-	this->souls = 2;
+	this->souls = 1;
 
 	int e_row = 0;
 	int e_col = 0;
