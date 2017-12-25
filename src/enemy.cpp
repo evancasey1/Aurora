@@ -22,7 +22,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->seek_moves = 1;
 	this->accuracy = 0.5;
 	this->XP = 30;
-	this->loot_drop_chance = 1;
+	this->loot_drop_chance = 0.6;
 	this->souls = 1;
 	this->number_drops_possible = 2;
 
@@ -86,17 +86,14 @@ int Enemy::computeAttackPower() {
 void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 	//Loot calculations
 	double loot_chance_roll;
+	bool dropped = false;
+	Loot *obj = new Loot();
 	for (int i = 0; i < this->number_drops_possible; i++) {
 		loot_chance_roll  = ((double) rand() / RAND_MAX);
 		if (this->loot_drop_chance >= loot_chance_roll) {
 			//Generate loot
 			//Drop loot on map
-			wattroff(alert_win, COLOR_PAIR(5));
-			wattron(alert_win, COLOR_PAIR(6));
-			wprintw(alert_win, "%s dropped loot.\n", (this->name).c_str());
-			wattroff(alert_win, COLOR_PAIR(6));
-			wattron(alert_win, COLOR_PAIR(5));
-			Loot *obj = new Loot();
+			dropped = true;
 			obj->row = this->row;
 			obj->col = this->col;
 			obj->dropped_by = this->name;
@@ -108,8 +105,15 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 			else {
 				obj->weapons.push_back(*(new Weapon()));
 			}
-			loot->push_back(*obj);
 		}
+	}
+	if (dropped) {
+		wattroff(alert_win, COLOR_PAIR(5));
+		wattron(alert_win, COLOR_PAIR(6));
+		wprintw(alert_win, "%s dropped loot.\n", (this->name).c_str());
+		wattroff(alert_win, COLOR_PAIR(6));
+		wattron(alert_win, COLOR_PAIR(5));
+		loot->push_back(*obj);
 	}
 	wrefresh(alert_win);
 }
