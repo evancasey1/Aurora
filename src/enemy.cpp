@@ -24,6 +24,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->XP = 30;
 	this->loot_drop_chance = 1;
 	this->souls = 1;
+	this->number_drops_possible = 2;
 
 	int e_row = 0;
 	int e_col = 0;
@@ -84,28 +85,31 @@ int Enemy::computeAttackPower() {
 
 void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 	//Loot calculations
-	double loot_chance_roll  = ((double) rand() / RAND_MAX);
-	if (this->loot_drop_chance >= loot_chance_roll) {
-		//Generate loot
-		//Drop loot on map
-		wattroff(alert_win, COLOR_PAIR(5));
-		wattron(alert_win, COLOR_PAIR(6));
-		wprintw(alert_win, "%s dropped loot.\n", (this->name).c_str());
-		wattroff(alert_win, COLOR_PAIR(6));
-		wattron(alert_win, COLOR_PAIR(5));
-		Loot *obj = new Loot();
-		obj->row = this->row;
-		obj->col = this->col;
-		obj->dropped_by = this->name;
-		
-		if (this->name == "Wolf") {
-			//Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers);
-			obj->food.push_back(*(new Food("Wolf Meat", 4, 1, 5, 3)));
+	double loot_chance_roll;
+	for (int i = 0; i < this->number_drops_possible; i++) {
+		loot_chance_roll  = ((double) rand() / RAND_MAX);
+		if (this->loot_drop_chance >= loot_chance_roll) {
+			//Generate loot
+			//Drop loot on map
+			wattroff(alert_win, COLOR_PAIR(5));
+			wattron(alert_win, COLOR_PAIR(6));
+			wprintw(alert_win, "%s dropped loot.\n", (this->name).c_str());
+			wattroff(alert_win, COLOR_PAIR(6));
+			wattron(alert_win, COLOR_PAIR(5));
+			Loot *obj = new Loot();
+			obj->row = this->row;
+			obj->col = this->col;
+			obj->dropped_by = this->name;
+			
+			if (this->name == "Wolf") {
+				//Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers);
+				obj->food.push_back(*(new Food("Wolf Meat", 4, 1, 5, 3)));
+			}
+			else {
+				obj->weapons.push_back(*(new Weapon()));
+			}
+			loot->push_back(*obj);
 		}
-		else {
-			obj->weapons.push_back(*(new Weapon()));
-		}
-		loot->push_back(*obj);
 	}
 	wrefresh(alert_win);
 }

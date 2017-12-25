@@ -47,6 +47,7 @@ class Enemy
 		bool alert_player;
 		char symbol;
 		double loot_drop_chance;
+		int number_drops_possible;
 		std::string name;
 
 		struct Equipment {
