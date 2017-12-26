@@ -133,12 +133,11 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 			wattron(inventory_window, A_BOLD);
 			wprintw(inventory_window, "%s\n", (loot_iter->dropped_by).c_str());
 			wattroff(inventory_window, A_BOLD);
-
-			if (counter == item_index) {
-				wattron(inventory_window, A_STANDOUT);
-			}
 			
 			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
+				if (counter == item_index) {
+					wattron(inventory_window, A_STANDOUT);
+				}
 				wprintw(inventory_window, "> [%d] %s\n", counter, (weapon_iter->name).c_str());
 				if (counter == item_index) {
 					wprintw(item_description_window, "%s\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", (weapon_iter->name).c_str(), weapon_iter->attack_power, weapon_iter->attack_power + weapon_iter->attack_power_range, weapon_iter->accuracy, weapon_iter->crit_chance);
@@ -147,6 +146,9 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 				counter++;
 			}
 			for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
+				if (counter == item_index) {
+					wattron(inventory_window, A_STANDOUT);
+				}
 				wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
 				if (counter == item_index) {
 					wprintw(item_description_window, "%s\nHealth Gain: %d\nHeal Over Time: %d:%d:%d", (food_iter->name).c_str(), food_iter->initial_health_gain, food_iter->health_gain_per_trigger, food_iter->total_triggers, food_iter->turns_until_trigger);
