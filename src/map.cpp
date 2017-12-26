@@ -44,7 +44,7 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, std::
 {
 	//TODO:
 	//	reduce flicker
-
+	wclear(map_window);
 	wmove(map_window, 2, 0);
 	char to_add;
 	int row_max = player->row + vision + 1;
@@ -89,15 +89,7 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, std::
 		}
 		count++;
 		wprintw(map_window, "\n");
-		if (player->row + vision > this->size - 1) {
-			wmove(map_window, player->row + vision, 0);
-			wclrtoeol(map_window);
-		}
-		else if (player->row - vision < 0) {
-			wmove(map_window, player->col - vision, 0);
-			wclrtoeol(map_window);
-		}
-		
-		wrefresh(map_window);
 	}
+	printPlayerInfo(*player, map_window);
+	wrefresh(map_window);
 }

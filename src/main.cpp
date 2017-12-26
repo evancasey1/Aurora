@@ -18,7 +18,7 @@
 
 /* Begin globals */
 const int MAP_SIZES[3] = {50, 100, 150};
-const int MAP_VERTICAL_PADDING = 3;
+const int MAP_VERTICAL_PADDING = 4;
 const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
