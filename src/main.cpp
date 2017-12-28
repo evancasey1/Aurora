@@ -18,14 +18,14 @@
 
 /* Begin globals */
 const int MAP_SIZES[3] = {50, 100, 150};
-const int MAP_VERTICAL_PADDING = 4;
+const int MAP_VERTICAL_PADDING = 3;
 const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
 const int NUM_ENEMY_TYPES = 6;
 bool is_daytime = true;
-int day_turns = 20;
-int night_turns = 10;
+int day_turns = 70;
+int night_turns = 30;
 int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
@@ -41,6 +41,8 @@ WINDOW *player_status_window;
 WINDOW *inventory_window;
 WINDOW *loot_window;
 WINDOW *power_status_window;
+WINDOW *item_description_window;
+
 
 const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
 									 "       :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+:   :+: :+: ",
@@ -162,20 +164,89 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 	wrefresh(inventory_window);
 }
 
+void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect_index, int current_item_index, std::vector<Equipment> *equipment_at_loc, std::vector<Enemy::Loot> *loot_at_loc, std::vector<int> *loot_indices) 
+{
+	//	TODO: Delete the values in the true loot vector as well.
+	std::vector<Enemy::Loot>::iterator loot_iter;
+	std::vector<Equipment>::iterator equipment_iter;
+
+	loot_iter = loot_at_loc->begin();
+	equipment_iter = equipment_at_loc->begin();
+	while (std::distance(loot_at_loc->begin(), loot_iter) < current_vect_index) {
+		loot_iter++;
+	}
+	while (std::distance(equipment_at_loc->begin(), equipment_iter) < current_total_index) {
+		equipment_iter++;
+	}
+
+	/*
+	CASE IF WEAPON
+	*/
+	if (equipment_at_loc->at(current_total_index).equipment_id == 0) {
+		if (player->inventory.weapon_count == player->inventory.weapon_capacity) {
+			wprintw(alert_window, "Insufficient space in weapon pouch\n");
+			wrefresh(alert_window);
+		}
+		else {
+			player->inventory.weapons.push_back(loot_at_loc->at(current_vect_index).weapons.at(current_item_index));
+			player->inventory.weapon_count++;
+			loot_iter->weapons.erase(loot_iter->weapons.begin() + current_item_index);
+			if (loot_iter->weapons.size() == 0) {
+				loot_at_loc->erase(loot_iter);
+			}
+			loot_indices->at(current_vect_index)--;
+			equipment_at_loc->erase(equipment_iter);
+		}
+	}
+	/*
+	CASE IF FOOD
+	*/
+	else if (equipment_at_loc->at(current_total_index).equipment_id == 1) {
+		if (player->inventory.food_count == player->inventory.food_capacity) {
+			wprintw(alert_window, "Insufficient space in food reserves\n");
+			wrefresh(alert_window);
+		}
+		else {
+			player->inventory.food.push_back(loot_at_loc->at(current_vect_index).food.at(current_item_index));
+			player->inventory.food_count++;
+			loot_iter->food.erase(loot_iter->food.begin() + current_item_index);
+			if (loot_iter->food.size() == 0) {
+				loot_at_loc->erase(loot_iter);
+			}
+			loot_indices->at(current_vect_index)--;
+			equipment_at_loc->erase(equipment_iter);
+		}
+	}
+
+	if (loot_indices->at(current_vect_index) == -1) {
+		loot_indices->erase(loot_indices->begin() + current_vect_index);
+	}
+	current_item_index = 0;
+	current_vect_index = 0;
+	current_total_index = 0;
+
+	if (loot_at_loc->size() == 0) {
+		wclear(inventory_window);
+		wrefresh(inventory_window);
+		return;
+	}
+}
+
 //There is probably a more efficient way to handle deletion. 
 //Will worry about that later, after I nail down a way to do it at all
 //Will be really important to clean up this function later for readability 
 //	Have to break it down in a smaller, more modular fashion
-
-void manageLoot(Player *player, int loot_row, int loot_col) {
+/*
+manageLoot:
+	This function will handle the picking up and dropping of loot from enemies. Picked-up loot should be deleted 
+	from the map and added to the player's inventory.
+*/
+void manageLoot(Player *player, int loot_row, int loot_col) 
+{
 	int ch;
 	std::vector<int> loot_indices;
 	std::vector<Enemy::Loot> loot_at_loc;
-	std::vector<Enemy::Loot>::iterator loot_iter;
 	std::vector<Equipment> equipment_at_loc;
-	std::vector<Equipment>::iterator equipment_iter;
-	WINDOW *item_description_window = newwin(30, 30, 22, 60);
-
 	std::string obj_name;
 	int current_item_index = 0;
 	int current_vect_index = 0;
@@ -234,63 +305,7 @@ void manageLoot(Player *player, int loot_row, int loot_col) {
 				}
 				break;
 			case KEY_ENTER: case '\n':
-				//	TODO: Delete the values in the true loot vector as well.
-				loot_iter = loot_at_loc.begin();
-				equipment_iter = equipment_at_loc.begin();
-				while (std::distance(loot_at_loc.begin(), loot_iter) < current_vect_index) {
-					loot_iter++;
-				}
-				while (std::distance(equipment_at_loc.begin(), equipment_iter) < current_total_index) {
-					equipment_iter++;
-				}
-
-				//WEAPON
-				if (equipment_at_loc.at(current_total_index).equipment_id == 0) {
-					if (player->inventory.weapon_count == player->inventory.weapon_capacity) {
-						wprintw(alert_window, "Insufficient space in weapon pouch\n");
-						wrefresh(alert_window);
-					}
-					else {
-						player->inventory.weapons.push_back(loot_at_loc.at(current_vect_index).weapons.at(current_item_index));
-						player->inventory.weapon_count++;
-						loot_iter->weapons.erase(loot_iter->weapons.begin() + current_item_index);
-						if (loot_iter->weapons.size() == 0) {
-							loot_at_loc.erase(loot_iter);
-						}
-						loot_indices.at(current_vect_index)--;
-						equipment_at_loc.erase(equipment_iter);
-					}
-				}
-				//FOOD
-				else if (equipment_at_loc.at(current_total_index).equipment_id == 1) {
-					if (player->inventory.food_count == player->inventory.food_capacity) {
-						wprintw(alert_window, "Insufficient space in food reserves\n");
-						wrefresh(alert_window);
-					}
-					else {
-						player->inventory.food.push_back(loot_at_loc.at(current_vect_index).food.at(current_item_index));
-						player->inventory.food_count++;
-						loot_iter->food.erase(loot_iter->food.begin() + current_item_index);
-						if (loot_iter->food.size() == 0) {
-							loot_at_loc.erase(loot_iter);
-						}
-						loot_indices.at(current_vect_index)--;
-						equipment_at_loc.erase(equipment_iter);
-					}
-				}
-
-				if (loot_indices.at(current_vect_index) == -1) {
-					loot_indices.erase(loot_indices.begin() + current_vect_index);
-				}
-				current_item_index = 0;
-				current_vect_index = 0;
-				current_total_index = 0;
-
-				if (loot_at_loc.size() == 0) {
-					wclear(inventory_window);
-					wrefresh(inventory_window);
-					return;
-				}
+				pickUpLootAtIndex(player, current_total_index, current_vect_index, current_item_index, &equipment_at_loc, &loot_at_loc, &loot_indices);
 				break;
 			case 'l': case 'e':
 				wclear(inventory_window);
@@ -503,26 +518,6 @@ Map* userCreateMap()
 
 int main(int argc, char *argv[]) 
 {
-	//ISSUE:
-	//	Rare segementation fault on player movement. 
-	//		Not able to reproduce
-	//		Seems to happen more at the edges of the map. 
-	//		Could be an issue with enemy spawns
-	//TODO:
-	//	At some point put map creation into the map class. Not vital, but would
-	//  make more sense for the organization and flow of the program
-	//	---
-	//	Add equipment class (food, supplies)
-	//	---
-	//	Add new window for combat. Yet to be determined how this will be laid out.
-	//  ---
-	//	Figure out what to do if 2 different enemies reach the player at the same time.
-	//	---
-	//	Implement enemy party system (I.E. A troop of 3 goblins with varying statlines)
-	//	---
-	//	Player attributes for greater customization over game experience
-	//	---
-	
 	Player player;
 	//Map map;
 	srand((int)time(0));
@@ -563,7 +558,8 @@ int main(int argc, char *argv[])
 	inventory_window = newwin(inv_height, inv_width, inv_row, inv_col);
 	loot_window = newwin(inv_height, inv_width, inv_row, inv_col);
 	power_status_window = newwin(1, 30, 50, MAP_HORIZONTAL_PADDING);
-
+	item_description_window = newwin(30, 30, 22, 60);
+	
 	scrollok(alert_window, true);
 	scrollok(inventory_window, true);
 	scrollok(loot_window, true);

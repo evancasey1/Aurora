@@ -26,6 +26,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 		this->idle_moves = 1;
 		this->seek_moves = 1;
 	}
+	
 	this->accuracy = 0.5;
 	this->XP = 30;
 	this->loot_drop_chance = 0.6;
@@ -175,7 +176,7 @@ void Enemy::idle(int map_size)
 
 void Enemy::seek(int p_row, int p_col)
 {
-	for (int i = 0; i < this->seek_moves; i++){
+	for (int i = 0; i < this->seek_moves; i++){	
 		if (p_row > this->row) {
 			this->row++;
 		}
