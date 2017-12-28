@@ -12,6 +12,7 @@ class Food : public Equipment
 		int initial_health_gain;     //Health boost right after eating
 		int health_gain_per_trigger; //Amount of health gained when health is gained over time
 		int turns_until_trigger;     //Every X moves health is gained
+		int turn_count;				 //counts the current number of turns the food has been active
 		int total_triggers;          //Number of times health is gained until food wears off
 		int trigger_count;           //Keeps track of the above variable. Always initialized to 0
 };

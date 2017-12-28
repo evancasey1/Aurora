@@ -44,7 +44,30 @@ Player::Player()
 	this->souls = 0;
 }
 
-void Player::eatFood(Food *food_item, WINDOW *player_status_window) {
+void Player::foodEvents() 
+{
+	bool deleted;
+	std::vector<Food>::iterator food_iter;
+	for (food_iter = this->active_food.begin(); food_iter != this->active_food.end();) {
+		deleted = false;
+		food_iter->turn_count++;
+		if (food_iter->turn_count % food_iter->turns_until_trigger) {
+			food_iter->trigger_count++;
+			this->current_health += food_iter->health_gain_per_trigger;
+			if (food_iter->trigger_count == food_iter->total_triggers) {
+				food_iter = this->active_food.erase(food_iter);
+				deleted = true;
+			}
+		}
+		if (!deleted) {
+			food_iter++;
+		}
+	}
+}
+
+void Player::eatFood(Food *food_item, WINDOW *player_status_window) 
+{
+	this->active_food.push_back(*food_item);
 	this->current_health += food_item->initial_health_gain;
 	if (this->current_health > this->current_total_health) {
 		this->current_health = this->current_total_health;

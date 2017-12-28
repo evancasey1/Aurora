@@ -33,8 +33,10 @@ class Player
 		void manageInventory(WINDOW *inv_window, WINDOW *player_window, WINDOW *alert_win);
 		void setPrimaryWeapon(Weapon weapon);
 		void eatFood(Food *food, WINDOW *player_window);
+		void foodEvents();
 
 		Inventory inventory;
+		std::vector<Food> active_food;
 		int vision;
 		int current_health, base_total_health, current_total_health;
 		double speed;

@@ -383,6 +383,7 @@ void printTitle()
 void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
+	bool passive_turn = false;
 	//int loot_size;
 	std::vector<Enemy> enemies;	
 	map->printPlayerInfo(*player, map_window);
@@ -391,6 +392,7 @@ void mainGameLoop(Player *player, Map *map)
 	printSouls(player);
 
 	while (true) {
+		passive_turn = false;
 		ch = getch();
 		switch(ch) {
 			//player movement
@@ -416,10 +418,12 @@ void mainGameLoop(Player *player, Map *map)
 			case ',':
 				player->used_moves++;
 				map->printPlayerInfo(*player, map_window);
+				passive_turn = true;
 				break;
 			//player skips all remaining moves for the turn
 			case '.':
 				player->used_moves = player->allowed_moves;
+				passive_turn = true;
 				break;
 			default:
 				break;
@@ -437,6 +441,9 @@ void mainGameLoop(Player *player, Map *map)
 				turn_counter = 0;
 				wprintw(alert_window, "The sun rises.\n");
 				wrefresh(alert_window);
+			}
+			if (!passive_turn) {
+				player->foodEvents();
 			}
 			enemyEvents(player, map, &enemies);
 			player->used_moves = 0;

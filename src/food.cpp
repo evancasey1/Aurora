@@ -10,6 +10,7 @@ Food::Food() {
 	this->turns_until_trigger = 5;
 	this->total_triggers = 3; 
 	this->trigger_count = 0; 
+	this->turn_count = 0;
 }
 
 Food::Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers) {
@@ -20,4 +21,5 @@ Food::Food(std::string name, int initial_health_gain, int health_gain_per_trigge
 	this->turns_until_trigger = turns_until_trigger;
 	this->total_triggers = total_triggers; 
 	this->trigger_count = 0; 
+	this->turn_count = 0;
 }

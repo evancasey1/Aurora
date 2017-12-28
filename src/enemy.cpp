@@ -18,8 +18,14 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->crit_chance = 0.1;
 	this->speed = 1.5;
 	this->alert_player = true;
-	this->idle_moves = 1;
-	this->seek_moves = 1;
+	if (e_name == "Wolf") {
+		this->idle_moves = 2;
+		this->seek_moves = 2;
+	}
+	else {
+		this->idle_moves = 1;
+		this->seek_moves = 1;
+	}
 	this->accuracy = 0.5;
 	this->XP = 30;
 	this->loot_drop_chance = 0.6;
@@ -101,6 +107,9 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 			if (this->name == "Wolf") {
 				//Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers);
 				obj->food.push_back(*(new Food("Wolf Meat", 4, 1, 5, 3)));
+			}
+			else if (this->name == "Bear") {
+				obj->food.push_back(*(new Food("Bear Meat", 6, 2, 4, 2)));
 			}
 			else {
 				obj->weapons.push_back(*(new Weapon()));
