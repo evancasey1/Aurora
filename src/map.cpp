@@ -19,11 +19,15 @@ Map::Map(int s)
 	this->nighttime_color = 2;
 	this->daytime_color = 1;
 
-	int r;
+	double r;
 	for (int i = 0; i < s; i++) {
 		for (int j = 0; j < s; j++) {
 			r = (rand() % 2) + 45;
 			(this->map + ((i * this->size) + j))->symbol = r;
+			r = ((double) rand() / RAND_MAX);
+			if (r < .002) {
+				(this->map + ((i * this->size) + j))->symbol = '%';
+			}
 		}
 	}
 }

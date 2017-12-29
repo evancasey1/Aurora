@@ -164,7 +164,7 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 	wrefresh(inventory_window);
 }
 
-void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect_index, int current_item_index, std::vector<Equipment> *equipment_at_loc, std::vector<Enemy::Loot> *loot_at_loc, std::vector<int> *loot_indices) 
+void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect_index, int current_item_index, std::vector<Equipment> *equipment_at_loc, std::vector<Enemy::Loot> *loot_at_loc, std::vector<int> *loot_indices, std::vector<int> *indices_at_loc) 
 {
 	//	TODO: Delete the values in the true loot vector as well.
 	std::vector<Enemy::Loot>::iterator loot_iter;
@@ -179,6 +179,7 @@ void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect
 		equipment_iter++;
 	}
 
+	//Need to reduce repetition here in the future, but it is fine for a rough draft
 	/*
 	CASE IF WEAPON
 	*/
@@ -221,6 +222,7 @@ void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect
 	if (loot_indices->at(current_vect_index) == -1) {
 		loot_indices->erase(loot_indices->begin() + current_vect_index);
 	}
+
 	current_item_index = 0;
 	current_vect_index = 0;
 	current_total_index = 0;
@@ -244,6 +246,7 @@ manageLoot:
 void manageLoot(Player *player, int loot_row, int loot_col) 
 {
 	int ch;
+	std::vector<int> indices_at_loc;
 	std::vector<int> loot_indices;
 	std::vector<Enemy::Loot> loot_at_loc;
 	std::vector<Equipment> equipment_at_loc;
@@ -258,6 +261,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 			combined_size = (loot.at(i).weapons.size() + loot.at(i).food.size()) - 1;
 			loot_indices.push_back(combined_size);
 			loot_at_loc.push_back(loot.at(i));
+			indices_at_loc.push_back(i);
 		}
 	}
 	for (int j = 0; j < loot_at_loc.size(); j++) {
@@ -305,7 +309,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 				}
 				break;
 			case KEY_ENTER: case '\n':
-				pickUpLootAtIndex(player, current_total_index, current_vect_index, current_item_index, &equipment_at_loc, &loot_at_loc, &loot_indices);
+				pickUpLootAtIndex(player, current_total_index, current_vect_index, current_item_index, &equipment_at_loc, &loot_at_loc, &loot_indices, &indices_at_loc);
 				break;
 			case 'l': case 'e':
 				wclear(inventory_window);
