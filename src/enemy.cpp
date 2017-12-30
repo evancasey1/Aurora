@@ -94,6 +94,7 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 	//Loot calculations
 	double loot_chance_roll;
 	bool dropped = false;
+	static long unique_loot_id = 0;
 	Loot *obj = new Loot();
 	for (int i = 0; i < this->number_drops_possible; i++) {
 		loot_chance_roll  = ((double) rand() / RAND_MAX);
@@ -123,6 +124,8 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 		wprintw(alert_win, "%s dropped loot.\n", (this->name).c_str());
 		wattroff(alert_win, COLOR_PAIR(6));
 		wattron(alert_win, COLOR_PAIR(5));
+		obj->l_id = unique_loot_id;
+		unique_loot_id++;
 		loot->push_back(*obj);
 	}
 	wrefresh(alert_win);

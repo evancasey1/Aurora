@@ -164,7 +164,17 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 	wrefresh(inventory_window);
 }
 
-void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect_index, int current_item_index, std::vector<Equipment> *equipment_at_loc, std::vector<Enemy::Loot> *loot_at_loc, std::vector<int> *loot_indices, std::vector<int> *indices_at_loc) 
+int getLootIndex(long loot_id) 
+{
+	for (int i = 0; i < loot.size(); i++) {
+		if (loot.at(i).l_id == loot_id) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect_index, int current_item_index, std::vector<Equipment> *equipment_at_loc, std::vector<Enemy::Loot> *loot_at_loc, std::vector<int> *loot_indices) 
 {
 	//	TODO: Delete the values in the true loot vector as well.
 	std::vector<Enemy::Loot>::iterator loot_iter;
@@ -178,6 +188,7 @@ void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect
 	while (std::distance(equipment_at_loc->begin(), equipment_iter) < current_total_index) {
 		equipment_iter++;
 	}
+	int real_loot_index = getLootIndex(loot_iter->l_id);
 
 	//Need to reduce repetition here in the future, but it is fine for a rough draft
 	/*
@@ -192,9 +203,8 @@ void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect
 			player->inventory.weapons.push_back(loot_at_loc->at(current_vect_index).weapons.at(current_item_index));
 			player->inventory.weapon_count++;
 			loot_iter->weapons.erase(loot_iter->weapons.begin() + current_item_index);
-			if (loot_iter->weapons.size() == 0) {
-				loot_at_loc->erase(loot_iter);
-			}
+			loot.at(real_loot_index).weapons.erase(loot.at(real_loot_index).weapons.begin() + current_item_index);
+
 			loot_indices->at(current_vect_index)--;
 			equipment_at_loc->erase(equipment_iter);
 		}
@@ -211,9 +221,8 @@ void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect
 			player->inventory.food.push_back(loot_at_loc->at(current_vect_index).food.at(current_item_index));
 			player->inventory.food_count++;
 			loot_iter->food.erase(loot_iter->food.begin() + current_item_index);
-			if (loot_iter->food.size() == 0) {
-				loot_at_loc->erase(loot_iter);
-			}
+			loot.at(real_loot_index).food.erase(loot.at(real_loot_index).food.begin() + current_item_index);
+			
 			loot_indices->at(current_vect_index)--;
 			equipment_at_loc->erase(equipment_iter);
 		}
@@ -223,9 +232,13 @@ void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect
 		loot_indices->erase(loot_indices->begin() + current_vect_index);
 	}
 
-	current_item_index = 0;
-	current_vect_index = 0;
-	current_total_index = 0;
+	if (loot.at(real_loot_index).weapons.size() == 0 && loot.at(real_loot_index).food.size() == 0) {
+		loot.erase(loot.begin() + real_loot_index);
+	}
+	
+	if (loot_iter->food.size() == 0 && loot_iter->weapons.size() == 0) {
+		loot_at_loc->erase(loot_iter);
+	}
 
 	if (loot_at_loc->size() == 0) {
 		wclear(inventory_window);
@@ -246,7 +259,6 @@ manageLoot:
 void manageLoot(Player *player, int loot_row, int loot_col) 
 {
 	int ch;
-	std::vector<int> indices_at_loc;
 	std::vector<int> loot_indices;
 	std::vector<Enemy::Loot> loot_at_loc;
 	std::vector<Equipment> equipment_at_loc;
@@ -261,7 +273,6 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 			combined_size = (loot.at(i).weapons.size() + loot.at(i).food.size()) - 1;
 			loot_indices.push_back(combined_size);
 			loot_at_loc.push_back(loot.at(i));
-			indices_at_loc.push_back(i);
 		}
 	}
 	for (int j = 0; j < loot_at_loc.size(); j++) {
@@ -309,7 +320,10 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 				}
 				break;
 			case KEY_ENTER: case '\n':
-				pickUpLootAtIndex(player, current_total_index, current_vect_index, current_item_index, &equipment_at_loc, &loot_at_loc, &loot_indices, &indices_at_loc);
+				pickUpLootAtIndex(player, current_total_index, current_vect_index, current_item_index, &equipment_at_loc, &loot_at_loc, &loot_indices);
+				current_item_index = 0;
+				current_vect_index = 0;
+				current_total_index = 0;
 				break;
 			case 'l': case 'e':
 				wclear(inventory_window);

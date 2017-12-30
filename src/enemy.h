@@ -23,6 +23,7 @@ class Enemy
 			//Equipment, etc later
 			int row;
 			int col;
+			long l_id;
 		};
 		Enemy(std::string en, char es, int rw, int cl, int vi, int sz);
 		void seek(int p_row, int p_col);
