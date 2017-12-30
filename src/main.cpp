@@ -189,6 +189,10 @@ void pickUpLootAtIndex(Player *player, int current_total_index, int current_vect
 		equipment_iter++;
 	}
 	int real_loot_index = getLootIndex(loot_iter->l_id);
+	if (real_loot_index == -1) {
+		//ERROR, but this should never ever happen
+		return;
+	}
 
 	//Need to reduce repetition here in the future, but it is fine for a rough draft
 	/*
