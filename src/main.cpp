@@ -297,6 +297,9 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 	}
 
 	while(true) {
+		if (loot_at_loc.size() == 0) {
+			return;
+		}
 		printLoot(current_total_index, &loot_at_loc, item_description_window);
 		ch = getch();
 		
