@@ -30,9 +30,13 @@ int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
 
+
 const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "Wolf"};
 const char ENEMY_SYMBOLS[] = {'G', 'U', 'T', 'O', 'B', 'W'};
-
+/*
+const std::string ENEMY_NAMES[] = {"Goblin", "Bear", "Wolf"};
+const char ENEMY_SYMBOLS[] = {'G', 'B', 'W'};
+*/
 std::vector<Enemy::Loot> loot;
 
 WINDOW *map_window;

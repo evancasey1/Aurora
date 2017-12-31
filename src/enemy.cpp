@@ -4,34 +4,78 @@
 #include <ncurses.h>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 #include "enemy.h"
+
+template<typename Out>
+void split(const std::string &s, char delim, Out result) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        *(result++) = item;
+    }
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, std::back_inserter(elems));
+    return elems;
+}
 
 Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_vision, int map_size)
 {
+	bool validEnemy = false;
 	this->name = e_name;
 	this->symbol = e_symbol;
-	this->vision = 5;
-	this->total_health = 10;
-	this->current_health = this->total_health;
-	this->attack_power = 3;
-	this->attack_power_range = 1;
-	this->crit_chance = 0.1;
-	this->speed = 1.5;
-	this->alert_player = true;
-	if (e_name == "Wolf") {
-		this->idle_moves = 2;
-		this->seek_moves = 2;
+	/* ENEMY ATTRIBUTES */
+	std::ifstream infile("enemyAttributes.txt");
+	std::string line;
+	std::vector<std::string> elements;
+	while (std::getline(infile, line))
+	{
+		elements = split(line, ' ');
+		if (elements.at(0) == e_name) {
+			validEnemy = true;
+			break;
+		}
+	}
+
+	if (validEnemy) {
+		this->accuracy 				= std::atof(elements.at(1).substr(4, 4).c_str());
+		this->crit_chance 			= std::atof(elements.at(2).substr(5, 4).c_str());
+		this->attack_power 			= std::atoi(elements.at(3).substr(4, 2).c_str());
+		this->protection 			= std::atof(elements.at(4).substr(5, 4).c_str());
+		this->total_health 			= std::atoi(elements.at(5).substr(3, 3).c_str());
+		this->souls 				= std::atoi(elements.at(6).substr(6, 2).c_str());
+		this->XP 					= std::atoi(elements.at(7).substr(3, 3).c_str());
+		this->idle_moves 			= std::atoi(elements.at(8).substr(5, 1).c_str());
+		this->seek_moves 			= std::atoi(elements.at(9).substr(5, 1).c_str());
+		this->number_drops_possible = std::atoi(elements.at(10).substr(6, 1).c_str());
+		this->loot_drop_chance 		= std::atof(elements.at(11).substr(9, 4).c_str());
+		this->vision 				= std::atoi(elements.at(12).substr(4, 2).c_str());
+		this->speed 				= std::atof(elements.at(13).substr(4, 5).c_str());		
+		this->attack_power_range = 2;
 	}
 	else {
-		this->idle_moves = 1;
-		this->seek_moves = 1;
+		this->accuracy = 0.5;
+		this->crit_chance = 0.1;
+		this->attack_power = 3;
+		this->protection = 0.00;
+		this->total_health = 10;
+		this->souls = 1;
+		this->XP = 30;
+		this->idle_moves = 2;
+		this->seek_moves = 2;
+		this->number_drops_possible = 2;
+		this->loot_drop_chance = 0.6;
+		this->vision = 5;
+		this->speed = 1.5;
+		this->attack_power_range = 2;
 	}
-	
-	this->accuracy = 0.5;
-	this->XP = 30;
-	this->loot_drop_chance = 0.6;
-	this->souls = 1;
-	this->number_drops_possible = 2;
+
+	this->current_health = this->total_health;
+	this->alert_player = true;
 
 	int e_row = 0;
 	int e_col = 0;
