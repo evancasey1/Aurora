@@ -9,7 +9,7 @@ aurora: $(OBJS)
 
 main.o: main.cpp player.h map.h equipment.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
-player.o: player.cpp player.h equipment.h
+player.o: player.cpp player.h equipment.h enemy.h
 	$(CXX) $(CXXFLAGS) -c player.cpp
 map.o: map.cpp map.h enemy.h player.h
 	$(CXX) $(CXXFLAGS) -c map.cpp

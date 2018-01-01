@@ -331,7 +331,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 				}
 				break;
 			case KEY_ENTER: case '\n':
-				pickUpLootAtIndex(player, current_total_index, current_vect_index, current_item_index, &equipment_at_loc, &loot_at_loc, &loot_indices);
+				player->pickUpLootAtIndex(&loot, current_total_index, current_vect_index, current_item_index, &equipment_at_loc, &loot_at_loc, &loot_indices, inventory_window, alert_window);
 				current_item_index = 0;
 				current_vect_index = 0;
 				current_total_index = 0;

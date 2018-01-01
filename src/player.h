@@ -1,6 +1,7 @@
 #include <string>
 #include "weapon.h"
 #include "food.h"
+#include "enemy.h"
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -20,6 +21,7 @@ class Player
 
 		Player();
 		bool moveSpace(int direction, int map_size, WINDOW *player_window);
+		void pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total_index, int current_vect_index, int current_item_index, std::vector<Equipment> *equipment_at_loc, std::vector<Enemy::Loot> *loot_at_loc, std::vector<int> *loot_indices, WINDOW *inventory_window, WINDOW *alert_window);
 		void setRace(std::string r);
 		void userCreatePlayer();
 		int getRow();
