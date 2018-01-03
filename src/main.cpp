@@ -71,6 +71,7 @@ void printSouls(Player *player)
 bool checkAttackHit(double accuracy, double evasion) 
 {
 	double chance_to_hit  = ((double) rand() / RAND_MAX);
+
 	if(accuracy >= chance_to_hit + evasion) {
 		return true;
 	}

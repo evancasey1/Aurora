@@ -58,7 +58,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 		this->loot_drop_chance 		= std::atof(elements.at(11).substr(9, 4).c_str());
 		this->vision 				= std::atoi(elements.at(12).substr(4, 2).c_str());
 		this->speed 				= std::atof(elements.at(13).substr(4, 5).c_str());
-		this->base_evasion			= std::atof(elements.at(14).substr(4, 5).c_str());
+		this->base_evasion			= std::atof(elements.at(14).substr(4, 4).c_str());
 		this->attack_power_range = 2;
 	}
 	else {
