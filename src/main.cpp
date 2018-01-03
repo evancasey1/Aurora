@@ -22,7 +22,7 @@ const int MAP_VERTICAL_PADDING = 3;
 const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
-const int NUM_ENEMY_TYPES = 6;
+const int NUM_ENEMY_TYPES = 5;
 bool is_daytime = true;
 int day_turns = 70;
 int night_turns = 30;
@@ -30,13 +30,14 @@ int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
 
-
+/*
 const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "Wolf"};
 const char ENEMY_SYMBOLS[] = {'G', 'U', 'T', 'O', 'B', 'W'};
-/*
-const std::string ENEMY_NAMES[] = {"Goblin", "Bear", "Wolf"};
-const char ENEMY_SYMBOLS[] = {'G', 'B', 'W'};
 */
+
+const std::string ENEMY_NAMES[] = {"Goblin", "Bear", "Wolf", "Specter", "Undead"};
+const char ENEMY_SYMBOLS[] = {'G', 'B', 'W', 'S', 'U'};
+
 std::vector<Enemy::Loot> loot;
 
 WINDOW *map_window;
@@ -71,6 +72,11 @@ void printSouls(Player *player)
 bool checkAttackHit(double accuracy, double evasion) 
 {
 	double chance_to_hit  = ((double) rand() / RAND_MAX);
+	/*
+	endwin();
+	std::cout << "C2H: " << chance_to_hit << " - EVA: " << evasion << " - COM: " << chance_to_hit + evasion;
+	std::cout << " - ACC: " << accuracy << std::endl << std::endl;
+	*/
 
 	if(accuracy >= chance_to_hit + evasion) {
 		return true;
@@ -91,7 +97,6 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	bool enemy_hit  = checkAttackHit(enemy->accuracy, player->current_evasion);
 
 	if (player->speed > enemy->speed) {
-		//player attacks first
 		if (!player_hit) {
 			wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
 		}
@@ -99,37 +104,37 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 			enemy->current_health -= player_attack_power;
 			wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
 		}
+		//Enemy turn
 		if (enemy->current_health > 0) {
-			player->current_health -= enemy_attack_power;
-			wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
-		}
-		else {
-			//enemy died
-			wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
-			wattroff(alert_window, COLOR_PAIR(5));
-			wattron(alert_window, COLOR_PAIR(6));
-			wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
-			wattroff(alert_window, COLOR_PAIR(6));
-			wattron(alert_window, COLOR_PAIR(5));
-			printSouls(player);
-			player->gainExp(enemy->XP, alert_window);
-			player->gainSouls(enemy->souls, alert_window);
-		}
-	}
-	else if (enemy_hit) {
-		//enemy attacks first
-		player->current_health -= enemy_attack_power;
-		wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
-		if (player->current_health > 0) {
-			enemy->current_health -= player_attack_power;
-			wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
+			if (enemy_hit) {
+				player->current_health -= enemy_attack_power;
+				wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
+			}
+			else {
+				wprintw(alert_window, "%s missed.\n", (enemy->name).c_str());
+			}
 		}
 	}
 	else {
-		wprintw(alert_window, "%s missed.\n", (enemy->name).c_str());
+		if (!enemy_hit) {
+			wprintw(alert_window, "%s missed.\n", (enemy->name).c_str());
+		}
+		else {
+			player->current_health -= enemy_attack_power;
+			wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
+		}
+		//Player turn
+		if (player->current_health > 0) {
+			if (!player_hit) {
+				wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
+			}
+			else {
+				enemy->current_health -= player_attack_power;
+				wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
+			}	
+		}
 	}
 	if (player->current_health <= 0) {
-		//player died
 		wprintw(alert_window, "%s killed you. Game over.\n", (enemy->name).c_str());
 		wrefresh(alert_window);
 		wrefresh(player_status_window);
@@ -138,6 +143,18 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 		std::cout << "Game over.\n" << std::endl;
 		exit(0);
 	}
+	if (enemy->current_health <= 0) {
+		wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
+		wattroff(alert_window, COLOR_PAIR(5));
+		wattron(alert_window, COLOR_PAIR(6));
+		wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
+		wattroff(alert_window, COLOR_PAIR(6));
+		wattron(alert_window, COLOR_PAIR(5));
+		printSouls(player);
+		player->gainExp(enemy->XP, alert_window);
+		player->gainSouls(enemy->souls, alert_window);
+	}
+
 	player->printStatus(player_status_window);
 	wrefresh(alert_window);
 }
