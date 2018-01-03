@@ -44,6 +44,8 @@ class Player
 		double speed;
 		double crit_chance;
 		double accuracy;
+		double base_protection;
+		double current_protection;
 		int allowed_moves;
 		int used_moves;
 		double xp_cap_multiplier;

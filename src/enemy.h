@@ -45,7 +45,8 @@ class Enemy
 		double speed;
 		double crit_chance;
 		double accuracy;
-		double protection;
+		double base_protection;
+		double current_protection;
 		bool alert_player;
 		char symbol;
 		double loot_drop_chance;

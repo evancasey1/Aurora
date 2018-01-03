@@ -43,6 +43,8 @@ Player::Player()
 	this->max_inventory_index = 1;
 	this->souls_cap = 10;
 	this->souls = 0;
+	this->base_protection = 0.00;
+	this->current_protection = this->base_protection;
 }
 
 int getLootIndex(std::vector<Enemy::Loot> *loot, long loot_id) 

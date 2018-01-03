@@ -45,7 +45,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 		this->accuracy 				= std::atof(elements.at(1).substr(4, 4).c_str());
 		this->crit_chance 			= std::atof(elements.at(2).substr(5, 4).c_str());
 		this->attack_power 			= std::atoi(elements.at(3).substr(4, 2).c_str());
-		this->protection 			= std::atof(elements.at(4).substr(5, 4).c_str());
+		this->base_protection 		= std::atof(elements.at(4).substr(5, 4).c_str());
 		this->total_health 			= std::atoi(elements.at(5).substr(3, 3).c_str());
 		this->souls 				= std::atoi(elements.at(6).substr(6, 2).c_str());
 		this->XP 					= std::atoi(elements.at(7).substr(3, 3).c_str());
@@ -61,7 +61,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 		this->accuracy = 0.5;
 		this->crit_chance = 0.1;
 		this->attack_power = 3;
-		this->protection = 0.00;
+		this->base_protection = 0.00;
 		this->total_health = 10;
 		this->souls = 1;
 		this->XP = 30;
@@ -74,6 +74,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 		this->attack_power_range = 2;
 	}
 
+	this->current_protection = this->base_protection;
 	this->current_health = this->total_health;
 	this->alert_player = true;
 
