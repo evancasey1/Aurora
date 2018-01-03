@@ -43,8 +43,13 @@ Player::Player()
 	this->max_inventory_index = 1;
 	this->souls_cap = 10;
 	this->souls = 0;
+	this->souls_multiplier = 1.15;
+
 	this->base_protection = 0.00;
 	this->current_protection = this->base_protection;
+
+	this->base_evasion = 0.00;
+	this->current_evasion = this->base_evasion;
 }
 
 int getLootIndex(std::vector<Enemy::Loot> *loot, long loot_id) 
@@ -421,9 +426,7 @@ int Player::computeAttackPower() {
 	int power = this->primary_weapon->attack_power;
 	int power_range = this->primary_weapon->attack_power_range;
 	double crit_chance = this->primary_weapon->crit_chance;
-	double acc = this->primary_weapon->accuracy;
 
-	double chance_to_hit  = ((double) rand() / RAND_MAX);
 	double chance_to_crit = ((double) rand() / RAND_MAX);
 	if (power_range != 0) {
 		power += (rand() % power_range);
@@ -432,12 +435,9 @@ int Player::computeAttackPower() {
 		power *= 2;
 	}
 	if (this->souls == this->souls_cap) {
-		power *= 1.15;
+		power *= this->souls_multiplier;
 	}
-	if(acc >= chance_to_hit) {
-		return (int) power;
-	}
-	return 0;
+	return (int)power;
 }
 
 //Returns true if the movement was valid, false otherwise

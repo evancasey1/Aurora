@@ -47,6 +47,8 @@ class Enemy
 		double accuracy;
 		double base_protection;
 		double current_protection;
+		double base_evasion;
+		double current_evasion;
 		bool alert_player;
 		char symbol;
 		double loot_drop_chance;

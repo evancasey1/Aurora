@@ -42,6 +42,9 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	}
 
 	if (validEnemy) {
+		//I am not sold on the "Magic number" aspect of this solution, but it is far better
+		//than the alternative of having an individual class per each enemy or a separate conditional
+		//block for each.
 		this->accuracy 				= std::atof(elements.at(1).substr(4, 4).c_str());
 		this->crit_chance 			= std::atof(elements.at(2).substr(5, 4).c_str());
 		this->attack_power 			= std::atoi(elements.at(3).substr(4, 2).c_str());
@@ -54,7 +57,8 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 		this->number_drops_possible = std::atoi(elements.at(10).substr(6, 1).c_str());
 		this->loot_drop_chance 		= std::atof(elements.at(11).substr(9, 4).c_str());
 		this->vision 				= std::atoi(elements.at(12).substr(4, 2).c_str());
-		this->speed 				= std::atof(elements.at(13).substr(4, 5).c_str());		
+		this->speed 				= std::atof(elements.at(13).substr(4, 5).c_str());
+		this->base_evasion			= std::atof(elements.at(14).substr(4, 5).c_str());
 		this->attack_power_range = 2;
 	}
 	else {
@@ -71,9 +75,11 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 		this->loot_drop_chance = 0.6;
 		this->vision = 5;
 		this->speed = 1.5;
+		this->base_evasion = 0.0;
 		this->attack_power_range = 2;
 	}
 
+	this->current_evasion = this->base_evasion;
 	this->current_protection = this->base_protection;
 	this->current_health = this->total_health;
 	this->alert_player = true;
@@ -119,9 +125,7 @@ int Enemy::computeAttackPower() {
 	int power = this->attack_power;
 	int power_range = this->attack_power_range;
 	double crit_chance = this->crit_chance;
-	double accuracy = this->accuracy;
 	
-	double chance_to_hit  = ((double) rand() / RAND_MAX);
 	double chance_to_crit = ((double) rand() / RAND_MAX);
 	if (power_range != 0) {
 		power += (rand() % power_range);
@@ -129,10 +133,8 @@ int Enemy::computeAttackPower() {
 	if (crit_chance >= chance_to_crit) {
 		power *= 2;
 	}
-	if(accuracy >= chance_to_hit) {
-		return power;
-	}
-	return 0;
+
+	return (int)power;
 }
 
 void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {

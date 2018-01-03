@@ -46,6 +46,9 @@ class Player
 		double accuracy;
 		double base_protection;
 		double current_protection;
+		double base_evasion;
+		double current_evasion;
+		double souls_multiplier;
 		int allowed_moves;
 		int used_moves;
 		double xp_cap_multiplier;

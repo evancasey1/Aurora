@@ -68,6 +68,15 @@ void printSouls(Player *player)
 	wattroff(power_status_window, COLOR_PAIR(8));
 }
 
+bool checkAttackHit(double accuracy, double evasion) 
+{
+	double chance_to_hit  = ((double) rand() / RAND_MAX);
+	if(accuracy >= chance_to_hit + evasion) {
+		return true;
+	}
+	return false;
+}
+
 void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
 	//TODO:
@@ -77,10 +86,18 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 	Enemy *enemy = &(enemies->at(enemy_index));
 	player_attack_power = player->computeAttackPower() * (1 - enemy->current_protection);
 	enemy_attack_power  = enemy->computeAttackPower() * (1 - player->current_protection);
+	bool player_hit = checkAttackHit(player->accuracy, enemy->current_evasion);
+	bool enemy_hit  = checkAttackHit(enemy->accuracy, player->current_evasion);
+
 	if (player->speed > enemy->speed) {
 		//player attacks first
-		enemy->current_health -= player_attack_power;
-		wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
+		if (!player_hit) {
+			wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
+		}
+		else {
+			enemy->current_health -= player_attack_power;
+			wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
+		}
 		if (enemy->current_health > 0) {
 			player->current_health -= enemy_attack_power;
 			wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
@@ -98,7 +115,7 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 			player->gainSouls(enemy->souls, alert_window);
 		}
 	}
-	else {
+	else if (enemy_hit) {
 		//enemy attacks first
 		player->current_health -= enemy_attack_power;
 		wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
@@ -106,6 +123,9 @@ void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_inde
 			enemy->current_health -= player_attack_power;
 			wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
 		}
+	}
+	else {
+		wprintw(alert_window, "%s missed.\n", (enemy->name).c_str());
 	}
 	if (player->current_health <= 0) {
 		//player died
