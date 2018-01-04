@@ -79,6 +79,11 @@ bool checkIfAttackHit(double accuracy, double evasion)
 	return false;
 }
 
+int rollSpeedMod(int n)
+{
+	return (rand() % n);
+}
+
 void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
 	Enemy *enemy = &(enemies->at(enemy_index));
@@ -87,8 +92,10 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 	int enemy_attack_power =  enemy->computeAttackPower() * (1 - player->current_protection);
 	bool player_hit = checkIfAttackHit((player->primary_weapon->accuracy + player->accuracy), enemy->current_evasion);
 	bool enemy_hit  = checkIfAttackHit(enemy->accuracy, player->current_evasion);
+	int p_speed = player->speed + rollSpeedMod(5);
+	int e_speed = enemy->speed + rollSpeedMod(5);
 
-	if (player->speed > enemy->speed) {
+	if (p_speed > e_speed) {
 		if (!player_hit) {
 			wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
 		}

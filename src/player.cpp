@@ -41,7 +41,7 @@ Player::Player()
 	this->passive_health_regen_amount = 1;
 	this->inventory_index = 0;
 	this->max_inventory_index = 1;
-	this->souls_cap = 10;
+	this->souls_cap = 25;
 	this->souls = 0;
 	this->souls_multiplier = 1.15;
 
