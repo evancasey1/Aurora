@@ -28,7 +28,7 @@ Player::Player()
 	this->allowed_moves = 1;
 	this->used_moves = 0;
 	//Will be an attribute of weapon later, or a calculation between player and weapon
-	this->accuracy = 0.9;
+	this->accuracy = 0.00;
 	this->xp_cap_multiplier = 1.4;
 	this->current_xp_cap = 150;
 	this->level = 1;

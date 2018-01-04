@@ -69,14 +69,9 @@ void printSouls(Player *player)
 	wattroff(power_status_window, COLOR_PAIR(8));
 }
 
-bool checkAttackHit(double accuracy, double evasion) 
+bool checkIfAttackHit(double accuracy, double evasion) 
 {
 	double chance_to_hit  = ((double) rand() / RAND_MAX);
-	/*
-	endwin();
-	std::cout << "C2H: " << chance_to_hit << " - EVA: " << evasion << " - COM: " << chance_to_hit + evasion;
-	std::cout << " - ACC: " << accuracy << std::endl << std::endl;
-	*/
 
 	if(accuracy >= chance_to_hit + evasion) {
 		return true;
@@ -84,17 +79,14 @@ bool checkAttackHit(double accuracy, double evasion)
 	return false;
 }
 
-void initiate_combat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
+void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
-	//TODO:
-	//	actual turn-based combat
-	int player_attack_power;
-	int enemy_attack_power;
 	Enemy *enemy = &(enemies->at(enemy_index));
-	player_attack_power = player->computeAttackPower() * (1 - enemy->current_protection);
-	enemy_attack_power  = enemy->computeAttackPower() * (1 - player->current_protection);
-	bool player_hit = checkAttackHit(player->accuracy, enemy->current_evasion);
-	bool enemy_hit  = checkAttackHit(enemy->accuracy, player->current_evasion);
+
+	int player_attack_power = player->computeAttackPower() * (1 - enemy->current_protection);
+	int enemy_attack_power =  enemy->computeAttackPower() * (1 - player->current_protection);
+	bool player_hit = checkIfAttackHit((player->primary_weapon->accuracy + player->accuracy), enemy->current_evasion);
+	bool enemy_hit  = checkIfAttackHit(enemy->accuracy, player->current_evasion);
 
 	if (player->speed > enemy->speed) {
 		if (!player_hit) {
@@ -354,7 +346,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 			e.idle(map->size);
 		}
 		if (e.row == player->row && e.col == player->col) {
-			initiate_combat(player, enemies, index);
+			fastCombat(player, enemies, index);
 		}
 		index++;
 	}

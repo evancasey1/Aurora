@@ -6,8 +6,8 @@
 Weapon::Weapon() {
 	//Random weapon generation
 	this->equipment_id = 0;
-	this->ENHANCED_CHANCE = 0.35;
-	this->LEGENDARY_CHANCE = 0.15;
+	this->ENHANCED_CHANCE = 0.20;
+	this->LEGENDARY_CHANCE = 0.02;
 	this->ENHANCED_MOD = 1.25;
 	this->LEGENDARY_MOD = 1.5;
 
