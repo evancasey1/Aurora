@@ -33,6 +33,7 @@ class Player
 		void manageInventory(WINDOW *inv_window, WINDOW *player_window, WINDOW *alert_win);
 		void setPrimaryWeapon(Weapon weapon);
 		void eatFood(Food *food, WINDOW *player_window);
+		void levelUp(WINDOW *alert_win);
 		void foodEvents();
 		void setClassAttributes();
 
@@ -51,12 +52,13 @@ class Player
 		int base_damage;
 		int allowed_moves;
 		int used_moves;
-		double xp_cap_multiplier;
 		int level;
 		int level_points;
 		int current_xp_cap;
 		int current_xp;
+		double level_up_multiplier_xp;
 		double level_up_multiplier_health;
+		double level_up_multiplier_damage;
 		std::string race;
 		int row;
 		int col;

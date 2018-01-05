@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 #include "player.h"
 #include "enemy.h"
 
@@ -25,7 +26,7 @@ static std::vector<std::string> split(const std::string &s, char delim) {
 Player::Player(std::string p_class)
 {
 	this->vision = 6;
-	this->primary_weapon = new Weapon("Short Sword", 3, 1);
+	this->primary_weapon = new Weapon("Short Sword", 3, 2);
 	Food *start_food = new Food("Meat", 3, 1, 2, 2);
 	for (int i = 0; i < 3; i++) {
 		this->inventory.food.push_back(*start_food);
@@ -54,6 +55,7 @@ Player::Player(std::string p_class)
 	this->base_total_health 		 = std::atoi(elements.at(7).substr(3, 2).c_str());
 	this->level_up_multiplier_health = std::atof(elements.at(8).substr(4, 4).c_str());
 	this->crit_chance				 = std::atof(elements.at(8).substr(5, 4).c_str());
+	this->level_up_multiplier_damage = std::atof(elements.at(9).substr(5, 4).c_str());
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
@@ -72,7 +74,7 @@ Player::Player(std::string p_class)
 	this->current_total_health = this->base_total_health;
 	this->current_health = this->base_total_health;
 	this->used_moves = 0;
-	this->xp_cap_multiplier = 1.4;
+	this->level_up_multiplier_xp = 1.25;
 	this->current_xp_cap = 150;
 	this->level = 1;
 	this->level_points = 0;
@@ -360,22 +362,28 @@ void Player::gainSouls(int souls_to_gain, WINDOW *alert_win)
 	wattron(alert_win, COLOR_PAIR(5));
 }
 
+void Player::levelUp(WINDOW *alert_win)
+{
+	this->current_xp -= this->current_xp_cap;
+	this->level++;
+	this->current_xp_cap *= this->level_up_multiplier_xp;
+	wattroff(alert_win, COLOR_PAIR(5));
+	wattron(alert_win, COLOR_PAIR(7));
+	wprintw(alert_win, "Level up! %d -> %d\n", this->level - 1, this->level);
+	wrefresh(alert_win);
+	wattroff(alert_win, COLOR_PAIR(7));
+	wattron(alert_win, COLOR_PAIR(5));
+	this->base_total_health = std::ceil(this->base_total_health * this->level_up_multiplier_health);
+	this->base_damage = std::ceil(this->base_damage * this->level_up_multiplier_damage);
+	this->current_total_health = this->base_total_health;
+	this->level_points++;
+}
+
 void Player::gainExp(int xp, WINDOW *alert_win) 
 {
 	this->current_xp += xp;
 	if (this->current_xp >= this->current_xp_cap) {
-		this->current_xp -= this->current_xp_cap;
-		this->level++;
-		this->current_xp_cap *= this->xp_cap_multiplier;
-		wattroff(alert_win, COLOR_PAIR(5));
-		wattron(alert_win, COLOR_PAIR(7));
-		wprintw(alert_win, "Level up! %d -> %d\n", this->level - 1, this->level);
-		wrefresh(alert_win);
-		wattroff(alert_win, COLOR_PAIR(7));
-		wattron(alert_win, COLOR_PAIR(5));
-		this->base_total_health *= this->level_up_multiplier_health;
-		this->current_total_health = this->base_total_health;
-		this->level_points++;
+		this->levelUp(alert_win);
 	}
 }
 
@@ -403,7 +411,7 @@ void Player::printStatus(WINDOW *player_window)
 }
 
 int Player::computeAttackPower() {
-	int power = this->primary_weapon->attack_power;
+	int power = this->primary_weapon->attack_power + this->base_damage;
 	int power_range = this->primary_weapon->attack_power_range;
 	double crit_chance = this->primary_weapon->crit_chance;
 
