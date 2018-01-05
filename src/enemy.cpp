@@ -6,6 +6,8 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <cmath>
+#include <math.h>
 #include "enemy.h"
 
 template<typename Out>
@@ -23,9 +25,8 @@ static std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_vision, int map_size)
+Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_vision, int map_size, int level)
 {
-	bool validEnemy = false;
 	this->name = e_name;
 	this->symbol = e_symbol;
 	/* ENEMY ATTRIBUTES */
@@ -36,53 +37,35 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	{
 		elements = split(line, ' ');
 		if (elements.at(0) == e_name) {
-			validEnemy = true;
 			break;
 		}
 	}
 
-	if (validEnemy) {
-		//I am not sold on the "Magic number" aspect of this solution, but it is far better
-		//than the alternative of having an individual class per each enemy or a separate conditional
-		//block for each.
-		this->accuracy 				= std::atof(elements.at(1).substr(4, 4).c_str());
-		this->crit_chance 			= std::atof(elements.at(2).substr(5, 4).c_str());
-		this->attack_power 			= std::atoi(elements.at(3).substr(4, 2).c_str());
-		this->base_protection 		= std::atof(elements.at(4).substr(5, 4).c_str());
-		this->total_health 			= std::atoi(elements.at(5).substr(3, 3).c_str());
-		this->souls 				= std::atoi(elements.at(6).substr(6, 2).c_str());
-		this->XP 					= std::atoi(elements.at(7).substr(3, 3).c_str());
-		this->idle_moves 			= std::atoi(elements.at(8).substr(5, 1).c_str());
-		this->seek_moves 			= std::atoi(elements.at(9).substr(5, 1).c_str());
-		this->number_drops_possible = std::atoi(elements.at(10).substr(6, 1).c_str());
-		this->loot_drop_chance 		= std::atof(elements.at(11).substr(9, 4).c_str());
-		this->vision 				= std::atoi(elements.at(12).substr(4, 2).c_str());
-		this->speed 				= std::atof(elements.at(13).substr(4, 5).c_str());
-		this->base_evasion			= std::atof(elements.at(14).substr(4, 4).c_str());
-		this->attack_power_range = 2;
-	}
-	else {
-		this->accuracy = 0.5;
-		this->crit_chance = 0.1;
-		this->attack_power = 3;
-		this->base_protection = 0.00;
-		this->total_health = 10;
-		this->souls = 1;
-		this->XP = 30;
-		this->idle_moves = 2;
-		this->seek_moves = 2;
-		this->number_drops_possible = 2;
-		this->loot_drop_chance = 0.6;
-		this->vision = 5;
-		this->speed = 1.5;
-		this->base_evasion = 0.0;
-		this->attack_power_range = 2;
-	}
-
+	this->accuracy 				= std::atof(elements.at(1).substr(4, 4).c_str());
+	this->crit_chance 			= std::atof(elements.at(2).substr(5, 4).c_str());
+	this->attack_power 			= std::atoi(elements.at(3).substr(4, 2).c_str());
+	this->base_protection 		= std::atof(elements.at(4).substr(5, 4).c_str());
+	this->total_health 			= std::atoi(elements.at(5).substr(3, 3).c_str());
+	this->souls 				= std::atoi(elements.at(6).substr(6, 2).c_str());
+	this->XP 					= std::atoi(elements.at(7).substr(3, 3).c_str());
+	this->idle_moves 			= std::atoi(elements.at(8).substr(5, 1).c_str());
+	this->seek_moves 			= std::atoi(elements.at(9).substr(5, 1).c_str());
+	this->number_drops_possible = std::atoi(elements.at(10).substr(6, 1).c_str());
+	this->loot_drop_chance 		= std::atof(elements.at(11).substr(9, 4).c_str());
+	this->vision 				= std::atoi(elements.at(12).substr(4, 2).c_str());
+	this->speed 				= std::atof(elements.at(13).substr(4, 5).c_str());
+	this->base_evasion			= std::atof(elements.at(14).substr(4, 4).c_str());
+	this->level_up_multiplier_health = pow(std::atof(elements.at(15).substr(4, 4).c_str()), level);
+	this->level_up_multiplier_damage = pow(std::atof(elements.at(16).substr(5, 4).c_str()), level);
+	
+	this->attack_power_range = 2;
 	this->current_evasion = this->base_evasion;
 	this->current_protection = this->base_protection;
 	this->current_health = this->total_health;
 	this->alert_player = true;
+
+	this->total_health = std::ceil(this->total_health * this->level_up_multiplier_health);
+	this->attack_power = std::ceil(this->attack_power * this->level_up_multiplier_damage);
 
 	int e_row = 0;
 	int e_col = 0;

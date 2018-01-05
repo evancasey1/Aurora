@@ -25,7 +25,7 @@ class Enemy
 			int col;
 			long l_id;
 		};
-		Enemy(std::string en, char es, int rw, int cl, int vi, int sz);
+		Enemy(std::string en, char es, int rw, int cl, int vi, int sz, int lvl);
 		void seek(int p_row, int p_col);
 		void idle(int m_size);
 		int computeAttackPower();
@@ -53,6 +53,8 @@ class Enemy
 		char symbol;
 		double loot_drop_chance;
 		int number_drops_possible;
+		double level_up_multiplier_health;
+		double level_up_multiplier_damage;
 		std::string name;
 
 		struct Equipment {

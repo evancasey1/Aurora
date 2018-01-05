@@ -317,7 +317,7 @@ void spawnEnemy(std::vector<Enemy> *enemies, Player *player, Map *map) {
 		int enemy_index = (rand() % NUM_ENEMY_TYPES);
 		std::string e_name = ENEMY_NAMES[enemy_index];
 		char e_symbol = ENEMY_SYMBOLS[enemy_index];
-		enemies->push_back(*(new Enemy(e_name, e_symbol, player->row, player->col, player->vision, map->size)));
+		enemies->push_back(*(new Enemy(e_name, e_symbol, player->row, player->col, player->vision, map->size, player->level)));
 	}
 }
 
