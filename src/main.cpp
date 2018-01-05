@@ -448,6 +448,62 @@ void mainGameLoop(Player *player, Map *map)
 	endwin();
 }
 
+Player* userCreatePlayer()
+{
+	//TODO:
+	//	Attribute selection
+	int chosen_index = 0;
+	std::string options[3] = {"Rogue", "Swordsman", "Warrior"};
+	std::string descriptions[3] = {"The Rogue strikes swiftly and relies on shadows for concealment to compensate   for weak constitution.", 
+								   "The Swordsman is a balanced fighter,    well suited for bladed weapons and      medium armor.", 
+								   "The Warrior is a tanky brute that       specializes in blunt force weapons and  heavy armor."};
+	int horiz_pad = (int) ((COLS/2)-10);
+	int vert_pad = 3;
+	WINDOW *player_description_window = newwin(30, 40, vert_pad + 25, horiz_pad - 10);
+	int ch = 0;
+	
+	attron(A_BOLD);
+	mvprintw(vert_pad + 10, horiz_pad, "Select your adventurer:\n");
+	attroff(A_BOLD);
+	while(ch != KEY_ENTER && ch != '\n') {
+		//prints contents of options[]
+		//highlights currently selected option
+		wclear(player_description_window);
+		wprintw(player_description_window, "%s", descriptions[chosen_index].c_str());
+		wrefresh(player_description_window);
+		for (int i = 0; i < 3; i++) {
+			move(vert_pad + i + 11, horiz_pad);
+			clrtoeol();
+			if (i != chosen_index) {
+				addstr(options[i].c_str());
+			}
+			else {
+				attron(A_STANDOUT);
+				addstr(options[i].c_str());
+				attroff(A_STANDOUT);	
+			}
+		}
+		
+		ch = getch();
+		switch(ch) {
+			case KEY_UP:
+				chosen_index <= 0 ? chosen_index = 2 : chosen_index--;
+				refresh();
+				break;
+			case KEY_DOWN:
+				chosen_index >= 2 ? chosen_index = 0 : chosen_index++;
+				refresh();
+				break;
+			default:
+				break;
+		}
+	}
+	clear();
+	refresh();
+	free(player_description_window);
+	return new Player(options[chosen_index]);
+}
+
 Map* userCreateMap()
 {
 	//TODO:
@@ -497,7 +553,6 @@ Map* userCreateMap()
 
 int main(int argc, char *argv[]) 
 {
-	Player player;
 	//Map map;
 	srand((int)time(0));
 
@@ -522,8 +577,8 @@ int main(int argc, char *argv[])
 	Map *map = userCreateMap();
 
 	printTitle();
-	player.userCreatePlayer();
-	player.setPosition((int)map->size/2, (int)map->size/2);
+	Player *player = userCreatePlayer();
+	player->setPosition((int)map->size/2, (int)map->size/2);
 
 	int map_height = 30, map_width = 50;
 	int com_height = 14, com_width = 50;
@@ -543,7 +598,7 @@ int main(int argc, char *argv[])
 	scrollok(inventory_window, true);
 	scrollok(loot_window, true);
 
-	mainGameLoop(&player, map);
+	mainGameLoop(player, map);
 
 	return 0;
 }

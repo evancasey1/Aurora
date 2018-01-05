@@ -19,11 +19,9 @@ class Player
 			int food_count;
 		};
 
-		Player();
+		Player(std::string race);
 		bool moveSpace(int direction, int map_size, WINDOW *player_window);
 		void pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total_index, int current_vect_index, int current_item_index, std::vector<Equipment> *equipment_at_loc, std::vector<Enemy::Loot> *loot_at_loc, std::vector<int> *loot_indices, WINDOW *inventory_window, WINDOW *alert_window);
-		void setRace(std::string r);
-		void userCreatePlayer();
 		int getRow();
 		int getCol();
 		void setPosition(int r, int c);
@@ -36,6 +34,7 @@ class Player
 		void setPrimaryWeapon(Weapon weapon);
 		void eatFood(Food *food, WINDOW *player_window);
 		void foodEvents();
+		void setClassAttributes();
 
 		Inventory inventory;
 		std::vector<Food> active_food;
@@ -49,6 +48,7 @@ class Player
 		double base_evasion;
 		double current_evasion;
 		double souls_multiplier;
+		int base_damage;
 		int allowed_moves;
 		int used_moves;
 		double xp_cap_multiplier;
@@ -56,7 +56,6 @@ class Player
 		int level_points;
 		int current_xp_cap;
 		int current_xp;
-		int health_mod;
 		double level_up_multiplier_health;
 		std::string race;
 		int row;

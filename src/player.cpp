@@ -2,10 +2,27 @@
 #include <string>
 #include <ncurses.h>
 #include <vector>
+#include <fstream>
+#include <sstream>
 #include "player.h"
 #include "enemy.h"
 
-Player::Player()
+template<typename Out>
+static void split(const std::string &s, char delim, Out result) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        *(result++) = item;
+    }
+}
+
+static std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, std::back_inserter(elems));
+    return elems;
+}
+
+Player::Player(std::string p_class)
 {
 	this->vision = 6;
 	this->primary_weapon = new Weapon("Short Sword", 3, 1);
@@ -18,24 +35,48 @@ Player::Player()
 	this->inventory.weapon_count = 0;
 	this->inventory.food_count = 3;
 
+	std::ifstream infile("playerAttributes.txt");
+	std::string line;
+	std::vector<std::string> elements;
+	while (std::getline(infile, line))
+	{
+		elements = split(line, ' ');
+		if (elements.at(0) == p_class) {
+			break;
+		}
+	}
+	this->accuracy 					 = std::atof(elements.at(1).substr(4, 4).c_str());
+	this->speed   					 = std::atoi(elements.at(2).substr(4, 2).c_str());
+	this->base_damage 				 = std::atoi(elements.at(3).substr(4, 2).c_str());
+	this->allowed_moves				 = std::atoi(elements.at(4).substr(4, 1).c_str());
+	this->base_evasion 				 = std::atof(elements.at(5).substr(4, 4).c_str());
+	this->base_protection 		     = std::atof(elements.at(6).substr(5, 4).c_str());
+	this->base_total_health 		 = std::atoi(elements.at(7).substr(3, 2).c_str());
+	this->level_up_multiplier_health = std::atof(elements.at(8).substr(4, 4).c_str());
+	this->crit_chance				 = std::atof(elements.at(8).substr(5, 4).c_str());
+
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
+	/*
 	this->base_total_health = 5000;
-	this->current_total_health = this->base_total_health;
-	this->current_health = this->base_total_health;
 	this->speed = 2.0;
 	this->crit_chance = 0.05;
 	this->allowed_moves = 1;
-	this->used_moves = 0;
-	//Will be an attribute of weapon later, or a calculation between player and weapon
 	this->accuracy = 0.00;
+	this->level_up_multiplier_health = 1.2;
+	this->base_damage = 1;
+	this->base_protection = 0.00;
+	this->base_evasion = 0.00;
+	*/
+	//These attributes are constant for all player types
+	this->current_total_health = this->base_total_health;
+	this->current_health = this->base_total_health;
+	this->used_moves = 0;
 	this->xp_cap_multiplier = 1.4;
 	this->current_xp_cap = 150;
 	this->level = 1;
 	this->level_points = 0;
 	this->current_xp = 0;
-	this->level_up_multiplier_health = 1.2;
-	this->health_mod = 0;
 	this->passive_health_regen_counter = 0;
 	this->passive_health_regen_trigger = 50;
 	this->passive_health_regen_amount = 1;
@@ -44,12 +85,8 @@ Player::Player()
 	this->souls_cap = 25;
 	this->souls = 0;
 	this->souls_multiplier = 1.15;
-
-	this->base_protection = 0.00;
-	this->current_protection = this->base_protection;
-
-	this->base_evasion = 0.00;
 	this->current_evasion = this->base_evasion;
+	this->current_protection = this->base_protection;
 }
 
 int getLootIndex(std::vector<Enemy::Loot> *loot, long loot_id) 
@@ -309,63 +346,6 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 	}
 }
 
-void Player::userCreatePlayer()
-{
-	//TODO:
-	//	Attribute selection
-	int chosen_index = 0;
-	std::string options[3] = {"Rogue", "Swordsman", "Warrior"};
-	std::string descriptions[3] = {"The Rogue strikes swiftly and relies on shadows for concealment to compensate   for weak constitution.", 
-								   "The Swordsman is a balanced fighter,    well suited for bladed weapons and      medium armor.", 
-								   "The Warrior is a tanky brute that       specializes in blunt force weapons and  heavy armor."};
-	int horiz_pad = (int) ((COLS/2)-10);
-	int vert_pad = 3;
-	WINDOW *player_description_window = newwin(30, 40, vert_pad + 25, horiz_pad - 10);
-	int ch = 0;
-	
-	attron(A_BOLD);
-	mvprintw(vert_pad + 10, horiz_pad, "Select your adventurer:\n");
-	attroff(A_BOLD);
-	while(ch != KEY_ENTER && ch != '\n') {
-		//prints contents of options[]
-		//highlights currently selected option
-		wclear(player_description_window);
-		wprintw(player_description_window, "%s", descriptions[chosen_index].c_str());
-		wrefresh(player_description_window);
-		for (int i = 0; i < 3; i++) {
-			move(vert_pad + i + 11, horiz_pad);
-			clrtoeol();
-			if (i != chosen_index) {
-				addstr(options[i].c_str());
-			}
-			else {
-				attron(A_STANDOUT);
-				addstr(options[i].c_str());
-				attroff(A_STANDOUT);	
-			}
-		}
-		
-		ch = getch();
-		switch(ch) {
-			case KEY_UP:
-				chosen_index <= 0 ? chosen_index = 2 : chosen_index--;
-				refresh();
-				break;
-			case KEY_DOWN:
-				chosen_index >= 2 ? chosen_index = 0 : chosen_index++;
-				refresh();
-				break;
-			default:
-				break;
-		}
-	}
-	this->race = options[chosen_index];
-	clear();
-	refresh();
-	free(player_description_window);
-}
-
-
 void Player::gainSouls(int souls_to_gain, WINDOW *alert_win)
 {
 	this->souls += souls_to_gain;
@@ -394,7 +374,7 @@ void Player::gainExp(int xp, WINDOW *alert_win)
 		wattroff(alert_win, COLOR_PAIR(7));
 		wattron(alert_win, COLOR_PAIR(5));
 		this->base_total_health *= this->level_up_multiplier_health;
-		this->current_total_health = this->base_total_health + this->health_mod;
+		this->current_total_health = this->base_total_health;
 		this->level_points++;
 	}
 }
