@@ -209,18 +209,39 @@ void Enemy::idle(int map_size)
 
 void Enemy::seek(int p_row, int p_col)
 {
+	//Not too happy with this randomization solution, but since enemy
+	//movement is going to be overhauled soon anyway it'll do
+	int choice;
 	for (int i = 0; i < this->seek_moves; i++){	
-		if (p_row > this->row) {
-			this->row++;
+		choice = rand() % 2;
+		if (choice) {
+			if (p_row > this->row) {
+				this->row++;
+			}
+			else if (p_row < this->row) {
+				this->row--;
+			}
+			else if (p_col > this->col) {
+				this->col++;
+			}
+			else if (p_col < this->col) {
+				this->col--;
+			}
 		}
-		else if (p_row < this->row) {
-			this->row--;
+		else {
+			if (p_col > this->col) {
+				this->col++;
+			}
+			else if (p_col < this->col) {
+				this->col--;
+			}
+			else if (p_row > this->row) {
+				this->row++;
+			}
+			else if (p_row < this->row) {
+				this->row--;
+			}
 		}
-		else if (p_col > this->col) {
-			this->col++;
-		}
-		else if (p_col < this->col) {
-			this->col--;
-		}
+		
 	}
 }
