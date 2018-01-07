@@ -317,6 +317,7 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 			case KEY_LEFT:
 				if (this->inventory_index > 0) {
 					this->inventory_index--;
+					index = 0;
 					wclear(item_description_window);
 					wrefresh(item_description_window);
 				}
@@ -346,6 +347,8 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 				break;
 		}
 	}
+	wclear(item_description_window);
+	wrefresh(item_description_window);
 }
 
 void Player::gainSouls(int souls_to_gain, WINDOW *alert_win)
