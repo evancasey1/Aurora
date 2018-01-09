@@ -84,6 +84,12 @@ int rollSpeedMod(int n)
 	return (rand() % n);
 }
 
+void cleanUp(Player *player)
+{
+	//Final clean up method to clear up memory leaks (of which there are probably several at the moment)
+	delete player;
+}
+
 void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
 	Enemy *enemy = &(enemies->at(enemy_index));
@@ -137,9 +143,9 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 		wprintw(alert_window, "%s killed you. Game over.\n", (enemy->name).c_str());
 		wrefresh(alert_window);
 		wrefresh(player_status_window);
-		usleep(2500000);
 		endwin();
 		std::cout << "Game over.\n" << std::endl;
+		cleanUp(player);
 		exit(0);
 	}
 	if (enemy->current_health <= 0) {
@@ -317,7 +323,8 @@ void spawnEnemy(std::vector<Enemy> *enemies, Player *player, Map *map) {
 		int enemy_index = (rand() % NUM_ENEMY_TYPES);
 		std::string e_name = ENEMY_NAMES[enemy_index];
 		char e_symbol = ENEMY_SYMBOLS[enemy_index];
-		enemies->push_back(*(new Enemy(e_name, e_symbol, player->row, player->col, player->vision, map->size, player->level)));
+		Enemy tempE(e_name, e_symbol, player->row, player->col, player->vision, map->size, player->level);
+		enemies->push_back(tempE);
 	}
 }
 
@@ -448,7 +455,7 @@ void mainGameLoop(Player *player, Map *map)
 	endwin();
 }
 
-Player* userCreatePlayer()
+Player userCreatePlayer()
 {
 	//TODO:
 	//	Attribute selection
@@ -501,10 +508,11 @@ Player* userCreatePlayer()
 	clear();
 	refresh();
 	free(player_description_window);
-	return new Player(options[chosen_index]);
+	Player player(options[chosen_index]);
+	return player;
 }
 
-Map* userCreateMap()
+Map userCreateMap()
 {
 	//TODO:
 	//	Support for custom map size
@@ -548,7 +556,8 @@ Map* userCreateMap()
 	}
 	clear();
 	refresh();
-	return new Map(MAP_SIZES[chosen_index]);
+	Map map(MAP_SIZES[chosen_index]);
+	return map;
 }
 
 int main(int argc, char *argv[]) 
@@ -574,11 +583,11 @@ int main(int argc, char *argv[])
 	init_pair(1, COLOR_BLACK, COLOR_WHITE); //default day: MAP
 	// END COLORS //
 
-	Map *map = userCreateMap();
+	Map map = userCreateMap();
 
 	printTitle();
-	Player *player = userCreatePlayer();
-	player->setPosition((int)map->size/2, (int)map->size/2);
+	Player player = userCreatePlayer();
+	player.setPosition((int)map.size/2, (int)map.size/2);
 
 	int map_height = 30, map_width = 50;
 	int com_height = 14, com_width = 50;
@@ -598,7 +607,7 @@ int main(int argc, char *argv[])
 	scrollok(inventory_window, true);
 	scrollok(loot_window, true);
 
-	mainGameLoop(player, map);
+	mainGameLoop(&player, &map);
 
 	return 0;
 }

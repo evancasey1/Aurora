@@ -40,7 +40,7 @@ Map::MapSection Map::getMapSectionFromIndex(int row, int col)
 void Map::printPlayerInfo(Player player, WINDOW *map_window)
 {
 	wmove(map_window, 1, 0);
-	wprintw(map_window, "X: %d Y: %d     Moves: %d/%d\n", player.col, abs(player.row - (this->size - 1)), player.used_moves, player.allowed_moves);
+	wprintw(map_window, "X: %d Y: %d     Moves: %d\n", player.col, abs(player.row - (this->size - 1)), player.allowed_moves - player.used_moves);
 	wrefresh(map_window);
 }
 

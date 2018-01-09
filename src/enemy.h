@@ -56,14 +56,13 @@ class Enemy
 		double level_up_multiplier_health;
 		double level_up_multiplier_damage;
 		std::string name;
+		int seek_moves;
+		int idle_moves;
 
 		struct Equipment {
 			std::vector<Weapon> weapons;
 		};
 
-	private:		
-		int seek_moves;
-		int idle_moves;
 };
 
 #endif
