@@ -15,6 +15,7 @@
 #include "enemy.h"
 #include "map.h"
 #include "equipment.h"
+#include "colors.h"
 
 /* Begin globals */
 const int MAP_SIZES[3] = {50, 100, 150};
@@ -23,6 +24,7 @@ const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
 const int NUM_ENEMY_TYPES = 5;
+const int SPEED_ROLL = 5;
 bool is_daytime = true;
 int day_turns = 70;
 int night_turns = 30;
@@ -48,7 +50,6 @@ WINDOW *loot_window;
 WINDOW *power_status_window;
 WINDOW *item_description_window;
 
-
 const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
 									 "       :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+:   :+: :+: ",
 									 "     +:+   +:+  +:+    +:+ +:+    +:+ +:+    +:+ +:+    +:+  +:+   +:+ ",
@@ -62,11 +63,11 @@ void printSouls(Player *player)
 {
 	wclear(power_status_window);
 	if (player->souls == player->souls_cap) {
-		wattron(power_status_window, COLOR_PAIR(8));
+		wattron(power_status_window, Color::YellowBlack);
 	}
 	wprintw(power_status_window, "SOULS: %d/%d", player->souls, player->souls_cap);
 	wrefresh(power_status_window);
-	wattroff(power_status_window, COLOR_PAIR(8));
+	wattroff(power_status_window, Color::YellowBlack);
 }
 
 bool checkIfAttackHit(double accuracy, double evasion) 
@@ -84,12 +85,6 @@ int rollSpeedMod(int n)
 	return (rand() % n);
 }
 
-void cleanUp(Player *player)
-{
-	//Final clean up method to clear up memory leaks (of which there are probably several at the moment)
-	delete player;
-}
-
 void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
 	Enemy *enemy = &(enemies->at(enemy_index));
@@ -98,8 +93,8 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 	int enemy_attack_power =  enemy->computeAttackPower() * (1 - player->current_protection);
 	bool player_hit = checkIfAttackHit((player->primary_weapon->accuracy + player->accuracy), enemy->current_evasion);
 	bool enemy_hit  = checkIfAttackHit(enemy->accuracy, player->current_evasion);
-	int p_speed = player->speed + rollSpeedMod(5);
-	int e_speed = enemy->speed + rollSpeedMod(5);
+	int p_speed = player->speed + rollSpeedMod(SPEED_ROLL);
+	int e_speed = enemy->speed + rollSpeedMod(SPEED_ROLL);
 
 	if (p_speed > e_speed) {
 		if (!player_hit) {
@@ -145,16 +140,15 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 		wrefresh(player_status_window);
 		endwin();
 		std::cout << "Game over.\n" << std::endl;
-		cleanUp(player);
 		exit(0);
 	}
 	if (enemy->current_health <= 0) {
 		wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
-		wattroff(alert_window, COLOR_PAIR(5));
-		wattron(alert_window, COLOR_PAIR(6));
+		wattroff(alert_window, Color::RedBlack);
+		wattron(alert_window, Color::GreenBlack);
 		wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
-		wattroff(alert_window, COLOR_PAIR(6));
-		wattron(alert_window, COLOR_PAIR(5));
+		wattroff(alert_window, Color::GreenBlack);
+		wattron(alert_window, Color::RedBlack);
 		printSouls(player);
 		player->gainExp(enemy->XP, alert_window);
 		player->gainSouls(enemy->souls, alert_window);
@@ -340,7 +334,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 {
 	int index = 0;
 	double distance;
-	wattron(alert_window, COLOR_PAIR(5)); //turn on enemy color scheme while enemy events are active
+	wattron(alert_window, Color::RedBlack); //turn on enemy color scheme while enemy events are active
 	for (auto &e : *enemies) {
 		distance = getDistance(player->col, player->row, e.col, e.row);
 		if (distance <= (double) e.vision) {
@@ -368,7 +362,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 	deleteDefeatedEnemies(enemies);
 	spawnEnemy(enemies, player, map);
 
-	wattroff(alert_window, COLOR_PAIR(1));
+	wattroff(alert_window, Color::BlackWhite);
 }
 
 void printTitle()
@@ -595,6 +589,9 @@ int main(int argc, char *argv[])
 	int inv_height = 20, inv_width = 30;
 	int inv_row = 22, inv_col = MAP_HORIZONTAL_PADDING;
 
+
+	//TODO:
+	//	have window generation depend on size of terminal, or resize it as necessary
 	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
 	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
 	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);

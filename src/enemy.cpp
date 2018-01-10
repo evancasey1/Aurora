@@ -9,6 +9,7 @@
 #include <cmath>
 #include <math.h>
 #include "enemy.h"
+#include "colors.h"
 
 template<typename Out>
 static void split(const std::string &s, char delim, Out result) {
@@ -149,11 +150,11 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 		}
 	}
 	if (dropped) {
-		wattroff(alert_win, COLOR_PAIR(5));
-		wattron(alert_win, COLOR_PAIR(6));
+		wattroff(alert_win, Color::RedBlack);
+		wattron(alert_win, Color::GreenBlack);
 		wprintw(alert_win, "%s dropped loot.\n", (this->name).c_str());
-		wattroff(alert_win, COLOR_PAIR(6));
-		wattron(alert_win, COLOR_PAIR(5));
+		wattroff(alert_win, Color::GreenBlack);
+		wattron(alert_win, Color::RedBlack);
 		obj->l_id = unique_loot_id;
 		unique_loot_id++;
 		loot->push_back(*obj);

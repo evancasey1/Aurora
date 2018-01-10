@@ -7,6 +7,7 @@
 #include <cmath>
 #include "player.h"
 #include "enemy.h"
+#include "colors.h"
 
 template<typename Out>
 static void split(const std::string &s, char delim, Out result) {
@@ -357,12 +358,12 @@ void Player::gainSouls(int souls_to_gain, WINDOW *alert_win)
 	if (this->souls > souls_cap) {
 		this->souls = souls_cap;
 	}
-	wattroff(alert_win, COLOR_PAIR(5));
-	wattron(alert_win, COLOR_PAIR(6));
+	wattroff(alert_win, Color::RedBlack);
+	wattron(alert_win, Color::GreenBlack);
 	wprintw(alert_win, "Acquired %d souls.\n", souls_to_gain);
 	wrefresh(alert_win);
-	wattroff(alert_win, COLOR_PAIR(6));
-	wattron(alert_win, COLOR_PAIR(5));
+	wattroff(alert_win, Color::GreenBlack);
+	wattron(alert_win, Color::RedBlack);
 }
 
 void Player::levelUp(WINDOW *alert_win)
@@ -370,12 +371,12 @@ void Player::levelUp(WINDOW *alert_win)
 	this->current_xp -= this->current_xp_cap;
 	this->level++;
 	this->current_xp_cap *= this->level_up_multiplier_xp;
-	wattroff(alert_win, COLOR_PAIR(5));
-	wattron(alert_win, COLOR_PAIR(7));
+	wattroff(alert_win, Color::RedBlack);
+	wattron(alert_win, Color::CyanBlack);
 	wprintw(alert_win, "Level up! %d -> %d\n", this->level - 1, this->level);
 	wrefresh(alert_win);
-	wattroff(alert_win, COLOR_PAIR(7));
-	wattron(alert_win, COLOR_PAIR(5));
+	wattroff(alert_win, Color::CyanBlack);
+	wattron(alert_win, Color::RedBlack);
 	this->base_total_health = std::ceil(this->base_total_health * this->level_up_multiplier_health);
 	this->base_damage = std::ceil(this->base_damage * this->level_up_multiplier_damage);
 	this->current_total_health = this->base_total_health;
@@ -405,10 +406,10 @@ void Player::printStatus(WINDOW *player_window)
 	wprintw(player_window, "Health: ");
 	//If health is below a certain threshold display it in red
 	if (this->current_health <= (int)(0.25 * this->current_total_health)) {
-		wattron(player_window, COLOR_PAIR(5));
+		wattron(player_window, Color::RedBlack);
 	}
 	wprintw(player_window, "%d/%d\n", this->current_health, this->current_total_health);
-	wattroff(player_window, COLOR_PAIR(5));
+	wattroff(player_window, Color::RedBlack);
 	wprintw(player_window, "Level: %d        XP: %d/%d\n", this->level, this->current_xp, this->current_xp_cap);
 	wrefresh(player_window);
 }
