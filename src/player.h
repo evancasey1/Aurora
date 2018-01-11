@@ -20,7 +20,7 @@ class Player
 		};
 
 		Player(std::string race);
-		bool moveSpace(int direction, int map_size, WINDOW *player_window);
+		bool moveSpace(int direction, int map_size, WINDOW *player_window, std::vector<Enemy> enemies);
 		void pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total_index, int current_vect_index, int current_item_index, std::vector<Equipment> *equipment_at_loc, std::vector<Enemy::Loot> *loot_at_loc, std::vector<int> *loot_indices, WINDOW *inventory_window, WINDOW *alert_window);
 		int getRow();
 		int getCol();
@@ -36,6 +36,7 @@ class Player
 		void levelUp(WINDOW *alert_win);
 		void foodEvents();
 		void setClassAttributes();
+		bool enemyAtLocation(int row, int col, std::vector<Enemy> enemies);
 
 		Inventory inventory;
 		std::vector<Food> active_food;
