@@ -217,15 +217,17 @@ manageLoot:
 void manageLoot(Player *player, int loot_row, int loot_col) 
 {
 	int ch;
-	std::vector<int> loot_indices;
-	std::vector<Enemy::Loot> loot_at_loc;
-	std::vector<Equipment> equipment_at_loc;
+	std::vector<int> loot_indices; //Valid indices for loot, vect_index tracks this.
+	std::vector<Enemy::Loot> loot_at_loc; //All loot objects at the specified row and column
+	std::vector<Equipment> equipment_at_loc; //Loot broken down into weapon and food components and stored as Equipment
 	std::string obj_name;
 	int current_item_index = 0;
 	int current_vect_index = 0;
 	int current_total_index = 0;
 	int combined_size = 0;
 
+	//The following loops populate the vectors in order
+	//for loot to be managed
 	for (int i = 0; i < loot.size(); i++) {
 		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
 			combined_size = (loot.at(i).weapons.size() + loot.at(i).food.size()) - 1;
@@ -233,6 +235,11 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 			loot_at_loc.push_back(loot.at(i));
 		}
 	}
+
+	if (loot_at_loc.size() == 0) {
+		return;
+	}
+
 	for (int j = 0; j < loot_at_loc.size(); j++) {
 		for (int w = 0; w < loot_at_loc.at(j).weapons.size(); w++) {
 			equipment_at_loc.push_back(loot_at_loc.at(j).weapons.at(w));
@@ -240,10 +247,6 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 		for (int f = 0; f < loot_at_loc.at(j).food.size(); f++) {
 			equipment_at_loc.push_back(loot_at_loc.at(j).food.at(f));
 		}
-	}
-
-	if (loot_at_loc.size() == 0) {
-		return;
 	}
 
 	while(true) {
@@ -379,7 +382,6 @@ void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
 	bool passive_turn = false;
-	//int loot_size;
 	std::vector<Enemy> enemies;	
 	map->printPlayerInfo(*player, map_window);
 	map->printMap(player, player->vision, enemies, loot, map_window);
@@ -554,6 +556,42 @@ Map userCreateMap()
 	return map;
 }
 
+void initiateWindows()
+{
+	int map_height = 30, map_width = 50;
+	int com_height = 14, com_width = 50;
+	int ps_height  = 2 , ps_width = map_width + com_width;
+	int inv_height = 20, inv_width = 30;
+	int inv_row = 22, inv_col = MAP_HORIZONTAL_PADDING;
+
+	//TODO:
+	//	have window generation depend on size of terminal, or resize it as necessary
+	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
+	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
+	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
+	inventory_window = newwin(inv_height, inv_width, inv_row, inv_col);
+	loot_window = newwin(inv_height, inv_width, inv_row, inv_col);
+	power_status_window = newwin(1, 30, 50, MAP_HORIZONTAL_PADDING);
+	item_description_window = newwin(30, 30, 22, 60);
+	scrollok(alert_window, true);
+	scrollok(inventory_window, true);
+	scrollok(loot_window, true);
+}
+
+void initiateColorPairs()
+{
+	// START COLORS //
+	init_pair(8, COLOR_YELLOW, COLOR_BLACK);//full souls
+	init_pair(7, COLOR_CYAN, COLOR_BLACK);  //Level up
+	init_pair(6, COLOR_GREEN, COLOR_BLACK); //XP gain
+	init_pair(5, COLOR_RED, COLOR_BLACK);   //enemy alert: MAIN
+	init_pair(4, COLOR_BLUE, COLOR_WHITE);  //player: MAP
+	init_pair(3, COLOR_RED, COLOR_WHITE);   //enemy: MAP
+	init_pair(2, COLOR_WHITE, COLOR_BLACK); //default night: MAP
+	init_pair(1, COLOR_BLACK, COLOR_WHITE); //default day: MAP
+	// END COLORS //
+}
+
 int main(int argc, char *argv[]) 
 {
 	//Map map;
@@ -565,44 +603,14 @@ int main(int argc, char *argv[])
 	keypad(stdscr, true);
 	curs_set(0);
 	start_color();
-
-	// START COLORS //
-	init_pair(8, COLOR_YELLOW, COLOR_BLACK);//full souls
-	init_pair(7, COLOR_CYAN, COLOR_BLACK);  //Level up
-	init_pair(6, COLOR_GREEN, COLOR_BLACK); //XP gain
-	init_pair(5, COLOR_RED, COLOR_BLACK);   //enemy alert: MAIN
-	init_pair(4, COLOR_BLUE, COLOR_WHITE);  //player: MAP
-	init_pair(3, COLOR_RED, COLOR_WHITE);   //enemy: MAP
-	init_pair(2, COLOR_WHITE, COLOR_BLACK); //default night: MAP
-	init_pair(1, COLOR_BLACK, COLOR_WHITE); //default day: MAP
-	// END COLORS //
+	initiateColorPairs();
+	initiateWindows();
 
 	Map map = userCreateMap();
-
 	printTitle();
+
 	Player player = userCreatePlayer();
 	player.setPosition((int)map.size/2, (int)map.size/2);
-
-	int map_height = 30, map_width = 50;
-	int com_height = 14, com_width = 50;
-	int ps_height  = 2 , ps_width = map_width + com_width;
-	int inv_height = 20, inv_width = 30;
-	int inv_row = 22, inv_col = MAP_HORIZONTAL_PADDING;
-
-
-	//TODO:
-	//	have window generation depend on size of terminal, or resize it as necessary
-	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
-	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
-	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
-	inventory_window = newwin(inv_height, inv_width, inv_row, inv_col);
-	loot_window = newwin(inv_height, inv_width, inv_row, inv_col);
-	power_status_window = newwin(1, 30, 50, MAP_HORIZONTAL_PADDING);
-	item_description_window = newwin(30, 30, 22, 60);
-	
-	scrollok(alert_window, true);
-	scrollok(inventory_window, true);
-	scrollok(loot_window, true);
 
 	mainGameLoop(&player, &map);
 

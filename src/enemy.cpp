@@ -122,30 +122,29 @@ int Enemy::computeAttackPower() {
 }
 
 void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
-	//Loot calculations
+	static long unique_loot_id = 0;
 	double loot_chance_roll;
 	bool dropped = false;
-	static long unique_loot_id = 0;
-	Loot *obj = new Loot();
+	Loot loot_obj;
 	for (int i = 0; i < this->number_drops_possible; i++) {
 		loot_chance_roll  = ((double) rand() / RAND_MAX);
 		if (this->loot_drop_chance >= loot_chance_roll) {
 			//Generate loot
 			//Drop loot on map
 			dropped = true;
-			obj->row = this->row;
-			obj->col = this->col;
-			obj->dropped_by = this->name;
+			loot_obj.row = this->row;
+			loot_obj.col = this->col;
+			loot_obj.dropped_by = this->name;
 			
 			if (this->name == "Wolf") {
 				//Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers);
-				obj->food.push_back(*(new Food("Wolf Meat", 4, 1, 5, 3)));
+				loot_obj.food.push_back(Food("Wolf Meat", 4, 1, 5, 3));
 			}
 			else if (this->name == "Bear") {
-				obj->food.push_back(*(new Food("Bear Meat", 6, 2, 4, 2)));
+				loot_obj.food.push_back(Food("Bear Meat", 6, 2, 4, 2));
 			}
 			else {
-				obj->weapons.push_back(*(new Weapon()));
+				loot_obj.weapons.push_back(Weapon());
 			}
 		}
 	}
@@ -155,9 +154,10 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 		wprintw(alert_win, "%s dropped loot.\n", (this->name).c_str());
 		wattroff(alert_win, Color::GreenBlack);
 		wattron(alert_win, Color::RedBlack);
-		obj->l_id = unique_loot_id;
+
+		loot_obj.l_id = unique_loot_id;
 		unique_loot_id++;
-		loot->push_back(*obj);
+		loot->push_back(loot_obj);
 	}
 	wrefresh(alert_win);
 }

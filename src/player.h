@@ -37,6 +37,7 @@ class Player
 		void foodEvents();
 		void setClassAttributes();
 		bool enemyAtLocation(int row, int col, std::vector<Enemy> enemies);
+		void passiveHealthRegeneration(WINDOW *p_win);
 
 		Inventory inventory;
 		std::vector<Food> active_food;

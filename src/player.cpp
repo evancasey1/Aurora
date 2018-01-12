@@ -442,32 +442,11 @@ bool Player::enemyAtLocation(int row, int col, std::vector<Enemy> enemies)
 	return false;
 }
 
-//Returns true if the movement was valid, false otherwise
-bool Player::moveSpace(int direction, int map_size, WINDOW *player_window, std::vector<Enemy> enemies)
+//Only passively regenerate on active moves (no skips)
+//This promotes active gameplay
+//Also only do if health is not capped
+void Player::passiveHealthRegeneration(WINDOW *player_window)
 {
-	switch (direction) {
-		case KEY_UP:
-			if (this->row == 0 || enemyAtLocation(this->row - 1, this->col, enemies)) return false;
-			this->row--;
-			break;
-		case KEY_DOWN:
-			if (this->row == map_size-1 || enemyAtLocation(this->row + 1, this->col, enemies)) return false;
-			this->row++;
-			break;
-		case KEY_LEFT:
-			if (this->col == 0 || enemyAtLocation(this->row, this->col - 1, enemies)) return false;
-			this->col--;
-			break;
-		case KEY_RIGHT:
-			if (this->col == map_size-1 || enemyAtLocation(this->row, this->col + 1, enemies)) return false;
-			this->col++;
-			break;
-		default:
-			break;
-	}
-	//Only passively regenerate on active moves (no skips)
-	//This promotes active gameplay
-	//Also only do if health is not capped
 	if (this->current_health < this->current_total_health) {
 		this->passive_health_regen_counter++;
 		if (this->passive_health_regen_counter == this->passive_health_regen_trigger) {
@@ -476,7 +455,33 @@ bool Player::moveSpace(int direction, int map_size, WINDOW *player_window, std::
 		}
 		this->printStatus(player_window);
 	}
+}
+
+//Returns true if the movement was valid, false otherwise
+bool Player::moveSpace(int direction, int map_size, WINDOW *player_window, std::vector<Enemy> enemies)
+{
+	switch (direction) {
+		case KEY_UP:
+			if (this->row == 0) return false;
+			this->row--;
+			break;
+		case KEY_DOWN:
+			if (this->row == map_size-1) return false;
+			this->row++;
+			break;
+		case KEY_LEFT:
+			if (this->col == 0) return false;
+			this->col--;
+			break;
+		case KEY_RIGHT:
+			if (this->col == map_size-1) return false;
+			this->col++;
+			break;
+		default:
+			break;
+	}
 	
+	passiveHealthRegeneration(player_window);
 	return true;
 }
 
