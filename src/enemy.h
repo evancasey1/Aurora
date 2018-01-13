@@ -35,7 +35,7 @@ class Enemy
 		int row;
 		int souls;
 		int col;
-		int lifespan;
+		int level;
 		int vision;
 		int current_health;
 		int total_health;

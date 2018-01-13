@@ -30,6 +30,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 {
 	this->name = e_name;
 	this->symbol = e_symbol;
+	this->level = e_level;
 	/* ENEMY ATTRIBUTES */
 	std::ifstream infile("enemyAttributes.txt");
 	std::string line;
@@ -144,7 +145,7 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
 				loot_obj.food.push_back(Food("Bear Meat", 6, 2, 4, 2));
 			}
 			else {
-				loot_obj.weapons.push_back(Weapon());
+				loot_obj.weapons.push_back(Weapon(this->level));
 			}
 		}
 	}

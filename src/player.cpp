@@ -60,17 +60,9 @@ Player::Player(std::string p_class)
 
 	//placeholder. For debugging only
 	//Player creation will be overhauled later
-	/*
+	
 	this->base_total_health = 5000;
-	this->speed = 2.0;
-	this->crit_chance = 0.05;
-	this->allowed_moves = 1;
-	this->accuracy = 0.00;
-	this->level_up_multiplier_health = 1.2;
-	this->base_damage = 1;
-	this->base_protection = 0.00;
-	this->base_evasion = 0.00;
-	*/
+	
 	//These attributes are constant for all player types
 	this->current_total_health = this->base_total_health;
 	this->current_health = this->base_total_health;
