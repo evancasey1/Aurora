@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
+#include <iterator>
 #include "player.h"
 #include "enemy.h"
 #include "colors.h"
@@ -36,6 +38,7 @@ Player::Player(std::string p_class)
 	this->inventory.weapon_capacity = 8;
 	this->inventory.weapon_count = 0;
 	this->inventory.food_count = 3;
+	this->race = p_class;
 
 	std::ifstream infile("playerAttributes.txt");
 	std::string line;
@@ -270,14 +273,30 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 		}
 	}
 	wrefresh(inv_window);
-	
 }
 
-void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, WINDOW *alert_win)
+int findValidLootID(std::vector<Enemy::Loot> loot)
+{
+	std::vector<int> used_ids;
+	int new_id = 0;
+	for (int i = 0; i < loot.size(); i++) {
+		used_ids.push_back(loot.at(i).l_id);
+	}
+	while(true) {
+		if (!(std::find(used_ids.begin(), used_ids.end(), new_id) != used_ids.end())) {
+			return new_id;
+		}
+		new_id++;
+	}
+}
+
+void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, WINDOW *alert_win, std::vector<Enemy::Loot> *loot)
 {
 	int ch;
 	int index = 0;
 	Weapon temp;
+	Enemy::Loot loot_obj;
+	bool valid_drop = false;
 	std::vector<Weapon> *weapon_vect;
 	WINDOW *item_description_window = newwin(30, 30, 22, 60);
 	while (true) {
@@ -323,11 +342,39 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 					this->setPrimaryWeapon(temp);
 					wprintw(alert_win, "Equipped %s\n", (this->primary_weapon->name).c_str());
 					wrefresh(alert_win);
+					index = 0;
 				}
 				else if (this->inventory_index == 1 && this->inventory.food.size() > 0) {
 					this->eatFood(&this->inventory.food.at(index), player_status_window);
 					this->inventory.food.erase(this->inventory.food.begin() + index);
 					index = 0;
+				}
+				break;
+			case 'd':
+				loot_obj.food.clear();
+				loot_obj.weapons.clear();
+
+				if (this->inventory_index == 0 && this->inventory.weapons.size() > 0) {
+					loot_obj.weapons.push_back(this->inventory.weapons.at(index));
+					this->inventory.weapons.erase(this->inventory.weapons.begin() + index);
+					this->inventory.weapon_count--;
+					valid_drop = true;
+				}
+				else if (this->inventory_index == 1 && this->inventory.food.size() > 0) {
+					loot_obj.food.push_back(this->inventory.food.at(index));
+					this->inventory.food.erase(this->inventory.food.begin() + index);	
+					this->inventory.food_count--;
+					valid_drop = true;
+				}
+
+				if (valid_drop) {
+					loot_obj.l_id = findValidLootID(*loot);
+					loot_obj.row = this->row;
+					loot_obj.col = this->col;
+					loot_obj.dropped_by = this->race;
+					loot->push_back(loot_obj);
+					index = 0;
+					valid_drop = false;
 				}
 				break;
 			case 'e':

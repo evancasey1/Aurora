@@ -30,7 +30,7 @@ class Player
 		void gainExp(int xp, WINDOW *p_window);
 		void gainSouls(int souls_to_gain, WINDOW *p_window);
 		void printInventory(WINDOW *inv_window, int index, WINDOW *item_window);
-		void manageInventory(WINDOW *inv_window, WINDOW *player_window, WINDOW *alert_win);
+		void manageInventory(WINDOW *inv_window, WINDOW *player_window, WINDOW *alert_win, std::vector<Enemy::Loot> *loot);
 		void setPrimaryWeapon(Weapon weapon);
 		void eatFood(Food *food, WINDOW *player_window);
 		void levelUp(WINDOW *alert_win);
