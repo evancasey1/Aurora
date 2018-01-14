@@ -223,7 +223,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 	if (this->inventory_index == 0) {
 		std::vector<Weapon>::iterator iter;
 		wattron(inv_window, A_BOLD);
-		wprintw(inv_window, "WEAPONS ->\n");
+		wprintw(inv_window, "WEAPONS [%d/%d] ->\n", this->inventory.weapon_count, this->inventory.weapon_capacity);
 		wattroff(inv_window, A_BOLD);
 		if (this->inventory.weapons.size() == 0) {
 			wprintw(inv_window, "<EMPTY>");
@@ -249,7 +249,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 	else if (this->inventory_index == 1) {
 		std::vector<Food>::iterator iter;
 		wattron(inv_window, A_BOLD);
-		wprintw(inv_window, "<- FOOD\n");
+		wprintw(inv_window, "<- FOOD [%d/%d]\n", this->inventory.food_count, this->inventory.food_capacity);
 		wattroff(inv_window, A_BOLD);
 		if (this->inventory.food.size() == 0) {
 			wprintw(inv_window, "<EMPTY>");

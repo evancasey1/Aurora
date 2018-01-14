@@ -288,6 +288,8 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 				current_item_index = 0;
 				current_vect_index = 0;
 				current_total_index = 0;
+				wclear(item_description_window);
+				wrefresh(item_description_window);
 				break;
 			case 'l': case 'e':
 				wclear(inventory_window);
