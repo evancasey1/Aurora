@@ -9,7 +9,7 @@
 #include <iterator>
 #include "player.h"
 #include "enemy.h"
-#include "colors.h"
+#include "color.h"
 
 template<typename Out>
 static void split(const std::string &s, char delim, Out result) {
@@ -34,10 +34,13 @@ Player::Player(std::string p_class)
 	for (int i = 0; i < 3; i++) {
 		this->inventory.food.push_back(*start_food);
 	}
-	this->inventory.food_capacity = 5;
-	this->inventory.weapon_capacity = 8;
-	this->inventory.weapon_count = 0;
+	this->inventory.food_capacity = 3;
+	this->inventory.weapon_capacity = 3;
+	this->inventory.armor_capacity = 3;
 	this->inventory.food_count = 3;
+	this->inventory.armor_count = 0;
+	this->inventory.weapon_count = 0;
+
 	this->race = p_class;
 
 	std::ifstream infile("playerAttributes.txt");
@@ -79,7 +82,7 @@ Player::Player(std::string p_class)
 	this->passive_health_regen_trigger = 50;
 	this->passive_health_regen_amount = 1;
 	this->inventory_index = 0;
-	this->max_inventory_index = 1;
+	this->max_inventory_index = 2;
 	this->souls_cap = 25;
 	this->souls = 0;
 	this->souls_multiplier = 1.15;
@@ -123,7 +126,7 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 	*/
 	if (equipment_at_loc->at(current_total_index).equipment_id == 0) {
 		if (this->inventory.weapon_count == this->inventory.weapon_capacity) {
-			wprintw(alert_window, "Insufficient space in weapon pouch\n");
+			wprintw(alert_window, "Insufficient space in weapon pouch.\n");
 			wrefresh(alert_window);
 		}
 		else {
@@ -141,7 +144,7 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 	*/
 	else if (equipment_at_loc->at(current_total_index).equipment_id == 1) {
 		if (this->inventory.food_count == this->inventory.food_capacity) {
-			wprintw(alert_window, "Insufficient space in food reserves\n");
+			wprintw(alert_window, "Insufficient space in food reserves.\n");
 			wrefresh(alert_window);
 		}
 		else {
@@ -149,6 +152,24 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 			this->inventory.food_count++;
 			loot_iter->food.erase(loot_iter->food.begin() + current_item_index);
 			loot->at(real_loot_index).food.erase(loot->at(real_loot_index).food.begin() + current_item_index);
+			
+			loot_indices->at(current_vect_index)--;
+			equipment_at_loc->erase(equipment_iter);
+		}
+	}
+	/*
+	CASE IF ARMOR
+	*/
+	else if (equipment_at_loc->at(current_total_index).equipment_id == 2) {
+		if (this->inventory.armor_count == this->inventory.armor_capacity) {
+			wprintw(alert_window, "Insufficient space in armor bag.\n");
+			wrefresh(alert_window);
+		}
+		else {
+			this->inventory.armor.push_back(loot_at_loc->at(current_vect_index).armor.at(current_item_index));
+			this->inventory.armor_count++;
+			loot_iter->armor.erase(loot_iter->armor.begin() + current_item_index);
+			loot->at(real_loot_index).armor.erase(loot->at(real_loot_index).armor.begin() + current_item_index);
 			
 			loot_indices->at(current_vect_index)--;
 			equipment_at_loc->erase(equipment_iter);
@@ -249,7 +270,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 	else if (this->inventory_index == 1) {
 		std::vector<Food>::iterator iter;
 		wattron(inv_window, A_BOLD);
-		wprintw(inv_window, "<- FOOD [%d/%d]\n", this->inventory.food_count, this->inventory.food_capacity);
+		wprintw(inv_window, "<- FOOD [%d/%d] ->\n", this->inventory.food_count, this->inventory.food_capacity);
 		wattroff(inv_window, A_BOLD);
 		if (this->inventory.food.size() == 0) {
 			wprintw(inv_window, "<EMPTY>");
@@ -259,6 +280,32 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 			wprintw(item_description_window, "Health Gain: %d\nHeal Over Time: %d:%d:%d", this->inventory.food.at(index).initial_health_gain, this->inventory.food.at(index).health_gain_per_trigger, this->inventory.food.at(index).total_triggers, this->inventory.food.at(index).turns_until_trigger);
 			wrefresh(item_description_window);
 			for (iter = this->inventory.food.begin(); iter != this->inventory.food.end();) {
+				if (counter == index) {
+					wattron(inv_window, A_STANDOUT);
+					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+					wattroff(inv_window, A_STANDOUT);
+				}
+				else {
+					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+				}
+				++iter;
+				++counter;
+			}
+		}
+	}
+	else if (this->inventory_index == 2) {
+		std::vector<Armor>::iterator iter;
+		wattron(inv_window, A_BOLD);
+		wprintw(inv_window, "<- ARMOR [%d/%d]\n", this->inventory.armor_count, this->inventory.armor_capacity);
+		wattroff(inv_window, A_BOLD);
+		if (this->inventory.armor.size() == 0) {
+			wprintw(inv_window, "<EMPTY>");
+		}
+		else {
+			wclrtoeol(item_description_window);
+			wprintw(item_description_window, "Protection: %.2f", this->inventory.armor.at(index).protection);
+			wrefresh(item_description_window);
+			for (iter = this->inventory.armor.begin(); iter != this->inventory.armor.end();) {
 				if (counter == index) {
 					wattron(inv_window, A_STANDOUT);
 					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());

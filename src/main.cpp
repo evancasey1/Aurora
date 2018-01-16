@@ -15,7 +15,7 @@
 #include "enemy.h"
 #include "map.h"
 #include "equipment.h"
-#include "colors.h"
+#include "color.h"
 
 /* Begin globals */
 const int MAP_SIZES[3] = {50, 100, 150};

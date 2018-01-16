@@ -2,6 +2,7 @@
 #include "weapon.h"
 #include "food.h"
 #include "enemy.h"
+#include "armor.h"
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -12,11 +13,14 @@ class Player
 		struct Inventory {
 			std::vector<Weapon> weapons;
 			std::vector<Food> food;
+			std::vector<Armor> armor;
 
 			int weapon_capacity;
 			int food_capacity;
 			int weapon_count;
 			int food_count;
+			int armor_capacity;
+			int armor_count;
 		};
 
 		Player(std::string race);

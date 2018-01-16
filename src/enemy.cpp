@@ -9,7 +9,7 @@
 #include <cmath>
 #include <math.h>
 #include "enemy.h"
-#include "colors.h"
+#include "color.h"
 
 template<typename Out>
 static void split(const std::string &s, char delim, Out result) {

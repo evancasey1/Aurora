@@ -12,7 +12,7 @@ Armor::Armor(int level)
 	this->armor_type = static_cast<ArmorType>(rand() % 5);
 	this->equipment_id = 2;
 	this->level = level;
-	this->prot = std::ceil(pow(base_prot, level));
+	this->protection = std::ceil(pow(base_prot, level));
 	if (armor_type == ArmorType::Boots) {
 		this->name = "Boots";
 	}
@@ -35,6 +35,6 @@ Armor::Armor(int level, std::string name, double prot)
 	this->equipment_id = 2;
 	this->level = level;
 	this->name = name;
-	this->prot = prot;
+	this->protection = prot;
 	this->armor_type = static_cast<ArmorType>(rand() % 5);
 }

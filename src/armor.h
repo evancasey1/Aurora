@@ -9,7 +9,7 @@ class Armor : public Equipment
 		Armor(int level);
 		Armor(int level, std::string name, double prot);
 		int level;
-		double prot;
+		double protection;
 		ArmorType armor_type;
 		std::string name;
 };
