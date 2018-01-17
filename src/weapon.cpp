@@ -179,3 +179,9 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
 		this->accuracy = 0.80;
 	}
 }
+
+void Weapon::printDescription(WINDOW *item_description_window)
+{
+	wprintw(item_description_window, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->attack_power, this->attack_power + this->attack_power_range, this->accuracy, this->crit_chance);
+	wrefresh(item_description_window);
+}

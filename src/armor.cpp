@@ -38,3 +38,9 @@ Armor::Armor(int level, std::string name, double prot)
 	this->protection = prot;
 	this->armor_type = static_cast<ArmorType>(rand() % 5);
 }
+
+void Armor::printDescription(WINDOW *item_description_window)
+{
+	wprintw(item_description_window, "Protection: %.2f", this->protection);
+	wrefresh(item_description_window);
+}

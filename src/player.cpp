@@ -26,6 +26,15 @@ static std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
+template<typename Out>
+static void castToEquipment(std::vector<Equipment> *equipment, std::vector<Out> items)
+{
+	for (int i = 0; i < items.size(); i++) {
+		equipment->push_back(items.at(i));
+		equipment->at(i).name = items.at(i).name;
+	}
+}
+
 Player::Player(std::string p_class)
 {
 	this->vision = 6;
@@ -240,83 +249,61 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 	wclear(inv_window);
 	wclear(item_description_window);
 	int counter = 0;
+	std::vector<Equipment> equipment;
+	std::vector<Equipment>::iterator iter;
 
-	if (this->inventory_index == 0) {
-		std::vector<Weapon>::iterator iter;
-		wattron(inv_window, A_BOLD);
-		wprintw(inv_window, "WEAPONS [%d/%d] ->\n", this->inventory.weapon_count, this->inventory.weapon_capacity);
-		wattroff(inv_window, A_BOLD);
-		if (this->inventory.weapons.size() == 0) {
-			wprintw(inv_window, "<EMPTY>");
-		}
-		else {
-			wclrtoeol(item_description_window);
-			wprintw(item_description_window, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->inventory.weapons.at(index).attack_power, this->inventory.weapons.at(index).attack_power + this->inventory.weapons.at(index).attack_power_range, this->inventory.weapons.at(index).accuracy, this->inventory.weapons.at(index).crit_chance);
-			wrefresh(item_description_window);
-			for (iter = this->inventory.weapons.begin(); iter != this->inventory.weapons.end();) {
-				if (counter == index) {
-					wattron(inv_window, A_STANDOUT);
-					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-					wattroff(inv_window, A_STANDOUT);
-				}
-				else {
-					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-				}
-				++iter;
-				++counter;
-			}
-		}
+	wattron(inv_window, A_BOLD);
+	switch(this->inventory_index) {
+		case 0:
+			wprintw(inv_window, "WEAPONS [%d/%d] ->\n", this->inventory.weapon_count, this->inventory.weapon_capacity);
+			castToEquipment(&equipment, this->inventory.weapons);
+			break;
+		case 1:
+			wprintw(inv_window, "<- FOOD [%d/%d] ->\n", this->inventory.food_count, this->inventory.food_capacity);
+			castToEquipment(&equipment, this->inventory.food);
+			break;
+		case 2:
+			wprintw(inv_window, "<- ARMOR [%d/%d]\n", this->inventory.armor_count, this->inventory.armor_capacity);
+			castToEquipment(&equipment, this->inventory.armor);
+			break;
+		default:
+			return;
 	}
-	else if (this->inventory_index == 1) {
-		std::vector<Food>::iterator iter;
-		wattron(inv_window, A_BOLD);
-		wprintw(inv_window, "<- FOOD [%d/%d] ->\n", this->inventory.food_count, this->inventory.food_capacity);
-		wattroff(inv_window, A_BOLD);
-		if (this->inventory.food.size() == 0) {
-			wprintw(inv_window, "<EMPTY>");
-		}
-		else {
-			wclrtoeol(item_description_window);
-			wprintw(item_description_window, "Health Gain: %d\nHeal Over Time: %d:%d:%d", this->inventory.food.at(index).initial_health_gain, this->inventory.food.at(index).health_gain_per_trigger, this->inventory.food.at(index).total_triggers, this->inventory.food.at(index).turns_until_trigger);
-			wrefresh(item_description_window);
-			for (iter = this->inventory.food.begin(); iter != this->inventory.food.end();) {
-				if (counter == index) {
-					wattron(inv_window, A_STANDOUT);
-					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-					wattroff(inv_window, A_STANDOUT);
-				}
-				else {
-					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-				}
-				++iter;
-				++counter;
-			}
-		}
+	wattroff(inv_window, A_BOLD);
+
+
+	if (equipment.size() == 0) {
+		wprintw(inv_window, "<EMPTY>");
 	}
-	else if (this->inventory_index == 2) {
-		std::vector<Armor>::iterator iter;
-		wattron(inv_window, A_BOLD);
-		wprintw(inv_window, "<- ARMOR [%d/%d]\n", this->inventory.armor_count, this->inventory.armor_capacity);
-		wattroff(inv_window, A_BOLD);
-		if (this->inventory.armor.size() == 0) {
-			wprintw(inv_window, "<EMPTY>");
+	else {
+		wclrtoeol(item_description_window);
+
+		//The following can probably be done far more elegantly with function pointers
+		switch(this->inventory_index) {
+			case 0:
+				this->inventory.weapons.at(index).printDescription(item_description_window);
+				break;
+			case 1:
+				this->inventory.food.at(index).printDescription(item_description_window);
+				break;
+			case 2:
+				this->inventory.armor.at(index).printDescription(item_description_window);
+				break;
+			default:
+				return;
 		}
-		else {
-			wclrtoeol(item_description_window);
-			wprintw(item_description_window, "Protection: %.2f", this->inventory.armor.at(index).protection);
-			wrefresh(item_description_window);
-			for (iter = this->inventory.armor.begin(); iter != this->inventory.armor.end();) {
-				if (counter == index) {
-					wattron(inv_window, A_STANDOUT);
-					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-					wattroff(inv_window, A_STANDOUT);
-				}
-				else {
-					wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-				}
-				++iter;
-				++counter;
+
+		for (iter = equipment.begin(); iter != equipment.end();) {
+			if (counter == index) {
+				wattron(inv_window, A_STANDOUT);
+				wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+				wattroff(inv_window, A_STANDOUT);
 			}
+			else {
+				wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+			}
+			++iter;
+			++counter;
 		}
 	}
 	wrefresh(inv_window);
