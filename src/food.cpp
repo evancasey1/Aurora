@@ -2,10 +2,11 @@
 #include <cstdlib>
 #include <ctime>
 #include "food.h"
+#include "equipmenttype.h"
 
 Food::Food() 
 {
-	this->equipment_id = 1;
+	this->equipment_id = static_cast<int>(EquipmentType::Food);
 	this->initial_health_gain = 5;     
 	this->health_gain_per_trigger = 2; 
 	this->turns_until_trigger = 5;

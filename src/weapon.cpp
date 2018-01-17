@@ -4,10 +4,11 @@
 #include <cmath>
 #include <math.h>
 #include "weapon.h"
+#include "equipmenttype.h"
 
 Weapon::Weapon() {
 	//Random weapon generation
-	this->equipment_id = 0;
+	this->equipment_id = static_cast<int>(EquipmentType::Weapon);
 	this->ENHANCED_CHANCE = 0.20;
 	this->LEGENDARY_CHANCE = 0.02;
 	this->ENHANCED_MOD = 1.25;

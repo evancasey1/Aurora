@@ -5,12 +5,13 @@
 #include <math.h>
 #include "armor.h"
 #include "armortype.h"
+#include "equipmenttype.h"
 
 Armor::Armor(int level) 
 {
 	double base_prot = 0.05;
 	this->armor_type = static_cast<ArmorType>(rand() % 5);
-	this->equipment_id = 2;
+	this->equipment_id = static_cast<int>(EquipmentType::Armor);
 	this->level = level;
 	this->protection = std::ceil(pow(base_prot, level));
 	if (armor_type == ArmorType::Boots) {

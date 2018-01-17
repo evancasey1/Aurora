@@ -10,6 +10,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "color.h"
+#include "equipmenttype.h"
 
 template<typename Out>
 static void split(const std::string &s, char delim, Out result) {
@@ -254,16 +255,16 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 
 	wattron(inv_window, A_BOLD);
 	switch(this->inventory_index) {
-		case 0:
+		case static_cast<int>(EquipmentType::Weapon):
 			wprintw(inv_window, "WEAPONS [%d/%d] ->\n", this->inventory.weapon_count, this->inventory.weapon_capacity);
 			castToEquipment(&equipment, this->inventory.weapons);
 			break;
-		case 1:
-			wprintw(inv_window, "<- FOOD [%d/%d] ->\n", this->inventory.food_count, this->inventory.food_capacity);
+		case static_cast<int>(EquipmentType::Food):
+			wprintw(inv_window, "<- FOOD [%d/%d]\n", this->inventory.food_count, this->inventory.food_capacity);
 			castToEquipment(&equipment, this->inventory.food);
 			break;
-		case 2:
-			wprintw(inv_window, "<- ARMOR [%d/%d]\n", this->inventory.armor_count, this->inventory.armor_capacity);
+		case static_cast<int>(EquipmentType::Armor):
+			wprintw(inv_window, "<- ARMOR [%d/%d] ->\n", this->inventory.armor_count, this->inventory.armor_capacity);
 			castToEquipment(&equipment, this->inventory.armor);
 			break;
 		default:
@@ -280,13 +281,13 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 
 		//The following can probably be done far more elegantly with function pointers
 		switch(this->inventory_index) {
-			case 0:
+			case static_cast<int>(EquipmentType::Weapon):
 				this->inventory.weapons.at(index).printDescription(item_description_window);
 				break;
-			case 1:
+			case static_cast<int>(EquipmentType::Food):
 				this->inventory.food.at(index).printDescription(item_description_window);
 				break;
-			case 2:
+			case static_cast<int>(EquipmentType::Armor):
 				this->inventory.armor.at(index).printDescription(item_description_window);
 				break;
 			default:

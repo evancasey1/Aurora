@@ -1,5 +1,5 @@
-#ifndef COLORS_H
-#define COLORS_H
+#ifndef ARMORTYPE_H
+#define ARMORTYPE_H
 
 enum class ArmorType : int {
     Boots = 0,
