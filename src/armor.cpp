@@ -13,27 +13,31 @@ Armor::Armor(int level)
 	this->armor_type = static_cast<ArmorType>(rand() % 5);
 	this->equipment_id = static_cast<int>(EquipmentType::Armor);
 	this->level = level;
-	this->protection = std::ceil(pow(base_prot, level));
-	if (armor_type == ArmorType::Boots) {
-		this->name = "Boots";
-	}
-	else if (armor_type == ArmorType::Legs) {
-		this->name = "Legs";
-	}
-	else if (armor_type == ArmorType::Chestpiece) {
-		this->name = "Chestpiece";
-	}
-	else if (armor_type == ArmorType::Gloves) {
-		this->name = "Gloves";
-	}
-	else if (armor_type == ArmorType::Helm) {
-		this->name = "Helm";
+	this->protection = pow(base_prot, level);
+	switch(armor_type) {
+		case ArmorType::Boots:
+			this->name = "Boots";
+			break;
+		case ArmorType::Legs:
+			this->name = "Boots";
+			break;
+		case ArmorType::Chestpiece:
+			this->name = "Boots";
+			break;
+		case ArmorType::Gloves:
+			this->name = "Boots";
+			break;
+		case ArmorType::Helm:
+			this->name = "Boots";
+			break;
+		default:
+			return;
 	}
 }
 
 Armor::Armor(int level, std::string name, double prot) 
 {
-	this->equipment_id = 2;
+	this->equipment_id = static_cast<int>(EquipmentType::Armor);
 	this->level = level;
 	this->name = name;
 	this->protection = prot;

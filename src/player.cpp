@@ -129,12 +129,12 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 		//ERROR, but this should never ever happen
 		return;
 	}
-
+	
 	//Need to reduce repetition here in the future, but it is fine for a rough draft
 	/*
 	CASE IF WEAPON
 	*/
-	if (equipment_at_loc->at(current_total_index).equipment_id == 0) {
+	if (equipment_at_loc->at(current_total_index).equipment_id == static_cast<int>(EquipmentType::Weapon)) {
 		if (this->inventory.weapon_count == this->inventory.weapon_capacity) {
 			wprintw(alert_window, "Insufficient space in weapon pouch.\n");
 			wrefresh(alert_window);
@@ -152,7 +152,7 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 	/*
 	CASE IF FOOD
 	*/
-	else if (equipment_at_loc->at(current_total_index).equipment_id == 1) {
+	else if (equipment_at_loc->at(current_total_index).equipment_id == static_cast<int>(EquipmentType::Food)) {
 		if (this->inventory.food_count == this->inventory.food_capacity) {
 			wprintw(alert_window, "Insufficient space in food reserves.\n");
 			wrefresh(alert_window);
@@ -170,7 +170,7 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 	/*
 	CASE IF ARMOR
 	*/
-	else if (equipment_at_loc->at(current_total_index).equipment_id == 2) {
+	else if (equipment_at_loc->at(current_total_index).equipment_id == static_cast<int>(EquipmentType::Armor)) {
 		if (this->inventory.armor_count == this->inventory.armor_capacity) {
 			wprintw(alert_window, "Insufficient space in armor bag.\n");
 			wrefresh(alert_window);
@@ -190,11 +190,11 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 		loot_indices->erase(loot_indices->begin() + current_vect_index);
 	}
 
-	if (loot->at(real_loot_index).weapons.size() == 0 && loot->at(real_loot_index).food.size() == 0) {
+	if (loot->at(real_loot_index).weapons.size() == 0 && loot->at(real_loot_index).food.size() == 0 && loot->at(real_loot_index).armor.size() == 0) {
 		loot->erase(loot->begin() + real_loot_index);
 	}
 	
-	if (loot_iter->food.size() == 0 && loot_iter->weapons.size() == 0) {
+	if (loot_iter->food.size() == 0 && loot_iter->weapons.size() == 0 && loot_iter->armor.size() == 0) {
 		loot_at_loc->erase(loot_iter);
 	}
 
@@ -370,7 +370,7 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 				}
 				break;
 			case KEY_ENTER: case '\n':
-				if (this->inventory_index == 0 && this->inventory.weapons.size() > 0) {
+				if (this->inventory_index == static_cast<int>(EquipmentType::Weapon) && this->inventory.weapons.size() > 0) {
 					weapon_vect = &this->inventory.weapons;
 					temp = weapon_vect->at(index);
 					weapon_vect->at(index) = *this->primary_weapon;
@@ -379,7 +379,7 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 					wrefresh(alert_win);
 					index = 0;
 				}
-				else if (this->inventory_index == 1 && this->inventory.food.size() > 0) {
+				else if (this->inventory_index == static_cast<int>(EquipmentType::Food) && this->inventory.food.size() > 0) {
 					this->eatFood(&this->inventory.food.at(index), player_status_window);
 					this->inventory.food.erase(this->inventory.food.begin() + index);
 					index = 0;
@@ -388,17 +388,24 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 			case 'd':
 				loot_obj.food.clear();
 				loot_obj.weapons.clear();
+				loot_obj.armor.clear();
 
-				if (this->inventory_index == 0 && this->inventory.weapons.size() > 0) {
+				if (this->inventory_index == static_cast<int>(EquipmentType::Weapon) && this->inventory.weapons.size() > 0) {
 					loot_obj.weapons.push_back(this->inventory.weapons.at(index));
 					this->inventory.weapons.erase(this->inventory.weapons.begin() + index);
 					this->inventory.weapon_count--;
 					valid_drop = true;
 				}
-				else if (this->inventory_index == 1 && this->inventory.food.size() > 0) {
+				else if (this->inventory_index == static_cast<int>(EquipmentType::Food) && this->inventory.food.size() > 0) {
 					loot_obj.food.push_back(this->inventory.food.at(index));
 					this->inventory.food.erase(this->inventory.food.begin() + index);	
 					this->inventory.food_count--;
+					valid_drop = true;
+				}
+				else if (this->inventory_index == static_cast<int>(EquipmentType::Armor) && this->inventory.armor.size() > 0) {
+					loot_obj.armor.push_back(this->inventory.armor.at(index));
+					this->inventory.armor.erase(this->inventory.armor.begin() + index);	
+					this->inventory.armor_count--;
 					valid_drop = true;
 				}
 

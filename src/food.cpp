@@ -17,7 +17,7 @@ Food::Food()
 
 Food::Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers) 
 {
-	this->equipment_id = 1;
+	this->equipment_id = static_cast<int>(EquipmentType::Food);
 	this->name = name;
 	this->initial_health_gain = initial_health_gain;     
 	this->health_gain_per_trigger = health_gain_per_trigger; 

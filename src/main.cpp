@@ -167,6 +167,7 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 	std::vector<Enemy::Loot>::iterator loot_iter;
 	std::vector<Weapon>::iterator weapon_iter;
 	std::vector<Food>::iterator food_iter;
+	std::vector<Armor>::iterator armor_iter;
 
 	if (loot_at_loc->size() == 0) {
 		wprintw(inventory_window, "<EMPTY>");
@@ -176,6 +177,11 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 			wattron(inventory_window, A_BOLD);
 			wprintw(inventory_window, "%s\n", (loot_iter->dropped_by).c_str());
 			wattroff(inventory_window, A_BOLD);
+
+			/*
+			TODO:
+				Drastically reduce the amount of repetition here
+			*/
 			
 			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
 				if (counter == item_index) {
@@ -195,6 +201,17 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 				wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
 				if (counter == item_index) {
 					wprintw(item_description_window, "%s\nHealth Gain: %d\nHeal Over Time: %d:%d:%d", (food_iter->name).c_str(), food_iter->initial_health_gain, food_iter->health_gain_per_trigger, food_iter->total_triggers, food_iter->turns_until_trigger);
+					wattroff(inventory_window, A_STANDOUT);
+				}
+				counter++;
+			}
+			for (armor_iter = loot_iter->armor.begin(); armor_iter != loot_iter->armor.end(); armor_iter++) {
+				if (counter == item_index) {
+					wattron(inventory_window, A_STANDOUT);
+				}
+				wprintw(inventory_window, "> [%d] %s\n", counter, (armor_iter->name).c_str());
+				if (counter == item_index) {
+					wprintw(item_description_window, "%s\nProtection %.2f", (armor_iter->name).c_str(), armor_iter->protection);
 					wattroff(inventory_window, A_STANDOUT);
 				}
 				counter++;
@@ -230,7 +247,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 	//for loot to be managed
 	for (int i = 0; i < loot.size(); i++) {
 		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
-			combined_size = (loot.at(i).weapons.size() + loot.at(i).food.size()) - 1;
+			combined_size = (loot.at(i).weapons.size() + loot.at(i).food.size() + loot.at(i).armor.size()) - 1;
 			loot_indices.push_back(combined_size);
 			loot_at_loc.push_back(loot.at(i));
 		}
@@ -246,6 +263,9 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 		}
 		for (int f = 0; f < loot_at_loc.at(j).food.size(); f++) {
 			equipment_at_loc.push_back(loot_at_loc.at(j).food.at(f));
+		}
+		for (int a = 0; a < loot_at_loc.at(j).armor.size(); a++) {
+			equipment_at_loc.push_back(loot_at_loc.at(j).armor.at(a));
 		}
 	}
 

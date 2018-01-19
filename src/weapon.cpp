@@ -71,7 +71,7 @@ Weapon::Weapon() {
 Weapon::Weapon(int level) {
 	//Random weapon generation
 	double level_mod = 1.10;
-	this->equipment_id = 0;
+	this->equipment_id = static_cast<int>(EquipmentType::Weapon);;
 	this->ENHANCED_CHANCE = 0.20;
 	this->LEGENDARY_CHANCE = 0.02;
 	this->ENHANCED_MOD = 1.25;
@@ -133,7 +133,7 @@ Weapon::Weapon(int level) {
 }
 
 Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
-	this->equipment_id = 0;
+	this->equipment_id = static_cast<int>(EquipmentType::Weapon);
 	double condition_chance = ((double) rand() / RAND_MAX);
 	
 	this->is_poisonous = false;
