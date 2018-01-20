@@ -34,7 +34,6 @@ int night_turns = 30;
 int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
-int item_counter = 0;
 
 /*
 const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "Wolf"};
@@ -166,13 +165,9 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 {
 	wclear(item_description_window);
 	wclear(inventory_window);
-	item_counter = 0;
-
+	
+	int item_counter = 0;
 	std::vector<Enemy::Loot>::iterator loot_iter;
-	std::vector<Weapon>::iterator weapon_iter;
-	std::vector<Food>::iterator food_iter;
-	std::vector<Armor>::iterator armor_iter;
-	std::vector<boost::variant<Weapon, Food, Armor>>::iterator equip_iter;
 
 	if (loot_at_loc->size() == 0) {
 		wprintw(inventory_window, "<EMPTY>");
