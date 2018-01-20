@@ -25,6 +25,8 @@ class Enemy
 		int computeAttackPower();
 		bool isValidMove(std::vector<Enemy> *enems, int p_row, int p_col);
 		void deathEvents(std::vector<Enemy::Loot> *loot, WINDOW *win);
+		void globalBuff(double mod);
+		void globalDebuff(double mod);
 
 		int row;
 		int souls;
@@ -36,6 +38,7 @@ class Enemy
 		int attack_power;
 		int attack_power_range;
 		int XP;
+		double nightbuff_multiplier;
 		double speed;
 		double crit_chance;
 		double accuracy;

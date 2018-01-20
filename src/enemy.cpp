@@ -65,6 +65,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->current_protection = this->base_protection;
 	this->current_health = this->total_health;
 	this->alert_player = true;
+	this->nightbuff_multiplier = 1.15;
 
 	this->total_health = std::ceil(this->total_health * this->level_up_multiplier_health);
 	this->attack_power = std::ceil(this->attack_power * this->level_up_multiplier_damage);
@@ -106,7 +107,8 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->col = e_col;
 }
 
-int Enemy::computeAttackPower() {
+int Enemy::computeAttackPower() 
+{
 	int power = this->attack_power;
 	int power_range = this->attack_power_range;
 	double crit_chance = this->crit_chance;
@@ -122,7 +124,32 @@ int Enemy::computeAttackPower() {
 	return (int)power;
 }
 
-void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) {
+void Enemy::globalBuff(double mod) 
+{
+	this->attack_power = (int)(this->attack_power * mod);
+	this->attack_power_range = (int)(this->attack_power_range * mod);
+	this->speed = (int)(speed * mod);
+	this->crit_chance *= mod;
+	this->accuracy *= mod;
+	this->current_protection *= mod;
+	this->current_evasion *= mod;
+	this->number_drops_possible *= 2;
+}
+
+void Enemy::globalDebuff(double mod) 
+{
+	this->attack_power = (int)(this->attack_power / mod);
+	this->attack_power_range = (int)(this->attack_power_range / mod);
+	this->speed = (int)(speed / mod);
+	this->crit_chance /= mod;
+	this->accuracy /= mod;
+	this->current_protection = this->base_protection;
+	this->current_evasion = this->base_evasion;
+	this->number_drops_possible /= 2;
+}
+
+void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) 
+{
 	static long unique_loot_id = 0;
 	double loot_chance_roll;
 	bool dropped = false;

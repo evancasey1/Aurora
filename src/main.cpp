@@ -12,6 +12,7 @@
 #include <vector>
 #include <math.h>
 #include <typeinfo>
+//#include <variant>
 #include "enemy.h"
 #include "map.h"
 #include "equipment.h"
@@ -168,6 +169,7 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 	std::vector<Weapon>::iterator weapon_iter;
 	std::vector<Food>::iterator food_iter;
 	std::vector<Armor>::iterator armor_iter;
+	std::vector<Equipment>::iterator equip_iter;
 
 	if (loot_at_loc->size() == 0) {
 		wprintw(inventory_window, "<EMPTY>");
@@ -180,7 +182,34 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 
 			/*
 			TODO:
-				Drastically reduce the amount of repetition here
+				Drastically reduce the amount of repetition here.
+				Also there should be a vector insert function that can replace these for loops, but I'm having trouble making it work
+			*/
+
+			/*
+			std::vector<std::variant<Weapon, Food, Armor>> equipment;
+
+			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
+				equipment.push_back((*weapon_iter));
+			}
+			for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
+				equipment.push_back((*food_iter));
+			}
+			for (armor_iter = loot_iter->armor.begin(); armor_iter != loot_iter->armor.end(); armor_iter++) {
+				equipment.push_back((*armor_iter));
+			}
+
+			for (equip_iter = equipment->begin(); equip_iter != equipment->end(); equip_iter++) {
+				if (counter == item_index) {
+					wattron(inventory_window, A_STANDOUT);
+				}
+				wprintw(inventory_window, "> [%d] %s\n", counter, equip_iter->name.c_str());
+				if (counter == item_index) {
+					equip_iter->printDescription(item_description_window);
+					wattroff(inventory_window, A_STANDOUT);
+				}
+				counter++;
+			}
 			*/
 			
 			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
@@ -189,7 +218,7 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 				}
 				wprintw(inventory_window, "> [%d] %s\n", counter, (weapon_iter->name).c_str());
 				if (counter == item_index) {
-					wprintw(item_description_window, "%s\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", (weapon_iter->name).c_str(), weapon_iter->attack_power, weapon_iter->attack_power + weapon_iter->attack_power_range, weapon_iter->accuracy, weapon_iter->crit_chance);
+					weapon_iter->printDescription(item_description_window);
 					wattroff(inventory_window, A_STANDOUT);
 				}
 				counter++;
@@ -200,7 +229,7 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 				}
 				wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
 				if (counter == item_index) {
-					wprintw(item_description_window, "%s\nHealth Gain: %d\nHeal Over Time: %d:%d:%d", (food_iter->name).c_str(), food_iter->initial_health_gain, food_iter->health_gain_per_trigger, food_iter->total_triggers, food_iter->turns_until_trigger);
+					food_iter->printDescription(item_description_window);
 					wattroff(inventory_window, A_STANDOUT);
 				}
 				counter++;
@@ -211,11 +240,12 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 				}
 				wprintw(inventory_window, "> [%d] %s\n", counter, (armor_iter->name).c_str());
 				if (counter == item_index) {
-					wprintw(item_description_window, "%s\nProtection %.2f", (armor_iter->name).c_str(), armor_iter->protection);
+					armor_iter->printDescription(item_description_window);
 					wattroff(inventory_window, A_STANDOUT);
 				}
 				counter++;
 			}
+			
 		}
 	}
 	wrefresh(item_description_window);
@@ -400,6 +430,20 @@ void printTitle()
 	refresh();
 }
 
+void enemyNightBuff(std::vector<Enemy> *enemies)
+{
+	for (int i = 0; i < enemies->size(); i++) {
+		enemies->at(i).globalBuff(enemies->at(i).nightbuff_multiplier);
+	}
+}
+
+void enemyDayDebuff(std::vector<Enemy> *enemies)
+{
+	for (int i = 0; i < enemies->size(); i++) {
+		enemies->at(i).globalDebuff(enemies->at(i).nightbuff_multiplier);
+	}
+}
+
 void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
@@ -450,12 +494,14 @@ void mainGameLoop(Player *player, Map *map)
 		if (player->used_moves == player->allowed_moves) {
 			turn_counter++;
 			if (is_daytime && turn_counter > day_turns) {
+				enemyNightBuff(&enemies);
 				is_daytime = false;
 				turn_counter = 0;
 				wprintw(alert_window, "Night is falling.\n");
 				wrefresh(alert_window);
 			}
 			else if (!is_daytime && turn_counter > night_turns) {
+				enemyDayDebuff(&enemies);
 				is_daytime = true;
 				turn_counter = 0;
 				wprintw(alert_window, "The sun rises.\n");
