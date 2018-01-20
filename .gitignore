@@ -5,4 +5,5 @@ src/player.o
 src/main.o
 src/weapon.o
 src/food.o
+src/armor.o
 src/aurora
