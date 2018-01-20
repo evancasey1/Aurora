@@ -7,7 +7,7 @@ OBJS = main.o player.o map.o enemy.o weapon.o food.o armor.o
 aurora: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o aurora $(OBJS) -lncurses -I boost
 
-main.o: main.cpp player.h map.h equipment.h color.h equipmenttype.h
+main.o: main.cpp player.h map.h equipment.h color.h equipmenttype.h visitors.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
 player.o: player.cpp player.h equipment.h enemy.h color.h equipmenttype.h
 	$(CXX) $(CXXFLAGS) -c player.cpp

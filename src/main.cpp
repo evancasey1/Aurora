@@ -18,6 +18,7 @@
 #include "equipment.h"
 #include "equipmenttype.h"
 #include "color.h"
+#include "visitors.h"
 
 /* Begin globals */
 const int MAP_SIZES[3] = {50, 100, 150};
@@ -33,6 +34,7 @@ int night_turns = 30;
 int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
+int item_counter = 0;
 
 /*
 const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "Wolf"};
@@ -60,18 +62,6 @@ const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::
 									 " #+#     #+# #+#    #+# #+#    #+# #+#    #+# #+#    #+# #+#     #+#   ",
 									 "###     ###  ########  ###    ###  ########  ###    ### ###     ###    "};
 /* End Globals */ 
-
-struct output_desc : public boost::static_visitor<>
-{
-  template <typename T>
-  void operator()(T t) const { t.printDescription(item_description_window); }
-};
-
-struct output_name : public boost::static_visitor<>
-{
-  template <typename T>
-  void operator()(T t) const { wprintw(inventory_window, "> %s\n", (t.name).c_str()); }
-};
 
 void printSouls(Player *player) 
 {
@@ -176,7 +166,7 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 {
 	wclear(item_description_window);
 	wclear(inventory_window);
-	int counter = 0;
+	item_counter = 0;
 
 	std::vector<Enemy::Loot>::iterator loot_iter;
 	std::vector<Weapon>::iterator weapon_iter;
@@ -199,16 +189,16 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 			equipment.insert(equipment.end(), loot_iter->armor.begin(), loot_iter->armor.end());
 			
 			for (int i = 0; i < equipment.size(); i++) {
-				if (counter == item_index) {
+				if (item_counter == item_index) {
 					wattron(inventory_window, A_STANDOUT);
 				}
-				boost::apply_visitor(output_name{}, equipment.at(i));
-				
-				if (counter == item_index) {
-					boost::apply_visitor(output_desc{}, equipment.at(i));
+				boost::apply_visitor(Visitors::output_name(item_counter, inventory_window), equipment.at(i));
+
+				if (item_counter == item_index) {
+					boost::apply_visitor(Visitors::output_desc(item_description_window), equipment.at(i));
 					wattroff(inventory_window, A_STANDOUT);
 				}
-				counter++;
+				item_counter++;
 			}
 		}
 	}
