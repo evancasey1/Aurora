@@ -61,6 +61,18 @@ const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::
 									 "###     ###  ########  ###    ###  ########  ###    ### ###     ###    "};
 /* End Globals */ 
 
+struct output_desc : public boost::static_visitor<>
+{
+  template <typename T>
+  void operator()(T t) const { t.printDescription(item_description_window); }
+};
+
+struct output_name : public boost::static_visitor<>
+{
+  template <typename T>
+  void operator()(T t) const { wprintw(inventory_window, "> %s\n", (t.name).c_str()); }
+};
+
 void printSouls(Player *player) 
 {
 	wclear(power_status_window);
@@ -190,36 +202,10 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 				if (counter == item_index) {
 					wattron(inventory_window, A_STANDOUT);
 				}
+				boost::apply_visitor(output_name{}, equipment.at(i));
+				
 				if (counter == item_index) {
-					wattron(inventory_window, A_STANDOUT);
-				}
-				switch(equipment.at(i).which()) {
-					case 0:
-						wprintw(inventory_window, "> [%d] %s\n", counter, boost::get<Weapon>(equipment.at(i)).name.c_str());
-						break;
-					case 1:
-						wprintw(inventory_window, "> [%d] %s\n", counter, boost::get<Food>(equipment.at(i)).name.c_str());
-						break;
-					case 2:
-						wprintw(inventory_window, "> [%d] %s\n", counter, boost::get<Armor>(equipment.at(i)).name.c_str());
-						break;
-					default:
-						break;
-				}
-				if (counter == item_index) {
-					switch(equipment.at(i).which()) {
-						case 0:
-							boost::get<Weapon>(equipment.at(i)).printDescription(item_description_window);
-							break;
-						case 1:
-							boost::get<Food>(equipment.at(i)).printDescription(item_description_window);
-							break;
-						case 2:
-							boost::get<Armor>(equipment.at(i)).printDescription(item_description_window);
-							break;
-						default:
-							break;
-					}
+					boost::apply_visitor(output_desc{}, equipment.at(i));
 					wattroff(inventory_window, A_STANDOUT);
 				}
 				counter++;
