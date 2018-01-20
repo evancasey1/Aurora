@@ -12,10 +12,11 @@
 #include <vector>
 #include <math.h>
 #include <typeinfo>
-//#include <variant>
+#include <boost/variant.hpp>
 #include "enemy.h"
 #include "map.h"
 #include "equipment.h"
+#include "equipmenttype.h"
 #include "color.h"
 
 /* Begin globals */
@@ -169,7 +170,7 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 	std::vector<Weapon>::iterator weapon_iter;
 	std::vector<Food>::iterator food_iter;
 	std::vector<Armor>::iterator armor_iter;
-	std::vector<Equipment>::iterator equip_iter;
+	std::vector<boost::variant<Weapon, Food, Armor>>::iterator equip_iter;
 
 	if (loot_at_loc->size() == 0) {
 		wprintw(inventory_window, "<EMPTY>");
@@ -180,72 +181,49 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 			wprintw(inventory_window, "%s\n", (loot_iter->dropped_by).c_str());
 			wattroff(inventory_window, A_BOLD);
 
-			/*
-			TODO:
-				Drastically reduce the amount of repetition here.
-				Also there should be a vector insert function that can replace these for loops, but I'm having trouble making it work
-			*/
-
-			/*
-			std::vector<std::variant<Weapon, Food, Armor>> equipment;
-
-			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
-				equipment.push_back((*weapon_iter));
-			}
-			for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
-				equipment.push_back((*food_iter));
-			}
-			for (armor_iter = loot_iter->armor.begin(); armor_iter != loot_iter->armor.end(); armor_iter++) {
-				equipment.push_back((*armor_iter));
-			}
-
-			for (equip_iter = equipment->begin(); equip_iter != equipment->end(); equip_iter++) {
-				if (counter == item_index) {
-					wattron(inventory_window, A_STANDOUT);
-				}
-				wprintw(inventory_window, "> [%d] %s\n", counter, equip_iter->name.c_str());
-				if (counter == item_index) {
-					equip_iter->printDescription(item_description_window);
-					wattroff(inventory_window, A_STANDOUT);
-				}
-				counter++;
-			}
-			*/
+			std::vector<boost::variant<Weapon, Food, Armor>> equipment;
+			equipment.insert(equipment.end(), loot_iter->weapons.begin(), loot_iter->weapons.end());
+			equipment.insert(equipment.end(), loot_iter->food.begin(), loot_iter->food.end());
+			equipment.insert(equipment.end(), loot_iter->armor.begin(), loot_iter->armor.end());
 			
-			for (weapon_iter = loot_iter->weapons.begin(); weapon_iter != loot_iter->weapons.end(); weapon_iter++) {
+			for (int i = 0; i < equipment.size(); i++) {
 				if (counter == item_index) {
 					wattron(inventory_window, A_STANDOUT);
 				}
-				wprintw(inventory_window, "> [%d] %s\n", counter, (weapon_iter->name).c_str());
 				if (counter == item_index) {
-					weapon_iter->printDescription(item_description_window);
+					wattron(inventory_window, A_STANDOUT);
+				}
+				switch(equipment.at(i).which()) {
+					case 0:
+						wprintw(inventory_window, "> [%d] %s\n", counter, boost::get<Weapon>(equipment.at(i)).name.c_str());
+						break;
+					case 1:
+						wprintw(inventory_window, "> [%d] %s\n", counter, boost::get<Food>(equipment.at(i)).name.c_str());
+						break;
+					case 2:
+						wprintw(inventory_window, "> [%d] %s\n", counter, boost::get<Armor>(equipment.at(i)).name.c_str());
+						break;
+					default:
+						break;
+				}
+				if (counter == item_index) {
+					switch(equipment.at(i).which()) {
+						case 0:
+							boost::get<Weapon>(equipment.at(i)).printDescription(item_description_window);
+							break;
+						case 1:
+							boost::get<Food>(equipment.at(i)).printDescription(item_description_window);
+							break;
+						case 2:
+							boost::get<Armor>(equipment.at(i)).printDescription(item_description_window);
+							break;
+						default:
+							break;
+					}
 					wattroff(inventory_window, A_STANDOUT);
 				}
 				counter++;
 			}
-			for (food_iter = loot_iter->food.begin(); food_iter != loot_iter->food.end(); food_iter++) {
-				if (counter == item_index) {
-					wattron(inventory_window, A_STANDOUT);
-				}
-				wprintw(inventory_window, "> [%d] %s\n", counter, (food_iter->name).c_str());
-				if (counter == item_index) {
-					food_iter->printDescription(item_description_window);
-					wattroff(inventory_window, A_STANDOUT);
-				}
-				counter++;
-			}
-			for (armor_iter = loot_iter->armor.begin(); armor_iter != loot_iter->armor.end(); armor_iter++) {
-				if (counter == item_index) {
-					wattron(inventory_window, A_STANDOUT);
-				}
-				wprintw(inventory_window, "> [%d] %s\n", counter, (armor_iter->name).c_str());
-				if (counter == item_index) {
-					armor_iter->printDescription(item_description_window);
-					wattroff(inventory_window, A_STANDOUT);
-				}
-				counter++;
-			}
-			
 		}
 	}
 	wrefresh(item_description_window);
