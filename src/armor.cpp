@@ -19,7 +19,7 @@ Armor::Armor(int level)
 			this->name = "Boots";
 			break;
 		case ArmorType::Legs:
-			this->name = "Legs";
+			this->name = "Leggings";
 			break;
 		case ArmorType::Chestpiece:
 			this->name = "Chestpiece";
