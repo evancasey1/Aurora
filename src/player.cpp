@@ -7,6 +7,8 @@
 #include <cmath>
 #include <algorithm>
 #include <iterator>
+#include <boost/variant.hpp>
+#include "visitors.h"
 #include "player.h"
 #include "enemy.h"
 #include "color.h"
@@ -25,15 +27,6 @@ static std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, std::back_inserter(elems));
     return elems;
-}
-
-template<typename Out>
-static void castToEquipment(std::vector<Equipment> *equipment, std::vector<Out> items)
-{
-	for (int i = 0; i < items.size(); i++) {
-		equipment->push_back(items.at(i));
-		equipment->at(i).name = items.at(i).name;
-	}
 }
 
 Player::Player(std::string p_class)
@@ -75,7 +68,6 @@ Player::Player(std::string p_class)
 	this->level_up_multiplier_damage = std::atof(elements.at(9).substr(5, 4).c_str());
 
 	//placeholder. For debugging only
-	//Player creation will be overhauled later
 	
 	this->base_total_health = 5000;
 	
@@ -129,11 +121,9 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 		//ERROR, but this should never ever happen
 		return;
 	}
-	
 	//Need to reduce repetition here in the future, but it is fine for a rough draft
-	/*
-	CASE IF WEAPON
-	*/
+	
+	//CASE IF WEAPON
 	if (equipment_at_loc->at(current_total_index).equipment_id == static_cast<int>(EquipmentType::Weapon)) {
 		if (this->inventory.weapon_count == this->inventory.weapon_capacity) {
 			wprintw(alert_window, "Insufficient space in weapon pouch.\n");
@@ -149,9 +139,8 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 			equipment_at_loc->erase(equipment_iter);
 		}
 	}
-	/*
-	CASE IF FOOD
-	*/
+	
+	//CASE IF FOOD
 	else if (equipment_at_loc->at(current_total_index).equipment_id == static_cast<int>(EquipmentType::Food)) {
 		if (this->inventory.food_count == this->inventory.food_capacity) {
 			wprintw(alert_window, "Insufficient space in food reserves.\n");
@@ -167,9 +156,8 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 			equipment_at_loc->erase(equipment_iter);
 		}
 	}
-	/*
-	CASE IF ARMOR
-	*/
+	
+	//CASE IF ARMOR
 	else if (equipment_at_loc->at(current_total_index).equipment_id == static_cast<int>(EquipmentType::Armor)) {
 		if (this->inventory.armor_count == this->inventory.armor_capacity) {
 			wprintw(alert_window, "Insufficient space in armor bag.\n");
@@ -185,7 +173,7 @@ void Player::pickUpLootAtIndex(std::vector<Enemy::Loot> *loot, int current_total
 			equipment_at_loc->erase(equipment_iter);
 		}
 	}
-
+	
 	if (loot_indices->at(current_vect_index) == -1) {
 		loot_indices->erase(loot_indices->begin() + current_vect_index);
 	}
@@ -250,61 +238,47 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 	wclear(inv_window);
 	wclear(item_description_window);
 	int counter = 0;
-	std::vector<Equipment> equipment;
+	std::vector<boost::variant<Weapon, Food, Armor>> equipment;
+	//std::vector<Equipment> equipment;
 	std::vector<Equipment>::iterator iter;
 
 	wattron(inv_window, A_BOLD);
+	/*
+	This will be handled by a boost static visitor later
+	*/
 	switch(this->inventory_index) {
 		case static_cast<int>(EquipmentType::Weapon):
+			equipment.insert(equipment.end(), this->inventory.weapons.begin(), this->inventory.weapons.end());
 			wprintw(inv_window, "WEAPONS [%d/%d] ->\n", this->inventory.weapon_count, this->inventory.weapon_capacity);
-			castToEquipment(&equipment, this->inventory.weapons);
 			break;
 		case static_cast<int>(EquipmentType::Food):
+			equipment.insert(equipment.end(), this->inventory.food.begin(), this->inventory.food.end());
 			wprintw(inv_window, "<- FOOD [%d/%d]\n", this->inventory.food_count, this->inventory.food_capacity);
-			castToEquipment(&equipment, this->inventory.food);
 			break;
 		case static_cast<int>(EquipmentType::Armor):
+			equipment.insert(equipment.end(), this->inventory.armor.begin(), this->inventory.armor.end());
 			wprintw(inv_window, "<- ARMOR [%d/%d] ->\n", this->inventory.armor_count, this->inventory.armor_capacity);
-			castToEquipment(&equipment, this->inventory.armor);
 			break;
 		default:
 			return;
 	}
 	wattroff(inv_window, A_BOLD);
 
-
 	if (equipment.size() == 0) {
 		wprintw(inv_window, "<EMPTY>");
 	}
 	else {
-		wclrtoeol(item_description_window);
-
-		//The following can probably be done far more elegantly with function pointers
-		switch(this->inventory_index) {
-			case static_cast<int>(EquipmentType::Weapon):
-				this->inventory.weapons.at(index).printDescription(item_description_window);
-				break;
-			case static_cast<int>(EquipmentType::Food):
-				this->inventory.food.at(index).printDescription(item_description_window);
-				break;
-			case static_cast<int>(EquipmentType::Armor):
-				this->inventory.armor.at(index).printDescription(item_description_window);
-				break;
-			default:
-				return;
-		}
-
-		for (iter = equipment.begin(); iter != equipment.end();) {
+		for (int i = 0; i < equipment.size(); i++) {
 			if (counter == index) {
 				wattron(inv_window, A_STANDOUT);
-				wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
+			}
+			boost::apply_visitor(Visitors::output_name(counter, inv_window), equipment.at(i));
+
+			if (counter == index) {
+				boost::apply_visitor(Visitors::output_desc(item_description_window), equipment.at(i));
 				wattroff(inv_window, A_STANDOUT);
 			}
-			else {
-				wprintw(inv_window, "[%x] %s\n", counter, (iter->name).c_str());
-			}
-			++iter;
-			++counter;
+			counter++;
 		}
 	}
 	wrefresh(inv_window);
@@ -346,10 +320,13 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 				}
 				break;
 			case KEY_DOWN:
-				if (this->inventory_index == 0 && index < this->inventory.weapons.size() - 1) {
+				if (this->inventory_index == static_cast<int>(EquipmentType::Weapon) && index < this->inventory.weapons.size() - 1) {
 					index++;
 				}
-				else if (this->inventory_index == 1 && index < this->inventory.food.size() - 1) {
+				else if (this->inventory_index == static_cast<int>(EquipmentType::Food) && index < this->inventory.food.size() - 1) {
+					index++;
+				}
+				else if (this->inventory_index == static_cast<int>(EquipmentType::Armor) && index < this->inventory.armor.size() - 1) {
 					index++;
 				}
 				break;
@@ -390,6 +367,9 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 				loot_obj.weapons.clear();
 				loot_obj.armor.clear();
 
+				/*
+				TODO: reduce repetition here with a boost static visitor
+				*/
 				if (this->inventory_index == static_cast<int>(EquipmentType::Weapon) && this->inventory.weapons.size() > 0) {
 					loot_obj.weapons.push_back(this->inventory.weapons.at(index));
 					this->inventory.weapons.erase(this->inventory.weapons.begin() + index);

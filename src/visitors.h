@@ -2,6 +2,7 @@
 #define VISITORS_H
 #include <boost/variant.hpp>
 #include <ncurses.h>
+#include <vector>
 
 class Visitors 
 {

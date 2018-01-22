@@ -67,6 +67,8 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->alert_player = true;
 	this->nightbuff_multiplier = 1.15;
 
+	//this->number_drops_possible = 3;
+
 	this->total_health = std::ceil(this->total_health * this->level_up_multiplier_health);
 	this->attack_power = std::ceil(this->attack_power * this->level_up_multiplier_damage);
 

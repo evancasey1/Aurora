@@ -1,7 +1,7 @@
 #Makefile for Aurora
 
 CXX = g++
-CXXFLAGS = -g -Wall -pedantic -std=c++1z
+CXXFLAGS = -g -Wall -pedantic -std=c++14
 OBJS = main.o player.o map.o enemy.o weapon.o food.o armor.o
 
 aurora: $(OBJS)
@@ -9,7 +9,7 @@ aurora: $(OBJS)
 
 main.o: main.cpp player.h map.h equipment.h color.h equipmenttype.h visitors.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
-player.o: player.cpp player.h equipment.h enemy.h color.h equipmenttype.h
+player.o: player.cpp player.h equipment.h enemy.h color.h equipmenttype.h visitors.h
 	$(CXX) $(CXXFLAGS) -c player.cpp
 map.o: map.cpp map.h enemy.h player.h
 	$(CXX) $(CXXFLAGS) -c map.cpp

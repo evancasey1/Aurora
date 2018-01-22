@@ -19,16 +19,16 @@ Armor::Armor(int level)
 			this->name = "Boots";
 			break;
 		case ArmorType::Legs:
-			this->name = "Boots";
+			this->name = "Legs";
 			break;
 		case ArmorType::Chestpiece:
-			this->name = "Boots";
+			this->name = "Chestpiece";
 			break;
 		case ArmorType::Gloves:
-			this->name = "Boots";
+			this->name = "Gloves";
 			break;
 		case ArmorType::Helm:
-			this->name = "Boots";
+			this->name = "Helmet";
 			break;
 		default:
 			return;
