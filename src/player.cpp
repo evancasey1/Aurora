@@ -33,14 +33,17 @@ Player::Player(std::string p_class)
 {
 	this->vision = 6;
 	this->primary_weapon = new Weapon("Short Sword", 3, 2);
+	/*
 	Food *start_food = new Food("Meat", 3, 1, 2, 2);
 	for (int i = 0; i < 3; i++) {
 		this->inventory.food.push_back(*start_food);
+		this->inventory.food_count++;
 	}
+	*/
 	this->inventory.food_capacity = 3;
 	this->inventory.weapon_capacity = 3;
 	this->inventory.armor_capacity = 3;
-	this->inventory.food_count = 3;
+	this->inventory.food_count = 0;
 	this->inventory.armor_count = 0;
 	this->inventory.weapon_count = 0;
 

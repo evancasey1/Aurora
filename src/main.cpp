@@ -34,6 +34,7 @@ int night_turns = 30;
 int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
+int loot_items_per_screen = 5;
 
 /*
 const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "Wolf"};
@@ -161,19 +162,22 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 	wrefresh(alert_window);
 }
 
-void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *item_description_window) 
+void printLoot(int item_index, int screen_index, int max_screen_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *item_description_window) 
 {
 	wclear(item_description_window);
 	wclear(inventory_window);
 	
 	int item_counter = 0;
-	std::vector<Enemy::Loot>::iterator loot_iter;
+	int container_counter = 0;
+	std::vector<Enemy::Loot>::iterator loot_iter = loot_at_loc->begin();
+	std::advance(loot_iter, loot_items_per_screen * screen_index);
+	wprintw(inventory_window, "[%d/%d]\n", screen_index + 1, max_screen_index + 1);
 
 	if (loot_at_loc->size() == 0) {
 		wprintw(inventory_window, "<EMPTY>");
 	}
 	else {
-		for (loot_iter = loot_at_loc->begin(); loot_iter != loot_at_loc->end(); loot_iter++) {
+		while(loot_iter != loot_at_loc->end() && container_counter != loot_items_per_screen) {
 			wattron(inventory_window, A_BOLD);
 			wprintw(inventory_window, "%s\n", (loot_iter->dropped_by).c_str());
 			wattroff(inventory_window, A_BOLD);
@@ -195,16 +199,16 @@ void printLoot(int item_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *it
 				}
 				item_counter++;
 			}
+			loot_iter++;
+			container_counter++;
 		}
 	}
 	wrefresh(item_description_window);
 	wrefresh(inventory_window);
 }
 
-//There is probably a more efficient way to handle deletion. 
-//Will worry about that later, after I nail down a way to do it at all
-//Will be really important to clean up this function later for readability 
 //	Have to break it down in a smaller, more modular fashion
+//	This function needs a complete and total overhaul
 /*
 manageLoot:
 	This function will handle the picking up and dropping of loot from enemies. Picked-up loot should be deleted 
@@ -221,6 +225,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 	int current_vect_index = 0;
 	int current_total_index = 0;
 	int combined_size = 0;
+	int screen_index = 0;
 
 	//The following loops populate the vectors in order
 	//for loot to be managed
@@ -231,28 +236,23 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 			loot_at_loc.push_back(loot.at(i));
 		}
 	}
+	int max_screen_index = (std::ceil(((double)loot_at_loc.size() / (double)loot_items_per_screen)) - 1);
 
 	if (loot_at_loc.size() == 0) {
 		return;
 	}
 
 	for (int j = 0; j < loot_at_loc.size(); j++) {
-		for (int w = 0; w < loot_at_loc.at(j).weapons.size(); w++) {
-			equipment_at_loc.push_back(loot_at_loc.at(j).weapons.at(w));
-		}
-		for (int f = 0; f < loot_at_loc.at(j).food.size(); f++) {
-			equipment_at_loc.push_back(loot_at_loc.at(j).food.at(f));
-		}
-		for (int a = 0; a < loot_at_loc.at(j).armor.size(); a++) {
-			equipment_at_loc.push_back(loot_at_loc.at(j).armor.at(a));
-		}
+		equipment_at_loc.insert(equipment_at_loc.end(), loot_at_loc.at(j).weapons.begin(), loot_at_loc.at(j).weapons.end());
+		equipment_at_loc.insert(equipment_at_loc.end(), loot_at_loc.at(j).food.begin(), loot_at_loc.at(j).food.end());
+		equipment_at_loc.insert(equipment_at_loc.end(), loot_at_loc.at(j).armor.begin(), loot_at_loc.at(j).armor.end());
 	}
 
 	while(true) {
 		if (loot_at_loc.size() == 0) {
 			return;
 		}
-		printLoot(current_total_index, &loot_at_loc, item_description_window);
+		printLoot(current_total_index, screen_index, max_screen_index, &loot_at_loc, item_description_window);
 		ch = getch();
 		
 		switch(ch) {
@@ -282,11 +282,24 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 					current_total_index++;
 				}
 				break;
+			case KEY_RIGHT:
+				if (screen_index < max_screen_index) {
+					screen_index++;
+				}
+				break;
+			case KEY_LEFT:
+				if (screen_index > 0) {
+					screen_index--;
+				}
+				break;
+			
 			case KEY_ENTER: case '\n':
 				player->pickUpLootAtIndex(&loot, current_total_index, current_vect_index, current_item_index, &equipment_at_loc, &loot_at_loc, &loot_indices, inventory_window, alert_window);
 				current_item_index = 0;
 				current_vect_index = 0;
 				current_total_index = 0;
+				screen_index = 0;
+				max_screen_index = (std::ceil(((double)loot_at_loc.size() / (double)loot_items_per_screen)) - 1);
 				wclear(item_description_window);
 				wrefresh(item_description_window);
 				break;
