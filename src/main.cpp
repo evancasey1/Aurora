@@ -26,7 +26,7 @@ const int MAP_VERTICAL_PADDING = 3;
 const int COM_VERTICAL_PADDING = 4;
 const int MAP_HORIZONTAL_PADDING = 5;
 const int SPAWN_TOTAL_DENOM = 100;
-const int NUM_ENEMY_TYPES = 5;
+const int NUM_ENEMY_TYPES = 6;
 const int SPEED_ROLL = 5;
 bool is_daytime = true;
 int day_turns = 80;
@@ -41,8 +41,8 @@ const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "
 const char ENEMY_SYMBOLS[] = {'G', 'U', 'T', 'O', 'B', 'W'};
 */
 
-const std::string ENEMY_NAMES[] = {"Goblin", "Bear", "Wolf", "Specter", "Undead"};
-const char ENEMY_SYMBOLS[] = {'G', 'B', 'W', 'S', 'U'};
+const std::string ENEMY_NAMES[] = {"Kobold", "Bear", "Wolf", "Specter", "Undead", "Graverobber"};
+const char ENEMY_SYMBOLS[] = {'K', 'B', 'W', 'S', 'U', 'G'};
 
 std::vector<Enemy::Loot> loot;
 
