@@ -19,7 +19,7 @@ class Enemy
 			int col;
 			long l_id;
 		};
-		Enemy(std::string en, char es, int rw, int cl, int vi, int sz, int lvl);
+		Enemy(std::string en, int rw, int cl, int vi, int sz, int lvl);
 		void seek(int p_row, int p_col);
 		void idle(int m_size);
 		int computeAttackPower();

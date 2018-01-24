@@ -26,10 +26,9 @@ static std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_vision, int map_size, int e_level)
+Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_size, int e_level)
 {
 	this->name = e_name;
-	this->symbol = e_symbol;
 	this->level = e_level;
 	/* ENEMY ATTRIBUTES */
 	std::ifstream infile("enemyAttributes.txt");
@@ -59,6 +58,7 @@ Enemy::Enemy(std::string e_name, char e_symbol, int p_row, int p_col, int p_visi
 	this->base_evasion			= std::atof(elements.at(14).substr(4, 4).c_str());
 	this->level_up_multiplier_health = pow(std::atof(elements.at(15).substr(4, 4).c_str()), e_level);
 	this->level_up_multiplier_damage = pow(std::atof(elements.at(16).substr(5, 4).c_str()), e_level);
+	this->symbol 				= (elements.at(17).substr(4, 1))[0];
 	
 	this->attack_power_range = 2;
 	this->current_evasion = this->base_evasion;

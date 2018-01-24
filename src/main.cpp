@@ -42,7 +42,6 @@ const char ENEMY_SYMBOLS[] = {'G', 'U', 'T', 'O', 'B', 'W'};
 */
 
 const std::string ENEMY_NAMES[] = {"Kobold", "Bear", "Wolf", "Specter", "Undead", "Graverobber"};
-const char ENEMY_SYMBOLS[] = {'K', 'B', 'W', 'S', 'U', 'G'};
 
 std::vector<Enemy::Loot> loot;
 
@@ -171,6 +170,7 @@ void printLoot(int item_index, int screen_index, int max_screen_index, std::vect
 	int container_counter = 0;
 	std::vector<Enemy::Loot>::iterator loot_iter = loot_at_loc->begin();
 	std::advance(loot_iter, loot_items_per_screen * screen_index);
+	item_counter += loot_items_per_screen * screen_index;
 	wprintw(inventory_window, "[%d/%d]\n", screen_index + 1, max_screen_index + 1);
 
 	if (loot_at_loc->size() == 0) {
@@ -333,8 +333,7 @@ void spawnEnemy(std::vector<Enemy> *enemies, Player *player, Map *map) {
 	if (rng <= enemy_spawn_rate && (enemies->size() < max_enemies)) {
 		int enemy_index = (rand() % NUM_ENEMY_TYPES);
 		std::string e_name = ENEMY_NAMES[enemy_index];
-		char e_symbol = ENEMY_SYMBOLS[enemy_index];
-		Enemy tempE(e_name, e_symbol, player->row, player->col, player->vision, map->size, player->level);
+		Enemy tempE(e_name, player->row, player->col, player->vision, map->size, player->level);
 		enemies->push_back(tempE);
 	}
 }
