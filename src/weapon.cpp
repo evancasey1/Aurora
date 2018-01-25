@@ -8,6 +8,8 @@
 
 Weapon::Weapon() {
 	//Random weapon generation
+	extern int item_id_counter;
+	this->item_id = item_id_counter++;
 	this->equipment_id = static_cast<int>(EquipmentType::Weapon);
 	this->ENHANCED_CHANCE = 0.20;
 	this->LEGENDARY_CHANCE = 0.02;
@@ -70,6 +72,8 @@ Weapon::Weapon() {
 
 Weapon::Weapon(int level) {
 	//Random weapon generation
+	extern int item_id_counter;
+	this->item_id = item_id_counter++;
 	double level_mod = 1.10;
 	this->equipment_id = static_cast<int>(EquipmentType::Weapon);;
 	this->ENHANCED_CHANCE = 0.20;
@@ -133,6 +137,8 @@ Weapon::Weapon(int level) {
 }
 
 Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
+	extern int item_id_counter;
+	this->item_id = item_id_counter++;
 	this->equipment_id = static_cast<int>(EquipmentType::Weapon);
 	double condition_chance = ((double) rand() / RAND_MAX);
 	

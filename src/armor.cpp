@@ -9,6 +9,8 @@
 
 Armor::Armor(int level) 
 {
+	extern int item_id_counter;
+	this->item_id = item_id_counter++;
 	double base_prot = 0.05;
 	this->armor_type = static_cast<ArmorType>(rand() % 5);
 	this->equipment_id = static_cast<int>(EquipmentType::Armor);
@@ -37,6 +39,8 @@ Armor::Armor(int level)
 
 Armor::Armor(int level, std::string name, double prot) 
 {
+	extern int item_id_counter;
+	this->item_id = item_id_counter++;
 	this->equipment_id = static_cast<int>(EquipmentType::Armor);
 	this->level = level;
 	this->name = name;

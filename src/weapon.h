@@ -18,7 +18,6 @@ class Weapon : public Equipment
 		double crit_chance;
 		double accuracy;
 
-
 	private:
 		double ENHANCED_CHANCE;
 		double LEGENDARY_CHANCE;

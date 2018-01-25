@@ -35,11 +35,7 @@ int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
 int loot_items_per_screen = 5;
-
-/*
-const std::string ENEMY_NAMES[] = {"Goblin", "Undead", "Troll", "Orc", "Bear", "Wolf"};
-const char ENEMY_SYMBOLS[] = {'G', 'U', 'T', 'O', 'B', 'W'};
-*/
+int item_id_counter = 0;
 
 const std::string ENEMY_NAMES[] = {"Kobold", "Bear", "Wolf", "Specter", "Undead", "Graverobber"};
 
@@ -161,6 +157,44 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 	wrefresh(alert_window);
 }
 
+void removeEmptyLootContainers()
+{
+	std::vector<Enemy::Loot>::iterator iter;
+	for (iter = loot.begin(); iter != loot.end();) {
+		if (iter->weapons.size() == 0 && iter->food.size() == 0 && iter->armor.size() == 0) {
+			loot.erase(iter);
+		}
+		else {
+			iter++;
+		}
+	}
+}
+
+bool removeLootByItemIndex(int it_id) 
+{
+	for (int i = 0; i < loot.size(); i++) {
+		for (int w = 0; w < loot.at(i).weapons.size(); w++) {
+			if (loot.at(i).weapons.at(w).item_id == it_id) {
+				loot.at(i).weapons.erase(loot.at(i).weapons.begin() + w);
+				return true;
+			}
+		}
+		for (int f = 0; f < loot.at(i).food.size(); f++) {
+			if (loot.at(i).food.at(f).item_id == it_id) {
+				loot.at(i).food.erase(loot.at(i).food.begin() + f);
+				return true;
+			}
+		}
+		for (int a = 0; a < loot.at(i).armor.size(); a++) {
+			if (loot.at(i).armor.at(a).item_id == it_id) {
+				loot.at(i).armor.erase(loot.at(i).armor.begin() + a);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cursor_index) 
 {
 	wclear(item_description_window);
@@ -179,6 +213,7 @@ void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cur
 	wrefresh(inventory_window);
 	wrefresh(item_description_window);
 }
+
 void manageLoot(Player *player, int loot_row, int loot_col)
 {
 	//boost::variant<Weapon, Food, Armor> allLootType;
@@ -232,11 +267,15 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 				}
 
 				if (isPickedup) {
+					if (!removeLootByItemIndex(boost::apply_visitor(Visitors::get_item_id(), allLoot.at(cursor_index)))) {
+						//ERROR
+						exit(0);
+					}
+					removeEmptyLootContainers();
 					allLoot.erase(allLoot.begin() + cursor_index);
 					if (cursor_index == allLoot.size()) {
 						cursor_index--;
 					}
-					//TODO: Delete from real loot table too
 				}
 				else {
 					wprintw(alert_window, "Insufficient Capacity for %s\n", boost::apply_visitor(Visitors::get_name(), allLoot.at(cursor_index)));

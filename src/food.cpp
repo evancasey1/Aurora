@@ -6,6 +6,8 @@
 
 Food::Food() 
 {
+	extern int item_id_counter;
+	this->item_id = item_id_counter++;
 	this->equipment_id = static_cast<int>(EquipmentType::Food);
 	this->initial_health_gain = 5;     
 	this->health_gain_per_trigger = 2; 
@@ -17,6 +19,8 @@ Food::Food()
 
 Food::Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers) 
 {
+	extern int item_id_counter;
+	this->item_id = item_id_counter++;
 	this->equipment_id = static_cast<int>(EquipmentType::Food);
 	this->name = name;
 	this->initial_health_gain = initial_health_gain;     

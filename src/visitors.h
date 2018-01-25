@@ -31,6 +31,12 @@ class Visitors
 			template <typename T>
 			const char* operator()(T t) const { return (t.name).c_str(); }
 		};
+
+		struct get_item_id : public boost::static_visitor<int>
+		{
+			template <typename T>
+			int operator()(T t) const { return t.item_id; }
+		};
 };
 
 

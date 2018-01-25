@@ -8,7 +8,9 @@ class Equipment
 	public:
 		Equipment(){};
 		void printDescription(WINDOW *win);
+
 		int equipment_id;
+		int item_id;
 		std::string name;
 };
 

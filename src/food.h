@@ -8,7 +8,7 @@ class Food : public Equipment
 		Food();
 		Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers);
 		void printDescription(WINDOW *win);
-
+		
 		std::string name;
 		int initial_health_gain;     //Health boost right after eating
 		int health_gain_per_trigger; //Amount of health gained when health is gained over time
