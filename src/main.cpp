@@ -161,59 +161,79 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 	wrefresh(alert_window);
 }
 
-void printLoot(int item_index, int screen_index, int max_screen_index, std::vector<Enemy::Loot> *loot_at_loc, WINDOW *item_description_window) 
+void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cursor_index) 
 {
 	wclear(item_description_window);
 	wclear(inventory_window);
 	
-	int item_counter = 0;
-	int container_counter = 0;
-	std::vector<Enemy::Loot>::iterator loot_iter = loot_at_loc->begin();
-	std::advance(loot_iter, loot_items_per_screen * screen_index);
-	item_counter += loot_items_per_screen * screen_index;
-	wprintw(inventory_window, "[%d/%d]\n", screen_index + 1, max_screen_index + 1);
-
-	if (loot_at_loc->size() == 0) {
-		wprintw(inventory_window, "<EMPTY>");
-	}
-	else {
-		while(loot_iter != loot_at_loc->end() && container_counter != loot_items_per_screen) {
-			wattron(inventory_window, A_BOLD);
-			wprintw(inventory_window, "%s\n", (loot_iter->dropped_by).c_str());
-			wattroff(inventory_window, A_BOLD);
-
-			std::vector<boost::variant<Weapon, Food, Armor>> equipment;
-			equipment.insert(equipment.end(), loot_iter->weapons.begin(), loot_iter->weapons.end());
-			equipment.insert(equipment.end(), loot_iter->food.begin(), loot_iter->food.end());
-			equipment.insert(equipment.end(), loot_iter->armor.begin(), loot_iter->armor.end());
-			
-			for (int i = 0; i < equipment.size(); i++) {
-				if (item_counter == item_index) {
-					wattron(inventory_window, A_STANDOUT);
-				}
-				boost::apply_visitor(Visitors::output_name(item_counter, inventory_window), equipment.at(i));
-
-				if (item_counter == item_index) {
-					boost::apply_visitor(Visitors::output_desc(item_description_window), equipment.at(i));
-					wattroff(inventory_window, A_STANDOUT);
-				}
-				item_counter++;
-			}
-			loot_iter++;
-			container_counter++;
+	for (int i = 0; i < allLoot.size(); i++) {
+		if (i == cursor_index) {
+			wattron(inventory_window, A_STANDOUT);
+		}
+		boost::apply_visitor(Visitors::output_name(i, inventory_window), allLoot.at(i));
+		if (i == cursor_index) {
+			boost::apply_visitor(Visitors::output_desc(item_description_window), allLoot.at(i));
+			wattroff(inventory_window, A_STANDOUT);
 		}
 	}
-	wrefresh(item_description_window);
 	wrefresh(inventory_window);
+	wrefresh(item_description_window);
+}
+void manageLoot(Player *player, int loot_row, int loot_col)
+{
+	//boost::variant<Weapon, Food, Armor> allLootType;
+	std::vector<boost::variant<Weapon, Food, Armor>> allLoot;
+	int cursor_index = 0;
+	int ch;
+
+	for (int i = 0; i < loot.size(); i++) {
+		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
+			allLoot.insert(allLoot.end(), loot.at(i).weapons.begin(), loot.at(i).weapons.end());
+			allLoot.insert(allLoot.end(), loot.at(i).food.begin(), loot.at(i).food.end());
+			allLoot.insert(allLoot.end(), loot.at(i).armor.begin(), loot.at(i).armor.end());
+		}
+	}
+
+	while(true) {
+		if (allLoot.size() == 0) {
+			return;
+		}
+		printLoot(allLoot, cursor_index);
+		ch = getch();
+		
+		switch(ch) {
+			case KEY_UP:
+				if (cursor_index > 0) {
+					cursor_index--;
+				}
+				break;
+			case KEY_DOWN:
+				if (cursor_index < (allLoot.size() - 1)) {
+					cursor_index++;
+				}
+				break;
+
+			case KEY_ENTER: case '\n':
+				
+				wclear(item_description_window);
+				wrefresh(item_description_window);
+				break;
+			case 'l': case 'e':
+				wclear(inventory_window);
+				wrefresh(inventory_window);
+				return;
+			default:
+				break;
+		}
+	}
 }
 
-//	Have to break it down in a smaller, more modular fashion
-//	This function needs a complete and total overhaul
 /*
 manageLoot:
 	This function will handle the picking up and dropping of loot from enemies. Picked-up loot should be deleted 
 	from the map and added to the player's inventory.
 */
+/*
 void manageLoot(Player *player, int loot_row, int loot_col) 
 {
 	int ch;
@@ -313,7 +333,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 		
 	}
 }
-
+*/
 void deleteDefeatedEnemies(std::vector<Enemy> *enemies) {
 	//loop through enemy vector and delete all dead enemies
 	std::vector<Enemy>::iterator iter;
