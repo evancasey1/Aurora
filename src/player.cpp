@@ -430,6 +430,36 @@ void Player::gainSouls(int souls_to_gain, WINDOW *alert_win)
 	wattron(alert_win, Color::RedBlack);
 }
 
+bool Player::pickupLoot(Weapon weapon_item) 
+{
+	if (this->inventory.weapon_count < this->inventory.weapon_capacity) {
+		this->inventory.weapons.push_back(weapon_item);
+		this->inventory.weapon_count++;
+		return true;
+	}
+	return false;
+}
+
+bool Player::pickupLoot(Food food_item) 
+{
+	if (this->inventory.food_count < this->inventory.food_capacity) {
+		this->inventory.food.push_back(food_item);
+		this->inventory.food_count++;
+		return true;
+	}
+	return false;
+}
+
+bool Player::pickupLoot(Armor armor_item) 
+{
+	if (this->inventory.armor_count < this->inventory.armor_capacity) {
+		this->inventory.armor.push_back(armor_item);
+		this->inventory.armor_count++;
+		return true;
+	}
+	return false;
+}
+
 void Player::levelUp(WINDOW *alert_win)
 {
 	this->current_xp -= this->current_xp_cap;

@@ -185,6 +185,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 	std::vector<boost::variant<Weapon, Food, Armor>> allLoot;
 	int cursor_index = 0;
 	int ch;
+	bool isPickedup = false;
 
 	for (int i = 0; i < loot.size(); i++) {
 		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
@@ -196,6 +197,8 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 
 	while(true) {
 		if (allLoot.size() == 0) {
+			wclear(inventory_window);
+			wrefresh(inventory_window);
 			return;
 		}
 		printLoot(allLoot, cursor_index);
@@ -214,6 +217,31 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 				break;
 
 			case KEY_ENTER: case '\n':
+				isPickedup = false;
+				
+				switch(allLoot.at(cursor_index).which()) {
+					case 0:
+						isPickedup = player->pickupLoot(boost::get<Weapon>(allLoot.at(cursor_index)));
+						break;
+					case 1:
+						isPickedup = player->pickupLoot(boost::get<Food>(allLoot.at(cursor_index)));
+						break;
+					default:
+						isPickedup = player->pickupLoot(boost::get<Armor>(allLoot.at(cursor_index)));
+						break;
+				}
+
+				if (isPickedup) {
+					allLoot.erase(allLoot.begin() + cursor_index);
+					if (cursor_index == allLoot.size()) {
+						cursor_index--;
+					}
+					//TODO: Delete from real loot table too
+				}
+				else {
+					wprintw(alert_window, "Insufficient Capacity for %s\n", boost::apply_visitor(Visitors::get_name(), allLoot.at(cursor_index)));
+					wrefresh(alert_window);
+				}
 				
 				wclear(item_description_window);
 				wrefresh(item_description_window);

@@ -25,6 +25,12 @@ class Visitors
 			template <typename T>
 			void operator()(T t) const { wprintw(win, "> [%d] %s\n", counter, (t.name).c_str()); }
 		};
+
+		struct get_name : public boost::static_visitor<const char*>
+		{
+			template <typename T>
+			const char* operator()(T t) const { return (t.name).c_str(); }
+		};
 };
 
 

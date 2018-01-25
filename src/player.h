@@ -42,6 +42,9 @@ class Player
 		void setClassAttributes();
 		bool enemyAtLocation(int row, int col, std::vector<Enemy> enemies);
 		void passiveHealthRegeneration(WINDOW *p_win);
+		bool pickupLoot(Weapon weapon_item);
+		bool pickupLoot(Food food_item);
+		bool pickupLoot(Armor armor_item);
 
 		Inventory inventory;
 		std::vector<Food> active_food;
