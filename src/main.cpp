@@ -252,20 +252,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 				break;
 
 			case KEY_ENTER: case '\n':
-				isPickedup = false;
-				
-				switch(allLoot.at(cursor_index).which()) {
-					case 0:
-						isPickedup = player->pickupLoot(boost::get<Weapon>(allLoot.at(cursor_index)));
-						break;
-					case 1:
-						isPickedup = player->pickupLoot(boost::get<Food>(allLoot.at(cursor_index)));
-						break;
-					default:
-						isPickedup = player->pickupLoot(boost::get<Armor>(allLoot.at(cursor_index)));
-						break;
-				}
-
+				isPickedup = boost::apply_visitor(Visitors::pick_up(player), allLoot.at(cursor_index));
 				if (isPickedup) {
 					if (!removeLootByItemIndex(boost::apply_visitor(Visitors::get_item_id(), allLoot.at(cursor_index)))) {
 						//ERROR
