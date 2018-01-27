@@ -195,12 +195,13 @@ bool removeLootByItemIndex(int it_id)
 	return false;
 }
 
-void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cursor_index) 
+void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cursor_index, int screen_index, int max_screens) 
 {
 	wclear(item_description_window);
 	wclear(inventory_window);
 	
-	for (int i = 0; i < allLoot.size(); i++) {
+	wprintw(inventory_window, "[%d/%d]\n", screen_index, max_screens);
+	for (int i = loot_items_per_screen * screen_index; i < (loot_items_per_screen * screen_index) + loot_items_per_screen && i < allLoot.size(); i++) {
 		if (i == cursor_index) {
 			wattron(inventory_window, A_STANDOUT);
 		}
@@ -219,6 +220,8 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 	//boost::variant<Weapon, Food, Armor> allLootType;
 	std::vector<boost::variant<Weapon, Food, Armor>> allLoot;
 	int cursor_index = 0;
+	int screen_index = 0;
+	int max_screens;
 	int ch;
 	bool isPickedup = false;
 
@@ -229,6 +232,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 			allLoot.insert(allLoot.end(), loot.at(i).armor.begin(), loot.at(i).armor.end());
 		}
 	}
+	max_screens = std::floor(allLoot.size() / loot_items_per_screen);
 
 	while(true) {
 		if (allLoot.size() == 0) {
@@ -236,21 +240,38 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 			wrefresh(inventory_window);
 			return;
 		}
-		printLoot(allLoot, cursor_index);
+		printLoot(allLoot, cursor_index, screen_index, max_screens);
 		ch = getch();
 		
 		switch(ch) {
 			case KEY_UP:
-				if (cursor_index > 0) {
+				if (cursor_index > 0 && cursor_index > ((screen_index) * loot_items_per_screen)) {
 					cursor_index--;
 				}
 				break;
 			case KEY_DOWN:
-				if (cursor_index < (allLoot.size() - 1)) {
+				if (cursor_index < (allLoot.size() - 1) && cursor_index < ((screen_index + 1) * loot_items_per_screen)) {
 					cursor_index++;
 				}
 				break;
-
+			case KEY_RIGHT:
+				if (screen_index < max_screens) {
+					screen_index++;
+					cursor_index += loot_items_per_screen;
+					if (cursor_index >= allLoot.size()) {
+						cursor_index = allLoot.size() - 1;
+					}
+				}
+				break;
+			case KEY_LEFT:
+				if (screen_index > 0) {
+					screen_index--;
+					cursor_index -= loot_items_per_screen;
+					if (cursor_index < 0) {
+						cursor_index = 0;
+					}
+				}
+				break;
 			case KEY_ENTER: case '\n':
 				isPickedup = boost::apply_visitor(Visitors::pick_up(player), allLoot.at(cursor_index));
 				if (isPickedup) {
@@ -262,6 +283,10 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 					allLoot.erase(allLoot.begin() + cursor_index);
 					if (cursor_index == allLoot.size()) {
 						cursor_index--;
+					}
+					max_screens = std::floor((allLoot.size() - 1) / loot_items_per_screen);
+					if (screen_index > max_screens) {
+						screen_index = max_screens;
 					}
 				}
 				else {
