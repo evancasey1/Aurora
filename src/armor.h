@@ -6,6 +6,7 @@
 class Armor : public Equipment 
 {
 	public:
+		Armor();
 		Armor(int level);
 		Armor(int level, std::string name, double prot);
 		void printDescription(WINDOW *win);

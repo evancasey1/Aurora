@@ -31,6 +31,10 @@ static std::vector<std::string> split(const std::string &s, char delim) {
 
 Player::Player(std::string p_class)
 {
+	for (int j = 0; j < 5; j++) {
+		Armor defArm;
+		equipped_armor.push_back(defArm);
+	}
 	this->vision = 6;
 	this->primary_weapon = new Weapon("Short Sword", 3, 2);
 	/*
@@ -215,7 +219,8 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 {
 	int ch;
 	int index = 0;
-	Weapon temp;
+	Weapon wtemp;
+	Armor atemp;
 	Enemy::Loot loot_obj;
 	bool valid_drop = false;
 	std::vector<Weapon> *weapon_vect;
@@ -261,9 +266,9 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 			case KEY_ENTER: case '\n':
 				if (this->inventory_index == static_cast<int>(EquipmentType::Weapon) && this->inventory.weapons.size() > 0) {
 					weapon_vect = &this->inventory.weapons;
-					temp = weapon_vect->at(index);
+					wtemp = weapon_vect->at(index);
 					weapon_vect->at(index) = *this->primary_weapon;
-					this->setPrimaryWeapon(temp);
+					this->setPrimaryWeapon(wtemp);
 					wprintw(alert_win, "Equipped %s\n", (this->primary_weapon->name).c_str());
 					wrefresh(alert_win);
 					index = 0;
@@ -272,6 +277,19 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
 					this->eatFood(&this->inventory.food.at(index), player_status_window);
 					this->inventory.food.erase(this->inventory.food.begin() + index);
 					index = 0;
+				}
+				else if (this->inventory_index == static_cast<int>(EquipmentType::Armor) && this->inventory.armor.size() > 0) {
+					atemp = this->inventory.armor.at(index);
+					this->inventory.armor.erase(this->inventory.armor.begin() + index);
+					if (equipped_armor.at(static_cast<int>(atemp.armor_type)).armor_type != ArmorType::Default) {
+						this->inventory.armor.push_back(equipped_armor.at(static_cast<int>(atemp.armor_type)));
+					}
+					else {
+						this->inventory.armor_count--;
+					}
+					equipped_armor.at(static_cast<int>(atemp.armor_type)) = atemp;
+					wprintw(alert_win, "Equipped %s\n", (atemp.name).c_str());
+					wrefresh(alert_win);	
 				}
 				break;
 			case 'd':

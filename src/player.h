@@ -47,6 +47,7 @@ class Player
 
 		Inventory inventory;
 		std::vector<Food> active_food;
+		std::vector<Armor> equipped_armor;
 		int vision;
 		int current_health, base_total_health, current_total_health;
 		double speed;

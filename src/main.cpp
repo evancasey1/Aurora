@@ -34,7 +34,7 @@ int night_turns = 30;
 int turn_counter = 0;
 int enemy_spawn_rate = 25;
 unsigned int max_enemies = 50;
-int loot_items_per_screen = 5;
+int loot_items_per_screen = 10;
 int item_id_counter = 0;
 
 const std::string ENEMY_NAMES[] = {"Kobold", "Bear", "Wolf", "Specter", "Undead", "Graverobber"};

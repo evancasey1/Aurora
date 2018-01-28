@@ -6,7 +6,8 @@ enum class ArmorType : int {
     Legs = 1,
     Chestpiece = 2,
     Gloves = 3,
-    Helm = 4
+    Helm = 4,
+    Default = 5
 };
 
 #endif

@@ -7,6 +7,18 @@
 #include "armortype.h"
 #include "equipmenttype.h"
 
+
+Armor::Armor() 
+{
+	extern int item_id_counter;
+	this->item_id = item_id_counter++;
+	this->armor_type = ArmorType::Default;
+	this->equipment_id = static_cast<int>(EquipmentType::Armor);
+	this->level = 0;
+	this->protection = 0.00;
+	this->name = "DEFAULT";
+}
+
 Armor::Armor(int level) 
 {
 	extern int item_id_counter;
