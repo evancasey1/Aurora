@@ -49,24 +49,18 @@ Weapon::Weapon() {
 
 	if (w_name == "Sword") {
 		this->bleed_chance = 0.15;
-		this->piercing_mod = 1.1;
-		this->slashing_mod = 1.3;
-		this->crushing_mod = 1.0;
-		this->accuracy = 0.85;
+		//Random value 80 <= X < 100
+		this->accuracy = ((rand()%20)+80)/100.0;
 	}
 	else if (w_name == "Dagger") {
 		this->bleed_chance = 0.25;
-		this->piercing_mod = 1.4;
-		this->slashing_mod = 1.1;
-		this->crushing_mod = 1.0;
-		this->accuracy = 0.95;
+		//Random value 90 <= X < 100
+		this->accuracy = ((rand()%10)+90)/100.0;
 	}
 	else {
 		this->bleed_chance = 0.05;
-		this->piercing_mod = 1.0;
-		this->slashing_mod = 1.0;
-		this->crushing_mod = 1.8;
-		this->accuracy = 0.80;
+		//Random value 75 <= X < 100
+		this->accuracy = ((rand()%25)+75)/100.0;
 	}
 }
 
@@ -114,24 +108,18 @@ Weapon::Weapon(int level) {
 
 	if (w_name == "Sword") {
 		this->bleed_chance = 0.15;
-		this->piercing_mod = 1.1;
-		this->slashing_mod = 1.3;
-		this->crushing_mod = 1.0;
-		this->accuracy = 0.85;
+		//Random value 80 <= X < 100
+		this->accuracy = ((rand()%20)+80)/100.0;
 	}
 	else if (w_name == "Dagger") {
 		this->bleed_chance = 0.25;
-		this->piercing_mod = 1.4;
-		this->slashing_mod = 1.1;
-		this->crushing_mod = 1.0;
-		this->accuracy = 0.95;
+		//Random value 90 <= X < 100
+		this->accuracy = ((rand()%10)+90)/100.0;
 	}
 	else {
 		this->bleed_chance = 0.05;
-		this->piercing_mod = 1.0;
-		this->slashing_mod = 1.0;
-		this->crushing_mod = 1.8;
-		this->accuracy = 0.80;
+		//Random value 75 <= X < 100
+		this->accuracy = ((rand()%25)+75)/100.0;
 	}
 	this->attack_power = std::ceil(this->attack_power * pow(level_mod, level));
 }
@@ -166,29 +154,23 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
 
 	if (w_name == "Sword") {
 		this->bleed_chance = 0.15;
-		this->piercing_mod = 1.1;
-		this->slashing_mod = 1.3;
-		this->crushing_mod = 1.0;
-		this->accuracy = 0.85;
+		//Random value 80 <= X < 100
+		this->accuracy = ((rand()%20)+80)/100.0;
 	}
 	else if (w_name == "Dagger") {
 		this->bleed_chance = 0.25;
-		this->piercing_mod = 1.4;
-		this->slashing_mod = 1.1;
-		this->crushing_mod = 1.0;
-		this->accuracy = 0.95;
+		//Random value 90 <= X < 100
+		this->accuracy = ((rand()%10)+90)/100.0;
 	}
 	else {
 		this->bleed_chance = 0.05;
-		this->piercing_mod = 1.0;
-		this->slashing_mod = 1.0;
-		this->crushing_mod = 1.8;
-		this->accuracy = 0.80;
+		//Random value 75 <= X < 100
+		this->accuracy = ((rand()%25)+75)/100.0;
 	}
 }
 
 void Weapon::printDescription(WINDOW *item_description_window)
 {
-	wprintw(item_description_window, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->attack_power, this->attack_power + this->attack_power_range, this->accuracy, this->crit_chance);
+	wprintw(item_description_window, "WEAPON\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->attack_power, this->attack_power + this->attack_power_range, this->accuracy, this->crit_chance);
 	wrefresh(item_description_window);
 }

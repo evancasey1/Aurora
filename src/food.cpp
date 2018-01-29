@@ -33,6 +33,6 @@ Food::Food(std::string name, int initial_health_gain, int health_gain_per_trigge
 
 void Food::printDescription(WINDOW *item_description_window)
 {
-	wprintw(item_description_window, "Health Gain: %d\nHeal Over Time: %d:%d:%d", this->initial_health_gain, this->health_gain_per_trigger, this->total_triggers, this->turns_until_trigger);
+	wprintw(item_description_window, "FOOD\nHealth Gain: %d\nHeal Over Time: %d:%d:%d", this->initial_health_gain, this->health_gain_per_trigger, this->total_triggers, this->turns_until_trigger);
 	wrefresh(item_description_window);
 }

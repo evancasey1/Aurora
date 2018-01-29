@@ -62,6 +62,6 @@ Armor::Armor(int level, std::string name, double prot)
 
 void Armor::printDescription(WINDOW *item_description_window)
 {
-	wprintw(item_description_window, "Protection: %.2f", this->protection);
+	wprintw(item_description_window, "ARMOR\nProtection: %.2f", this->protection);
 	wrefresh(item_description_window);
 }

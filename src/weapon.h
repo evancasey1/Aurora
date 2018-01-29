@@ -14,7 +14,6 @@ class Weapon : public Equipment
 		std::string name;
 		bool is_poisonous;
 		double bleed_chance, poison_chance;
-		double piercing_mod, slashing_mod, crushing_mod;
 		double crit_chance;
 		double accuracy;
 

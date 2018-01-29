@@ -25,8 +25,6 @@ class Player
 
 		Player(std::string race);
 		bool moveSpace(int direction, int map_size, WINDOW *player_window, std::vector<Enemy> enemies);
-		int getRow();
-		int getCol();
 		void setPosition(int r, int c);
 		void printStatus(WINDOW *player_window);
 		int computeAttackPower();
@@ -38,7 +36,6 @@ class Player
 		void eatFood(Food *food, WINDOW *player_window);
 		void levelUp(WINDOW *alert_win);
 		void foodEvents();
-		void setClassAttributes();
 		bool enemyAtLocation(int row, int col, std::vector<Enemy> enemies);
 		void passiveHealthRegeneration(WINDOW *p_win);
 		bool pickupLoot(Weapon weapon_item);
