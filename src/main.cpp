@@ -362,8 +362,12 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 			}
 			e.idle(map->size);
 		}
-		if (e.row == player->row && e.col == player->col) {
-			fastCombat(player, enemies, index);
+		if (e.row == player->row && e.col == player->col && !player->isInCombat()) {
+			player->setInCombat(true);
+			while (e.current_health > 0) { 
+				fastCombat(player, enemies, index);
+			}
+			player->setInCombat(false);
 		}
 		index++;
 	}

@@ -41,6 +41,8 @@ class Player
 		bool pickupLoot(Weapon weapon_item);
 		bool pickupLoot(Food food_item);
 		bool pickupLoot(Armor armor_item);
+		bool isInCombat();
+		void setInCombat(bool toggle);
 
 		Inventory inventory;
 		std::vector<Food> active_food;
@@ -72,6 +74,7 @@ class Player
 		int max_inventory_index;
 		int souls;
 		int souls_cap;
+		bool inCombat;
 
 		int passive_health_regen_counter;   //count of number of moves. Rolls back to 0 when equal to trigger.
 		int passive_health_regen_trigger;   //number of moves before passive health regeneration happens

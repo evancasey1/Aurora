@@ -97,6 +97,7 @@ Player::Player(std::string p_class)
 	this->souls_multiplier = 1.15;
 	this->current_evasion = this->base_evasion;
 	this->current_protection = this->base_protection;
+	this->inCombat = false;
 }
 
 int getLootIndex(std::vector<Enemy::Loot> *loot, long loot_id) 
@@ -416,6 +417,16 @@ void Player::setPosition(int row, int col)
 {
 	this->row = row;
 	this->col = col;
+}
+
+void Player::setInCombat(bool toggle)
+{
+	this->inCombat = toggle;
+}
+
+bool Player::isInCombat()
+{
+	return this->inCombat;
 }
 
 //Will print things like player gold count, health, status, and 
