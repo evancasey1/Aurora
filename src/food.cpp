@@ -31,6 +31,12 @@ Food::Food(std::string name, int initial_health_gain, int health_gain_per_trigge
 	this->turn_count = 0;
 }
 
+void Food::printType(WINDOW *win) 
+{
+	wprintw(win, "FOOD\n");
+	wrefresh(win);
+}
+
 void Food::printDescription(WINDOW *item_description_window)
 {
 	wprintw(item_description_window, "FOOD\nHealth Gain: %d\nHeal Over Time: %d:%d:%d", this->initial_health_gain, this->health_gain_per_trigger, this->total_triggers, this->turns_until_trigger);

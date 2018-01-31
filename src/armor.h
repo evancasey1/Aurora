@@ -10,6 +10,7 @@ class Armor : public Equipment
 		Armor(int level);
 		Armor(int level, std::string name, double prot);
 		void printDescription(WINDOW *win);
+		void printType(WINDOW *win);
 
 		int level;
 		double protection;

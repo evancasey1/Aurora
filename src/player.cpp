@@ -194,10 +194,10 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 			boost::apply_visitor(Visitors::output_name(counter, inv_window), equipment.at(i));
 
 			if (counter == index) {
-				boost::apply_visitor(Visitors::output_desc(item_description_window), equipment.at(i));
+				boost::apply_visitor(Visitors::output_inv_desc(item_description_window), equipment.at(i));
 				if (inventory_index != static_cast<int>(EquipmentType::Food)) {
 					mvwprintw(item_description_window, 7, 0, "Currently Equipped:\n");
-					boost::apply_visitor(Visitors::output_desc(item_description_window), current_equipped);
+					boost::apply_visitor(Visitors::output_inv_desc(item_description_window), current_equipped);
 				}
 				wattroff(inv_window, A_STANDOUT);
 			}

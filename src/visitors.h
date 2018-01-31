@@ -14,6 +14,14 @@ class Visitors
 			WINDOW *win;
 			explicit output_desc(WINDOW *item_description_window) : win(item_description_window) {}
 			template <typename T>
+			void operator()(T t) const { t.printType(win); t.printDescription(win); }
+		};
+
+		struct output_inv_desc : public boost::static_visitor<>
+		{
+			WINDOW *win;
+			explicit output_inv_desc(WINDOW *item_description_window) : win(item_description_window) {}
+			template <typename T>
 			void operator()(T t) const { t.printDescription(win); }
 		};
 

@@ -9,6 +9,7 @@ class Weapon : public Equipment
 		Weapon(int level);
 		Weapon(std::string name, int attack_power, int attack_power_range);
 		void printDescription(WINDOW *win);
+		void printType(WINDOW *win);
 				
 		int attack_power, attack_power_range;
 		std::string name;

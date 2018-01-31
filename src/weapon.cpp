@@ -169,8 +169,14 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
 	}
 }
 
+void Weapon::printType(WINDOW *win) 
+{
+	wprintw(win, "WEAPON\n");
+	wrefresh(win);
+}
+
 void Weapon::printDescription(WINDOW *item_description_window)
 {
-	wprintw(item_description_window, "WEAPON\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->attack_power, this->attack_power + this->attack_power_range, this->accuracy, this->crit_chance);
+	wprintw(item_description_window, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->attack_power, this->attack_power + this->attack_power_range, this->accuracy, this->crit_chance);
 	wrefresh(item_description_window);
 }
