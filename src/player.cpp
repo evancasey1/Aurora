@@ -191,7 +191,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 			if (counter == index) {
 				wattron(inv_window, A_STANDOUT);
 			}
-			boost::apply_visitor(Visitors::output_name(counter, inv_window), equipment.at(i));
+			boost::apply_visitor(Visitors::output_list_name(counter, inv_window), equipment.at(i));
 
 			if (counter == index) {
 				boost::apply_visitor(Visitors::output_inv_desc(item_description_window), equipment.at(i));

@@ -15,6 +15,7 @@ Food::Food()
 	this->total_triggers = 3; 
 	this->trigger_count = 0; 
 	this->turn_count = 0;
+	this->name = "Food";
 }
 
 Food::Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers) 

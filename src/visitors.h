@@ -25,14 +25,23 @@ class Visitors
 			void operator()(T t) const { t.printDescription(win); }
 		};
 
-		struct output_name : public boost::static_visitor<>
+		struct output_list_name : public boost::static_visitor<>
 		{
 			int counter;
 			WINDOW *win;
-			explicit output_name(int item_counter, WINDOW *inventory_window) : counter (item_counter), win(inventory_window) {}
+			explicit output_list_name(int item_counter, WINDOW *inventory_window) : counter (item_counter), win(inventory_window) {}
 
 			template <typename T>
 			void operator()(T t) const { wprintw(win, "> [%d] %s\n", counter, (t.name).c_str()); }
+		};
+
+		struct output_name : public boost::static_visitor<>
+		{
+			WINDOW *win;
+			explicit output_name(WINDOW *window) : win(window) {}
+
+			template <typename T>
+			void operator()(T t) const { wprintw(win, "%s\n", (t.name).c_str()); }
 		};
 
 		struct get_name : public boost::static_visitor<const char*>

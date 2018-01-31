@@ -205,7 +205,7 @@ void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cur
 		if (i == cursor_index) {
 			wattron(inventory_window, A_STANDOUT);
 		}
-		boost::apply_visitor(Visitors::output_name(i, inventory_window), allLoot.at(i));
+		boost::apply_visitor(Visitors::output_list_name(i, inventory_window), allLoot.at(i));
 		if (i == cursor_index) {
 			boost::apply_visitor(Visitors::output_desc(item_description_window), allLoot.at(i));
 			wattroff(inventory_window, A_STANDOUT);
@@ -290,7 +290,8 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 					}
 				}
 				else {
-					wprintw(alert_window, "Insufficient Capacity for %s\n", boost::apply_visitor(Visitors::get_name(), allLoot.at(cursor_index)));
+					wprintw(alert_window, "Insufficient Capacity for ");
+					boost::apply_visitor(Visitors::output_name(alert_window), allLoot.at(cursor_index));
 					wrefresh(alert_window);
 				}
 				
