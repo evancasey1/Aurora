@@ -28,6 +28,8 @@ Armor::Armor(int level)
 	this->equipment_id = static_cast<int>(EquipmentType::Armor);
 	this->level = level;
 	this->protection = base_prot * pow(base_prot + 1, level);
+	//Added protection of up to 10% or 0.10
+	this->protection += ((rand() % 10) / 100.0);
 	switch(armor_type) {
 		case ArmorType::Boots:
 			this->name = "Boots";

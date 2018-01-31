@@ -156,17 +156,16 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 	wclear(item_description_window);
 	int counter = 0;
 	std::vector<boost::variant<Weapon, Food, Armor>> equipment;
-	//std::vector<Equipment> equipment;
+	boost::variant<Weapon, Armor> current_equipped;
 	std::vector<Equipment>::iterator iter;
 
 	wattron(inv_window, A_BOLD);
-	/*
-	This will be handled by a boost static visitor later
-	*/
+
 	switch(this->inventory_index) {
 		case static_cast<int>(EquipmentType::Weapon):
 			equipment.insert(equipment.end(), this->inventory.weapons.begin(), this->inventory.weapons.end());
 			wprintw(inv_window, "WEAPONS [%d/%d] ->\n", this->inventory.weapon_count, this->inventory.weapon_capacity);
+			current_equipped = *this->primary_weapon;
 			break;
 		case static_cast<int>(EquipmentType::Food):
 			equipment.insert(equipment.end(), this->inventory.food.begin(), this->inventory.food.end());
@@ -175,6 +174,9 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 		case static_cast<int>(EquipmentType::Armor):
 			equipment.insert(equipment.end(), this->inventory.armor.begin(), this->inventory.armor.end());
 			wprintw(inv_window, "<- ARMOR [%d/%d] ->\n", this->inventory.armor_count, this->inventory.armor_capacity);
+			if (this->inventory.armor.size() > 0) {
+				current_equipped = equipped_armor.at(static_cast<int>(this->inventory.armor.at(index).armor_type));
+			}
 			break;
 		default:
 			return;
@@ -193,8 +195,13 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 
 			if (counter == index) {
 				boost::apply_visitor(Visitors::output_desc(item_description_window), equipment.at(i));
+				if (inventory_index != static_cast<int>(EquipmentType::Food)) {
+					mvwprintw(item_description_window, 7, 0, "Currently Equipped:\n");
+					boost::apply_visitor(Visitors::output_desc(item_description_window), current_equipped);
+				}
 				wattroff(inv_window, A_STANDOUT);
 			}
+
 			counter++;
 		}
 	}
