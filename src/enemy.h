@@ -28,6 +28,8 @@ class Enemy
 		void deathEvents(std::vector<Enemy::Loot> *loot, WINDOW *win);
 		void globalBuff(double mod);
 		void globalDebuff(double mod);
+		bool isInCombat();
+		void setInCombat(bool toggle);
 
 		int row;
 		int souls;
@@ -56,6 +58,7 @@ class Enemy
 		std::string name;
 		int seek_moves;
 		int idle_moves;
+		bool inCombat;
 
 		struct Equipment {
 			std::vector<Weapon> weapons;

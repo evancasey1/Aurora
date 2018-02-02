@@ -42,7 +42,8 @@ class Player
 		bool pickupLoot(Food food_item);
 		bool pickupLoot(Armor armor_item);
 		bool isInCombat();
-		void setInCombat(bool toggle);
+		void setInCombatAbsolute(bool toggle);
+		void setInCombatCheck(std::vector<Enemy> enemies);
 
 		Inventory inventory;
 		std::vector<Food> active_food;

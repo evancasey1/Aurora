@@ -426,9 +426,20 @@ void Player::setPosition(int row, int col)
 	this->col = col;
 }
 
-void Player::setInCombat(bool toggle)
+void Player::setInCombatAbsolute(bool toggle)
 {
 	this->inCombat = toggle;
+}
+
+void Player::setInCombatCheck(std::vector<Enemy> enemies)
+{
+	for (Enemy e : enemies){
+		if (e.isInCombat()) {
+			this->inCombat = true;
+			return;
+		}
+	}
+	this->inCombat = false;
 }
 
 bool Player::isInCombat()

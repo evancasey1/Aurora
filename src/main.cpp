@@ -360,20 +360,19 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 				//if player gets out of range of enemy sight
 				//set up to alert them when they get back into range
 				e.alert_player = true;
+				e.setInCombat(false);
 			}
 			e.idle(map->size);
 		}
-		if (e.row == player->row && e.col == player->col && !player->isInCombat()) {
-			player->setInCombat(true);
-			while (e.current_health > 0) { 
-				fastCombat(player, enemies, index);
-			}
-			player->setInCombat(false);
+		if (e.row == player->row && e.col == player->col && (!player->isInCombat() || e.isInCombat())) {
+			e.setInCombat(true);
+			fastCombat(player, enemies, index);
 		}
 		index++;
 	}
 
 	deleteDefeatedEnemies(enemies);
+	player->setInCombatCheck(*enemies);
 	spawnEnemy(enemies, player, map);
 
 	wattroff(alert_window, Color::BlackWhite);

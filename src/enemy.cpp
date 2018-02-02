@@ -12,7 +12,8 @@
 #include "color.h"
 
 template<typename Out>
-static void split(const std::string &s, char delim, Out result) {
+static void split(const std::string &s, char delim, Out result) 
+{
     std::stringstream ss(s);
     std::string item;
     while (std::getline(ss, item, delim)) {
@@ -20,7 +21,8 @@ static void split(const std::string &s, char delim, Out result) {
     }
 }
 
-static std::vector<std::string> split(const std::string &s, char delim) {
+static std::vector<std::string> split(const std::string &s, char delim) 
+{
     std::vector<std::string> elems;
     split(s, delim, std::back_inserter(elems));
     return elems;
@@ -66,6 +68,7 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
 	this->current_health = this->total_health;
 	this->alert_player = true;
 	this->nightbuff_multiplier = 1.15;
+	this->inCombat = false;
 
 	//this->number_drops_possible = 3;
 
@@ -197,7 +200,8 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
 	wrefresh(alert_win);
 }
 
-bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col) {
+bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col)
+{
 	std::vector<Enemy>::iterator iter;
 	for (iter = enemies->begin(); iter != enemies->end();) {
 		if (iter->row == this->row && iter->col == this->col) {
@@ -210,6 +214,16 @@ bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col) {
 	}
 
 	return true;
+}
+
+bool Enemy::isInCombat() 
+{
+	return this->inCombat;
+}
+
+void Enemy::setInCombat(bool toggle)
+{
+	this->inCombat = toggle;
 }
 
 void Enemy::idle(int map_size)
