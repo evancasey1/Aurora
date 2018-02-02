@@ -381,7 +381,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 
 void printTitle()
 {
-	int titleLines = 7;
+	int titleLines = sizeof(TITLE_TEXT)/sizeof(*TITLE_TEXT);
 	int horizontal_pad = (COLS/2) - (TITLE_TEXT[0].length() / 2);
 	for (int i = 0; i < titleLines; i++) {
 		mvprintw((i + 3), horizontal_pad, TITLE_TEXT[i].c_str());
