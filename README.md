@@ -19,6 +19,7 @@ Survive the wilderness, battle a wide variety of creatures, and save the world f
 <ul>
 <li> C++14
 <li> Boost Library
+<li> NCURSES
 </ul>
 
 ## Statement
