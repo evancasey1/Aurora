@@ -461,6 +461,11 @@ void Player::printStatus(WINDOW *player_window)
 	wprintw(player_window, "%d/%d\n", this->current_health, this->current_total_health);
 	wattroff(player_window, Color::RedBlack);
 	wprintw(player_window, "Level: %d        XP: %d/%d\n", this->level, this->current_xp, this->current_xp_cap);
+	if (this->souls == this->souls_cap) {
+		wattron(player_window, Color::YellowBlack);
+	}
+	wprintw(player_window, "SOULS: %d/%d", this->souls, this->souls_cap);
+	wattroff(player_window, Color::YellowBlack);
 	wrefresh(player_window);
 }
 

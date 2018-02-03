@@ -58,17 +58,6 @@ const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::
 									 "###     ###  ########  ###    ###  ########  ###    ### ###     ###    "};
 /* End Globals */ 
 
-void printSouls(Player *player) 
-{
-	wclear(power_status_window);
-	if (player->souls == player->souls_cap) {
-		wattron(power_status_window, Color::YellowBlack);
-	}
-	wprintw(power_status_window, "SOULS: %d/%d", player->souls, player->souls_cap);
-	wrefresh(power_status_window);
-	wattroff(power_status_window, Color::YellowBlack);
-}
-
 bool checkIfAttackHit(double accuracy, double evasion) 
 {
 	double chance_to_hit  = ((double) rand() / RAND_MAX);
@@ -148,7 +137,6 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 		wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
 		wattroff(alert_window, Color::GreenBlack);
 		wattron(alert_window, Color::RedBlack);
-		printSouls(player);
 		player->gainExp(enemy->XP, alert_window);
 		player->gainSouls(enemy->souls, alert_window);
 	}
@@ -410,7 +398,6 @@ void mainGameLoop(Player *player, Map *map)
 	map->printPlayerInfo(*player, map_window);
 	map->printMap(player, player->vision, enemies, loot, map_window);
 	player->printStatus(player_status_window);
-	printSouls(player);
 
 	while (true) {
 		passive_turn = false;
@@ -586,13 +573,13 @@ void initiateWindows()
 {
 	int map_height = 30, map_width = 50;
 	int com_height = 14, com_width = 50;
-	int ps_height  = 2 , ps_width = map_width + com_width;
+	int ps_height  = 3 , ps_width = map_width + com_width;
 	int inv_height = 20, inv_width = 30;
 	int inv_row = 22, inv_col = MAP_HORIZONTAL_PADDING;
 
 	//TODO:
 	//	have window generation depend on size of terminal, or resize it as necessary
-	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING, MAP_HORIZONTAL_PADDING);
+	map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING + 1, MAP_HORIZONTAL_PADDING);
 	alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
 	player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
 	inventory_window = newwin(inv_height, inv_width, inv_row, inv_col);
