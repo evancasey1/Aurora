@@ -21,23 +21,7 @@
 #include "visitors.h"
 
 /* Begin globals */
-const int MAP_SIZES[3] = {50, 100, 150};
-const int MAP_VERTICAL_PADDING = 3;
-const int COM_VERTICAL_PADDING = 4;
-const int MAP_HORIZONTAL_PADDING = 5;
-const int SPAWN_TOTAL_DENOM = 100;
-const int NUM_ENEMY_TYPES = 6;
-const int SPEED_ROLL = 5;
-bool is_daytime = true;
-int day_turns = 80;
-int night_turns = 30;
-int turn_counter = 0;
-int enemy_spawn_rate = 25;
-unsigned int max_enemies = 50;
-int loot_items_per_screen = 10;
 int item_id_counter = 0;
-
-const std::string ENEMY_NAMES[] = {"Kobold", "Bear", "Wolf", "Specter", "Undead", "Graverobber"};
 
 std::vector<Enemy::Loot> loot;
 
@@ -48,14 +32,6 @@ WINDOW *inventory_window;
 WINDOW *loot_window;
 WINDOW *power_status_window;
 WINDOW *item_description_window;
-
-const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
-									 "       :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+:   :+: :+: ",
-									 "     +:+   +:+  +:+    +:+ +:+    +:+ +:+    +:+ +:+    +:+  +:+   +:+ ",
-									 "   +#++:++#++: +#+    +:+ +#++:++#:  +#+    +:+ +#++:++#:  +#++:++#++: ",
-									 "  +#+     +#+ +#+    +#+ +#+    +#+ +#+    +#+ +#+    +#+ +#+     +#+  ",
-									 " #+#     #+# #+#    #+# #+#    #+# #+#    #+# #+#    #+# #+#     #+#   ",
-									 "###     ###  ########  ###    ###  ########  ###    ### ###     ###    "};
 /* End Globals */ 
 
 bool checkIfAttackHit(double accuracy, double evasion) 
@@ -75,14 +51,15 @@ int rollSpeedMod(int n)
 
 void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
+	int n_speeds = 5; //Modifier to base speed, will be in range (0 to (N-1)), in other words, N possible values for the modifier
 	Enemy *enemy = &(enemies->at(enemy_index));
 
 	int player_attack_power = player->computeAttackPower() * (1 - enemy->current_protection);
 	int enemy_attack_power =  enemy->computeAttackPower() * (1 - player->current_protection);
 	bool player_hit = checkIfAttackHit((player->primary_weapon->accuracy + player->accuracy), enemy->current_evasion);
 	bool enemy_hit  = checkIfAttackHit(enemy->accuracy, player->current_evasion);
-	int p_speed = player->speed + rollSpeedMod(SPEED_ROLL);
-	int e_speed = enemy->speed + rollSpeedMod(SPEED_ROLL);
+	int p_speed = player->speed + rollSpeedMod(n_speeds);
+	int e_speed = enemy->speed + rollSpeedMod(n_speeds);
 
 	if (p_speed > e_speed) {
 		if (!player_hit) {
@@ -183,7 +160,7 @@ bool removeLootByItemIndex(int it_id)
 	return false;
 }
 
-void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cursor_index, int screen_index, int max_screens) 
+void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cursor_index, int screen_index, int max_screens, int loot_items_per_screen) 
 {
 	wclear(item_description_window);
 	wclear(inventory_window);
@@ -209,9 +186,10 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 	std::vector<boost::variant<Weapon, Food, Armor>> allLoot;
 	int cursor_index = 0;
 	int screen_index = 0;
+	int loot_items_per_screen = 10;
+	bool isPickedup = false;
 	int max_screens;
 	int ch;
-	bool isPickedup = false;
 
 	for (int i = 0; i < loot.size(); i++) {
 		if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
@@ -228,7 +206,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
 			wrefresh(inventory_window);
 			return;
 		}
-		printLoot(allLoot, cursor_index, screen_index, max_screens);
+		printLoot(allLoot, cursor_index, screen_index, max_screens, loot_items_per_screen);
 		ch = getch();
 		
 		switch(ch) {
@@ -311,9 +289,15 @@ void deleteDefeatedEnemies(std::vector<Enemy> *enemies) {
 }
 
 void spawnEnemy(std::vector<Enemy> *enemies, Player *player, Map *map) {
-	int rng = (rand() % SPAWN_TOTAL_DENOM);
+	static const std::string ENEMY_NAMES[] = {"Kobold", "Bear", "Wolf", "Specter", "Undead", "Graverobber"};
+	int spawn_denominator = 100;
+	int enemy_spawn_rate = 25;
+	unsigned int max_enemies = 50;
+	int num_enemies = sizeof(ENEMY_NAMES) / sizeof(*ENEMY_NAMES);
+	int rng = (rand() % spawn_denominator);
+	
 	if (rng <= enemy_spawn_rate && (enemies->size() < max_enemies)) {
-		int enemy_index = (rand() % NUM_ENEMY_TYPES);
+		int enemy_index = (rand() % num_enemies);
 		std::string e_name = ENEMY_NAMES[enemy_index];
 		Enemy tempE(e_name, player->row, player->col, player->vision, map->size, player->level);
 		enemies->push_back(tempE);
@@ -368,6 +352,14 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
 
 void printTitle()
 {
+	static const std::string TITLE_TEXT[7] =  {"          :::     :::    ::: :::::::::   ::::::::  :::::::::      :::  ",
+									 "       :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+:   :+: :+: ",
+									 "     +:+   +:+  +:+    +:+ +:+    +:+ +:+    +:+ +:+    +:+  +:+   +:+ ",
+									 "   +#++:++#++: +#+    +:+ +#++:++#:  +#+    +:+ +#++:++#:  +#++:++#++: ",
+									 "  +#+     +#+ +#+    +#+ +#+    +#+ +#+    +#+ +#+    +#+ +#+     +#+  ",
+									 " #+#     #+# #+#    #+# #+#    #+# #+#    #+# #+#    #+# #+#     #+#   ",
+									 "###     ###  ########  ###    ###  ########  ###    ### ###     ###    "};
+
 	int titleLines = sizeof(TITLE_TEXT)/sizeof(*TITLE_TEXT);
 	int horizontal_pad = (COLS/2) - (TITLE_TEXT[0].length() / 2);
 	for (int i = 0; i < titleLines; i++) {
@@ -393,8 +385,13 @@ void enemyDayDebuff(std::vector<Enemy> *enemies)
 void mainGameLoop(Player *player, Map *map)
 {
 	int ch;
+	int day_turns = 80;
+	int night_turns = 30;
+	int turn_counter = 0;
+	bool is_daytime = true;
 	bool passive_turn = false;
 	std::vector<Enemy> enemies;	
+	
 	map->printPlayerInfo(*player, map_window);
 	map->printMap(player, player->vision, enemies, loot, map_window);
 	player->printStatus(player_status_window);
@@ -523,21 +520,23 @@ Player userCreatePlayer()
 
 Map userCreateMap()
 {
+	int selection_vertical_padding = 13;
 	//TODO:
 	//	Support for custom map size
+	static const int MAP_SIZES[3] = {50, 100, 150};
 	int chosen_index = 0;
 	const char *options[] = {"Tiny", "Normal", "Huge"};
 	int horiz_pad = (int) ((COLS/2)-10);
 	int ch = 0;
 	attron(A_BOLD);
 	printTitle();
-	mvprintw(MAP_VERTICAL_PADDING + 10, horiz_pad, "Select your map size:\n");
+	mvprintw(selection_vertical_padding, horiz_pad, "Select your map size:\n");
 	attroff(A_BOLD);
 	while(ch != KEY_ENTER && ch != '\n') {
 		//prints contents of options[]
 		//highlights currently selected option
 		for (int i = 0; i < 3; i++) {
-			move(MAP_VERTICAL_PADDING + i + 11, horiz_pad);
+			move(selection_vertical_padding + i + 1, horiz_pad);
 			clrtoeol();
 			if (i != chosen_index) {
 				addstr(options[i]);
@@ -571,6 +570,10 @@ Map userCreateMap()
 
 void initiateWindows()
 {
+	static const int MAP_VERTICAL_PADDING = 3;
+	static const int COM_VERTICAL_PADDING = 4;
+	static const int MAP_HORIZONTAL_PADDING = 5;
+
 	int map_height = 30, map_width = 50;
 	int com_height = 14, com_width = 50;
 	int ps_height  = 3 , ps_width = map_width + com_width;
