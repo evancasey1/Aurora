@@ -21,7 +21,7 @@
 #include "visitors.h"
 
 /* Begin globals */
-int item_id_counter = 0;
+int item_id_counter = 0; //This is a unique ID referenced by all 'equipment' classes.
 
 std::vector<Enemy::Loot> loot;
 
