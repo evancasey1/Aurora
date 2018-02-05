@@ -61,7 +61,10 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 	int p_speed = player->speed + rollSpeedMod(n_speeds);
 	int e_speed = enemy->speed + rollSpeedMod(n_speeds);
 
+	wattroff(alert_window, Color::MagentaBlack);
+
 	if (p_speed > e_speed) {
+		wattron(alert_window, Color::MagentaBlack);
 		if (!player_hit) {
 			wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
 		}
@@ -71,6 +74,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 		}
 		//Enemy turn
 		if (enemy->current_health > 0) {
+			wattron(alert_window, Color::RedBlack);
 			if (enemy_hit) {
 				player->current_health -= enemy_attack_power;
 				wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
@@ -81,6 +85,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 		}
 	}
 	else {
+		wattron(alert_window, Color::RedBlack);
 		if (!enemy_hit) {
 			wprintw(alert_window, "%s missed.\n", (enemy->name).c_str());
 		}
@@ -90,6 +95,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 		}
 		//Player turn
 		if (player->current_health > 0) {
+			wattron(alert_window, Color::MagentaBlack);
 			if (!player_hit) {
 				wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
 			}
@@ -108,6 +114,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 		exit(0);
 	}
 	if (enemy->current_health <= 0) {
+		wattron(alert_window, Color::MagentaBlack);
 		wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
 		wattroff(alert_window, Color::RedBlack);
 		wattron(alert_window, Color::GreenBlack);
@@ -597,6 +604,7 @@ void initiateWindows()
 void initiateColorPairs()
 {
 	// START COLORS //
+	init_pair(9, COLOR_MAGENTA, COLOR_BLACK);
 	init_pair(8, COLOR_YELLOW, COLOR_BLACK);//full souls
 	init_pair(7, COLOR_CYAN, COLOR_BLACK);  //Level up
 	init_pair(6, COLOR_GREEN, COLOR_BLACK); //XP gain

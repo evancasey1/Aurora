@@ -10,7 +10,8 @@ enum class Color : int {
     RedBlack = COLOR_PAIR(5),
     GreenBlack = COLOR_PAIR(6),
     CyanBlack = COLOR_PAIR(7),
-    YellowBlack = COLOR_PAIR(8)
+    YellowBlack = COLOR_PAIR(8),
+    MagentaBlack = COLOR_PAIR(9)
 };
 
 #endif
