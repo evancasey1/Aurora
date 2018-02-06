@@ -19,7 +19,7 @@ Weapon::Weapon() {
 	std::string names[] = {"Sword", "Dagger", "Mace", "Club"};
 	int name_index = rand() % 4;
 	//Temporary values. Will be dependent on level later
-	int attack_pow = 5;
+	int attack_pow = 3;
 	int attack_pow_range = 2;
 	
 	std::string w_name = names[name_index];
@@ -51,16 +51,19 @@ Weapon::Weapon() {
 		this->bleed_chance = 0.15;
 		//Random value 80 <= X < 100
 		this->accuracy = ((rand()%20)+80)/100.0;
+		this->attack_power += (rand() % (this->attack_power/4));
 	}
 	else if (w_name == "Dagger") {
 		this->bleed_chance = 0.25;
 		//Random value 90 <= X < 100
 		this->accuracy = ((rand()%10)+90)/100.0;
+		this->attack_power += (rand() % (this->attack_power/2));
 	}
 	else {
 		this->bleed_chance = 0.05;
 		//Random value 75 <= X < 100
 		this->accuracy = ((rand()%25)+75)/100.0;
+		this->attack_power += (rand() % (this->attack_power/3));
 	}
 }
 
@@ -110,16 +113,19 @@ Weapon::Weapon(int level) {
 		this->bleed_chance = 0.15;
 		//Random value 80 <= X < 100
 		this->accuracy = ((rand()%20)+80)/100.0;
+		this->attack_power += (rand() % (this->attack_power/4));
 	}
 	else if (w_name == "Dagger") {
 		this->bleed_chance = 0.25;
 		//Random value 90 <= X < 100
 		this->accuracy = ((rand()%10)+90)/100.0;
+		this->attack_power += (rand() % (this->attack_power/2));
 	}
 	else {
 		this->bleed_chance = 0.05;
 		//Random value 75 <= X < 100
 		this->accuracy = ((rand()%25)+75)/100.0;
+		this->attack_power += (rand() % (this->attack_power/3));
 	}
 	this->attack_power = std::ceil(this->attack_power * pow(level_mod, level));
 }
@@ -156,16 +162,19 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
 		this->bleed_chance = 0.15;
 		//Random value 80 <= X < 100
 		this->accuracy = ((rand()%20)+80)/100.0;
+		this->attack_power += (rand() % (this->attack_power/4));
 	}
 	else if (w_name == "Dagger") {
 		this->bleed_chance = 0.25;
 		//Random value 90 <= X < 100
 		this->accuracy = ((rand()%10)+90)/100.0;
+		this->attack_power += (rand() % (this->attack_power/2));
 	}
 	else {
 		this->bleed_chance = 0.05;
 		//Random value 75 <= X < 100
 		this->accuracy = ((rand()%25)+75)/100.0;
+		this->attack_power += (rand() % (this->attack_power/3));
 	}
 }
 
