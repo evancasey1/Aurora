@@ -110,6 +110,12 @@ int getLootIndex(std::vector<Enemy::Loot> *loot, long loot_id)
 	return -1;
 }
 
+/*
+*foodEvents()
+*	Goes through the list of the food items that the player has eaten,
+*	and for each item checks if the item should trigger health gain (and if so, gives health to player),
+*	increments the given counters, and deletes the food item if it should expire.
+*/
 void Player::foodEvents() 
 {
 	bool deleted;
@@ -131,6 +137,11 @@ void Player::foodEvents()
 	}
 }
 
+/*
+*eatFood(Food, WINDOW*)
+*	Gets passed a food item, adds it to the player's active_food vector, 
+*	and gives initial health boost to player.
+*/
 void Player::eatFood(Food *food_item, WINDOW *player_status_window) 
 {
 	this->active_food.push_back(*food_item);
@@ -148,8 +159,12 @@ void Player::setPrimaryWeapon(Weapon weapon)
 	*this->primary_weapon = weapon;
 }
 
-//Need to find a more elegant solution and not be repetitive within the loop
-//Some sort of generic pointer would be very useful
+/*
+*printInventory(WINDOW*, int, WINDOW*)
+*	Prints player's inventory in a categorical manner according to equipment.
+*	Simply goes down the corresponding list (Weapon, Food, Armor, etc), prints a counter
+*	and the item's name and description
+*/
 void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_description_window) 
 {
 	wclear(inv_window);
@@ -208,6 +223,11 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
 	wrefresh(inv_window);
 }
 
+/*
+*findValidLootID(std::vector<Enemy::Loot>)
+*	Returns a valid (unused at time of creation) loot id for use when the player drops 
+*	an item and it is added to the loot table.
+*/
 int findValidLootID(std::vector<Enemy::Loot> loot)
 {
 	std::vector<int> used_ids;
@@ -223,6 +243,14 @@ int findValidLootID(std::vector<Enemy::Loot> loot)
 	}
 }
 
+/*
+*manageInventory(WINDOW*, WINDOW*, WINDOW*, std::vector<Enemy::Loot>*)
+*	Main inventory management system of player.
+*	Player can switch between windows for each type of equipment (Armor, Weapon, Food, ...) using left and right arrow keys
+*	<ENTER>: allows player to equip Weapon/Armor or eat Food
+*	<d>: allows player to drop an item, will be put into world as a standard loot object 
+*	<KEY_UP>/<KEY_DOWN>: Allows player to navigate menus
+*/
 void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, WINDOW *alert_win, std::vector<Enemy::Loot> *loot)
 {
 	int ch;
