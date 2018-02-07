@@ -6,6 +6,9 @@
 #include "weapon.h"
 #include "equipmenttype.h"
 
+const int BASE_AP = 4;
+const int BASE_APR = 2;
+
 void Weapon::applyStatusBuff(std::string w_name, int ap, int apr)
 {
 	double condition_chance = ((double) rand() / RAND_MAX);
@@ -60,9 +63,6 @@ Weapon::Weapon() {
 
 	std::string names[] = {"Sword", "Dagger", "Mace", "Club"};
 	int name_index = rand() % 4;
-	//Temporary values. Will be dependent on level later
-	int attack_pow = 3;
-	int attack_pow_range = 2;
 	
 	std::string w_name = names[name_index];
 	
@@ -70,7 +70,7 @@ Weapon::Weapon() {
 	this->poison_chance = 0.0;
 	this->crit_chance = 0.15;
 
-	applyStatusBuff(w_name, attack_pow, attack_pow_range);
+	applyStatusBuff(w_name, BASE_AP, BASE_APR);
 	applyAttributes(w_name);
 }
 
@@ -87,9 +87,6 @@ Weapon::Weapon(int level) {
 
 	std::string names[] = {"Sword", "Dagger", "Mace", "Club"};
 	int name_index = rand() % 4;
-	//Temporary values. Will be dependent on level later
-	int attack_pow = 5;
-	int attack_pow_range = 2;
 	
 	std::string w_name = names[name_index];
 	
@@ -97,7 +94,7 @@ Weapon::Weapon(int level) {
 	this->poison_chance = 0.0;
 	this->crit_chance = 0.15;
 
-	applyStatusBuff(w_name, attack_pow, attack_pow_range);
+	applyStatusBuff(w_name, BASE_AP, BASE_APR);
 	applyAttributes(w_name);
 	this->attack_power = std::ceil(this->attack_power * pow(level_mod, level));
 }
