@@ -19,6 +19,8 @@ class Weapon : public Equipment
 		double accuracy;
 
 	private:
+		void applyAttributes(std::string name);
+		void applyStatusBuff(std::string w_name, int ap, int apr);
 		double ENHANCED_CHANCE;
 		double LEGENDARY_CHANCE;
 		double ENHANCED_MOD;
