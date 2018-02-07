@@ -5,17 +5,17 @@
 
 class Armor : public Equipment 
 {
-	public:
-		Armor();
-		Armor(int level);
-		Armor(int level, std::string name, double prot);
-		void printDescription(WINDOW *win);
-		void printType(WINDOW *win);
+    public:
+        Armor();
+        Armor(int level);
+        Armor(int level, std::string name, double prot);
+        void printDescription(WINDOW *win);
+        void printType(WINDOW *win);
 
-		int level;
-		double protection;
-		ArmorType armor_type;
-		std::string name;
+        int level;
+        double protection;
+        ArmorType armor_type;
+        std::string name;
 };
 
 #endif
