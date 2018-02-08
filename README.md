@@ -1,7 +1,10 @@
 # Aurora
 
-## HIGHLY UNSTABLE WORK IN PROGRESS
-This is a personal project with entirely inadequate planning and no deadline. This is not enterprise code. However, I will never push a non-compiling commit or a commit that throws warning when compiled, any errors with the compilation process likely have to do with dependencies or system differences.
+## UNSTABLE WORK IN PROGRESS
+<ul>
+<li>Dependency/System requirements are subject to change at any time.
+<li>This is a personal project with entirely inadequate planning and no deadline. This is not enterprise code. However, I will never push a non-compiling commit or a commit that throws warning when compiled, any errors with the compilation process likely have to do with dependencies or system differences.
+</ul>
 
 ## STATUS
 Pre-Alpha: No major gamebreaking bugs, not feature-complete, no end objectives (yet), little testing cross platform.
