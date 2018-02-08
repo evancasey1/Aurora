@@ -273,7 +273,9 @@ void manageLoot(Player *player, int loot_row, int loot_col)
                 break;
             case 'l': case 'e':
                 wclear(inventory_window);
+                wclear(item_description_window);
                 wrefresh(inventory_window);
+                wrefresh(item_description_window);
                 return;
             default:
                 break;
@@ -423,7 +425,6 @@ void mainGameLoop(Player *player, Map *map)
                 player->printStatus(player_status_window);
                 break;
             case 'l':
-                //Temporary code for now. Just to test
                 manageLoot(player, player->row, player->col);
                 break;
             //player skips a single move
