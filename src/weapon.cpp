@@ -36,18 +36,21 @@ void Weapon::applyAttributes(std::string w_name)
         //Random value 80 <= X < 100
         this->accuracy = ((rand()%20)+80)/100.0;
         this->attack_power += (rand() % (this->attack_power/4));
+        this->crit_chance = 0.07;
     }
     else if (w_name == "Dagger") {
         this->bleed_chance = 0.25;
         //Random value 90 <= X < 100
         this->accuracy = ((rand()%10)+90)/100.0;
         this->attack_power += (rand() % (this->attack_power/2));
+        this->crit_chance = 0.12;
     }
     else {
         this->bleed_chance = 0.05;
         //Random value 75 <= X < 100
         this->accuracy = ((rand()%25)+75)/100.0;
         this->attack_power += (rand() % (this->attack_power/3));
+        this->crit_chance = 0.04;
     }
 }
 
@@ -68,7 +71,6 @@ Weapon::Weapon() {
     
     this->is_poisonous = false;
     this->poison_chance = 0.0;
-    this->crit_chance = 0.15;
 
     applyStatusBuff(w_name, BASE_AP, BASE_APR);
     applyAttributes(w_name);
@@ -92,7 +94,6 @@ Weapon::Weapon(int level) {
     
     this->is_poisonous = false;
     this->poison_chance = 0.0;
-    this->crit_chance = 0.15;
 
     applyStatusBuff(w_name, BASE_AP, BASE_APR);
     applyAttributes(w_name);
@@ -106,7 +107,6 @@ Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
     
     this->is_poisonous = false;
     this->poison_chance = 0.0;
-    this->crit_chance = 0.15;
 
     applyStatusBuff(w_name, attack_pow, attack_pow_range);
     applyAttributes(w_name);
