@@ -359,6 +359,7 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
                     loot_obj.row = this->row;
                     loot_obj.col = this->col;
                     loot_obj.dropped_by = this->race;
+                    loot_obj.despawn_counter = 0;
                     loot->push_back(loot_obj);
                     index = 0;
                     valid_drop = false;

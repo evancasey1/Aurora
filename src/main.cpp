@@ -129,17 +129,26 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
     wrefresh(alert_window);
 }
 
-void removeEmptyLootContainers()
+void removeDespawnableLootContainers()
 {
+    int lifespan = 50;
     std::vector<Enemy::Loot>::iterator iter;
     for (iter = loot.begin(); iter != loot.end();) {
-        if (iter->weapons.size() == 0 && iter->food.size() == 0 && iter->armor.size() == 0) {
+        if ((iter->weapons.size() == 0 && iter->food.size() == 0 && iter->armor.size() == 0) || (iter->despawn_counter >= lifespan)) {
             loot.erase(iter);
         }
         else {
             iter++;
         }
     }
+}
+
+void updateLootDespawn() 
+{
+    for (int i = 0; i < loot.size(); i++) {
+        loot.at(i).despawn_counter++;
+    }
+    removeDespawnableLootContainers();
 }
 
 bool removeLootByItemIndex(int it_id) 
@@ -252,7 +261,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
                         //ERROR
                         exit(0);
                     }
-                    removeEmptyLootContainers();
+                    removeDespawnableLootContainers();
                     allLoot.erase(allLoot.begin() + cursor_index);
                     if (cursor_index == allLoot.size()) {
                         cursor_index--;
@@ -443,6 +452,7 @@ void mainGameLoop(Player *player, Map *map)
         }
         if (player->used_moves == player->allowed_moves) {
             turn_counter++;
+            updateLootDespawn();
             if (is_daytime && turn_counter > day_turns) {
                 enemyNightBuff(&enemies);
                 is_daytime = false;

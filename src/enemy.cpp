@@ -199,6 +199,7 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
         wattron(alert_win, Color::RedBlack);
 
         loot_obj.l_id = unique_loot_id;
+        loot_obj.despawn_counter = 0;
         unique_loot_id++;
         loot->push_back(loot_obj);
     }

@@ -18,6 +18,7 @@ class Enemy
             int row;
             int col;
             long l_id;
+            int despawn_counter;
         };
         
         Enemy(std::string en, int rw, int cl, int vi, int sz, int lvl);
