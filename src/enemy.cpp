@@ -134,6 +134,10 @@ int Enemy::computeAttackPower()
     return (int)power;
 }
 
+/*
+* During daytime, strengthens all enemies by $mod
+*
+*/
 void Enemy::globalBuff(double mod) 
 {
     this->attack_power = (int)(this->attack_power * mod);
@@ -146,6 +150,10 @@ void Enemy::globalBuff(double mod)
     this->number_drops_possible *= 2;
 }
 
+/*
+* Reverses effect of globalBuff by $mod
+*
+*/
 void Enemy::globalDebuff(double mod) 
 {
     this->attack_power = (int)(this->attack_power / mod);
@@ -158,6 +166,11 @@ void Enemy::globalDebuff(double mod)
     this->number_drops_possible /= 2;
 }
 
+/*
+* Handles loot dropping when enemies die.
+*
+*
+*/
 void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win) 
 {
     static long unique_loot_id = 0;
@@ -232,6 +245,9 @@ void Enemy::setInCombat(bool toggle)
     this->inCombat = toggle;
 }
 
+/*
+* Movement pattern when enemy does not spot player
+*/
 void Enemy::idle(int map_size)
 {
     //move a random direction or stay still
@@ -263,6 +279,9 @@ void Enemy::idle(int map_size)
     }
 }
 
+/*
+* Movement pattern when enemy spots player
+*/
 void Enemy::seek(int p_row, int p_col)
 {
     //Not too happy with this randomization solution, but since enemy

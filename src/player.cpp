@@ -38,7 +38,7 @@ Player::Player(std::string p_class)
     this->vision = 6;
     this->primary_weapon = new Weapon("Short Sword", 3, 2);
 
-    this->inventory.food_capacity = 3;
+    this->inventory.food_capacity = 5;
     this->inventory.weapon_capacity = 3;
     this->inventory.armor_capacity = 3;
     this->inventory.food_count = 0;
@@ -428,12 +428,14 @@ void Player::levelUp(WINDOW *alert_win)
     this->current_xp -= this->current_xp_cap;
     this->level++;
     this->current_xp_cap *= this->level_up_multiplier_xp;
+
     wattroff(alert_win, Color::RedBlack);
     wattron(alert_win, Color::CyanBlack);
     wprintw(alert_win, "Level up! %d -> %d\n", this->level - 1, this->level);
     wrefresh(alert_win);
     wattroff(alert_win, Color::CyanBlack);
     wattron(alert_win, Color::RedBlack);
+    
     this->base_total_health = std::ceil(this->base_total_health * this->level_up_multiplier_health);
     this->base_damage = std::ceil(this->base_damage * this->level_up_multiplier_damage);
     this->current_total_health = this->base_total_health;
