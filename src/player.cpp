@@ -365,7 +365,7 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
                     valid_drop = false;
                 }
                 break;
-            case 'e':
+            case 'e': case 'l': case 'a':
                 wclear(inv_window);
                 wclear(item_description_window);
                 wrefresh(inv_window);

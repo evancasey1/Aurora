@@ -284,7 +284,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
                 wclear(item_description_window);
                 wrefresh(item_description_window);
                 break;
-            case 'l': case 'e':
+            case 'l': case 'e': case 'a':
                 wclear(inventory_window);
                 wclear(item_description_window);
                 wrefresh(inventory_window);
