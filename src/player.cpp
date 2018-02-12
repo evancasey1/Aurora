@@ -417,6 +417,7 @@ void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window)
                     index++;
                 }
                 break;
+            //Will unequip weapon in future
             case KEY_ENTER:
                 break;
             case 'a': case 'e':

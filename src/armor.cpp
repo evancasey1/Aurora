@@ -16,7 +16,7 @@ Armor::Armor()
     this->equipment_id = static_cast<int>(EquipmentType::Armor);
     this->level = 0;
     this->protection = 0.00;
-    this->name = "DEFAULT";
+    this->name = "<NONE>";
 }
 
 Armor::Armor(int level) 
