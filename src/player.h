@@ -44,6 +44,8 @@ class Player
         bool isInCombat();
         void setInCombatAbsolute(bool toggle);
         void setInCombatCheck(std::vector<Enemy> enemies);
+        void printArmor(WINDOW *inv_window, WINDOW *item_description_window, int index);
+        void manageArmor(WINDOW *inv_window, WINDOW *item_description_window);
 
         Inventory inventory;
         std::vector<Food> active_food;

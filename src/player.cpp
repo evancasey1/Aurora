@@ -379,6 +379,58 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
     wrefresh(item_description_window);
 }
 
+void Player::printArmor(WINDOW *inv_window, WINDOW *item_description_window, int index)
+{
+    wclear(inv_window);
+    wclear(item_description_window);
+    wprintw(inv_window, "EQUIPPED ARMOR\n");
+
+    for (int i = 0; i < this->equipped_armor.size(); i++) {
+        if (i == index) {
+            wattron(inv_window, A_STANDOUT);
+            this->equipped_armor.at(i).printDescription(item_description_window);
+        }
+        wprintw(inv_window, "[%d] %s\n", i, this->equipped_armor.at(i).name.c_str());
+        wattroff(inv_window, A_STANDOUT);
+    }
+    wrefresh(inv_window);
+    wrefresh(item_description_window);
+
+}
+
+void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window)
+{
+    int ch;
+    int index = 0;
+
+    while (true) {
+        printArmor(inv_window, item_description_window, index);
+        ch = getch();
+        switch(ch) {
+            case KEY_UP:
+                if (index > 0) {
+                    index--;
+                }
+                break;
+            case KEY_DOWN:
+                if (index < (this->equipped_armor.size() - 1)) {
+                    index++;
+                }
+                break;
+            case KEY_ENTER:
+                break;
+            case 'a': case 'e':
+                wclear(inv_window);
+                wclear(item_description_window);
+                wrefresh(inv_window);
+                wrefresh(item_description_window);
+                return;
+            default:
+                break;
+        }
+    }
+}
+
 void Player::gainSouls(int souls_to_gain, WINDOW *alert_win)
 {
     this->souls += souls_to_gain;

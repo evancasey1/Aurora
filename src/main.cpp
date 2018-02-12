@@ -196,6 +196,10 @@ void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cur
     wrefresh(item_description_window);
 }
 
+/*
+*TODO:
+*   Make this function a member of player
+*/
 void manageLoot(Player *player, int loot_row, int loot_col)
 {
     //boost::variant<Weapon, Food, Armor> allLootType;
@@ -435,6 +439,9 @@ void mainGameLoop(Player *player, Map *map)
                 break;
             case 'l':
                 manageLoot(player, player->row, player->col);
+                break;
+            case 'a':
+                player->manageArmor(inventory_window, item_description_window);
                 break;
             //player skips a single move
             case ',':

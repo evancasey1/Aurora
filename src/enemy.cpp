@@ -179,6 +179,7 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
     Loot loot_obj;
     for (int i = 0; i < this->number_drops_possible; i++) {
         loot_chance_roll  = ((double) rand() / RAND_MAX);
+        //loot_chance_roll = 0.00;
         if (this->loot_drop_chance >= loot_chance_roll) {
             //Generate loot
             //Drop loot on map
