@@ -441,7 +441,7 @@ void mainGameLoop(Player *player, Map *map)
                 manageLoot(player, player->row, player->col);
                 break;
             case 'a':
-                player->manageArmor(inventory_window, item_description_window);
+                player->manageArmor(inventory_window, item_description_window, alert_window);
                 break;
             //player skips a single move
             case ',':

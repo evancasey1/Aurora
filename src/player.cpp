@@ -324,7 +324,8 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
                     }
                     equipped_armor.at(static_cast<int>(atemp.armor_type)) = atemp;
                     wprintw(alert_win, "Equipped %s\n", (atemp.name).c_str());
-                    wrefresh(alert_win);    
+                    wrefresh(alert_win);   
+                    index = 0; 
                 }
                 break;
             case 'd':
@@ -398,7 +399,25 @@ void Player::printArmor(WINDOW *inv_window, WINDOW *item_description_window, int
 
 }
 
-void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window)
+void Player::unequipArmor(WINDOW *alert_win, int index)
+{
+    if (this->equipped_armor.at(index).name != "<NONE>") {
+        if ((this->inventory.armor_count < this->inventory.armor_capacity)) {
+            Armor defaultArmor;
+            wprintw(alert_win, "Unequipped %s.\n", this->equipped_armor.at(index).name.c_str());
+            wrefresh(alert_win);
+            this->inventory.armor.push_back(this->equipped_armor.at(index));
+            this->equipped_armor.at(index) = defaultArmor;
+            this->inventory.armor_count++;
+        }
+        else {
+            wprintw(alert_win, "No room in inventory for %s.\n", this->equipped_armor.at(index).name.c_str());
+            wrefresh(alert_win);
+        }
+    }
+}
+
+void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window, WINDOW *alert_win)
 {
     int ch;
     int index = 0;
@@ -417,8 +436,8 @@ void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window)
                     index++;
                 }
                 break;
-            //Will unequip weapon in future
-            case KEY_ENTER:
+            case KEY_ENTER: case '\n':
+                this->unequipArmor(alert_win, index);
                 break;
             case 'a': case 'e':
                 wclear(inv_window);
