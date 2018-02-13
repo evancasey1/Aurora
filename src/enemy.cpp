@@ -178,8 +178,8 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
     bool dropped = false;
     Loot loot_obj;
     for (int i = 0; i < this->number_drops_possible; i++) {
-        //loot_chance_roll  = ((double) rand() / RAND_MAX);
-        loot_chance_roll = 0.00;
+        loot_chance_roll  = ((double) rand() / RAND_MAX);
+        //loot_chance_roll = 0.00;
         if (this->loot_drop_chance >= loot_chance_roll) {
             //Generate loot
             //Drop loot on map
@@ -196,7 +196,7 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
                 loot_obj.food.push_back(Food("Bear Meat", 6, 2, 4, 2));
             }
             else {
-                if ((rand() % 2) == 2) {
+                if ((rand() % 2) == 0) {
                     loot_obj.weapons.push_back(Weapon(this->level));
                 }
                 else {
