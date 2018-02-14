@@ -384,6 +384,7 @@ void Player::printArmor(WINDOW *inv_window, WINDOW *item_description_window, int
 {
     wclear(inv_window);
     wclear(item_description_window);
+    std::string armor_names[] = {"[Boots]     ", "[Leggings]  ", "[ChestPiece]", "[Gloves]    ", "[Helmet]    "};
     wprintw(inv_window, "EQUIPPED ARMOR\n");
 
     for (int i = 0; i < this->equipped_armor.size(); i++) {
@@ -391,7 +392,7 @@ void Player::printArmor(WINDOW *inv_window, WINDOW *item_description_window, int
             wattron(inv_window, A_STANDOUT);
             this->equipped_armor.at(i).printDescription(item_description_window);
         }
-        wprintw(inv_window, "[%d] %s\n", i, this->equipped_armor.at(i).name.c_str());
+        wprintw(inv_window, "%s |%s\n", armor_names[i].c_str(), this->equipped_armor.at(i).name.c_str());
         wattroff(inv_window, A_STANDOUT);
     }
     wrefresh(inv_window);
