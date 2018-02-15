@@ -420,6 +420,11 @@ void Player::unequipArmor(WINDOW *alert_win, int index)
     }
 }
 
+/*
+*manageArmor(WINDOW*, WINDOW*, WINDOW*)
+*When 'a' is pressed in the main game loop, currently equipped armor is displayed using this function.
+*The player can navigate the equipped armor and unequip it and check statistics.
+*/
 void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window, WINDOW *alert_win)
 {
     int ch;
