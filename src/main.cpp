@@ -69,7 +69,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 
     wattroff(alert_window, Color::MagentaBlack);
 
-    if (p_speed > e_speed) {
+    if (p_speed >= e_speed) {
         if (!player->attack(enemy, alert_window)) {
             enemy->attack(player, alert_window);
         }
@@ -90,7 +90,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
         wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
         wattroff(alert_window, Color::GreenBlack);
         wattron(alert_window, Color::RedBlack);
-        
+
         player->gainExp(enemy->XP, alert_window);
         player->gainSouls(enemy->souls, alert_window);
     }
@@ -589,7 +589,7 @@ Map userCreateMap()
     return map;
 }
 
-void initiateWindows()
+void inititializeWindows()
 {
     static const int MAP_VERTICAL_PADDING = 3;
     static const int COM_VERTICAL_PADDING = 4;
@@ -615,7 +615,7 @@ void initiateWindows()
     scrollok(loot_window, true);
 }
 
-void initiateColorPairs()
+void inititializeColorPairs()
 {
     // START COLORS //
     init_pair(9, COLOR_MAGENTA, COLOR_BLACK);
@@ -641,8 +641,8 @@ int main(int argc, char *argv[])
     keypad(stdscr, true);
     curs_set(0);
     start_color();
-    initiateColorPairs();
-    initiateWindows();
+    inititializeColorPairs();
+    inititializeWindows();
 
     Map map = userCreateMap();
     printTitle();
