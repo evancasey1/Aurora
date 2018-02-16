@@ -64,55 +64,19 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
     int n_speeds = 5; //Modifier to base speed, will be in range (0 to (N-1)), in other words, N possible values for the modifier
     Enemy *enemy = &(enemies->at(enemy_index));
 
-    int player_attack_power = player->computeAttackPower() * (1 - enemy->current_protection);
-    int enemy_attack_power =  enemy->computeAttackPower() * (1 - player->current_protection);
-    bool player_hit = checkIfAttackHit((player->primary_weapon->accuracy + player->accuracy), enemy->current_evasion);
-    bool enemy_hit  = checkIfAttackHit(enemy->accuracy, player->current_evasion);
     int p_speed = player->speed + rollSpeedMod(n_speeds);
     int e_speed = enemy->speed + rollSpeedMod(n_speeds);
 
     wattroff(alert_window, Color::MagentaBlack);
 
     if (p_speed > e_speed) {
-        wattron(alert_window, Color::MagentaBlack);
-        if (!player_hit) {
-            wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
-        }
-        else {
-            enemy->current_health -= player_attack_power;
-            wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
-        }
-        //Enemy turn
-        if (enemy->current_health > 0) {
-            wattron(alert_window, Color::RedBlack);
-            if (enemy_hit) {
-                player->current_health -= enemy_attack_power;
-                wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
-            }
-            else {
-                wprintw(alert_window, "%s missed.\n", (enemy->name).c_str());
-            }
+        if (!player->attack(enemy, alert_window)) {
+            enemy->attack(player, alert_window);
         }
     }
     else {
-        wattron(alert_window, Color::RedBlack);
-        if (!enemy_hit) {
-            wprintw(alert_window, "%s missed.\n", (enemy->name).c_str());
-        }
-        else {
-            player->current_health -= enemy_attack_power;
-            wprintw(alert_window, "%s hits you for %d damage.\n", (enemy->name).c_str(), enemy_attack_power);
-        }
-        //Player turn
-        if (player->current_health > 0) {
-            wattron(alert_window, Color::MagentaBlack);
-            if (!player_hit) {
-                wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
-            }
-            else {
-                enemy->current_health -= player_attack_power;
-                wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), player_attack_power);
-            }   
+        if (!enemy->attack(player, alert_window)) {
+            player->attack(enemy, alert_window);
         }
     }
     if (player->current_health <= 0) {
@@ -126,6 +90,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
         wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
         wattroff(alert_window, Color::GreenBlack);
         wattron(alert_window, Color::RedBlack);
+        
         player->gainExp(enemy->XP, alert_window);
         player->gainSouls(enemy->souls, alert_window);
     }
