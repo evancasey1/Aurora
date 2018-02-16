@@ -14,6 +14,8 @@
 #include "color.h"
 #include "equipmenttype.h"
 
+extern bool checkIfAttackHit(double acc, double eva);
+
 template<typename Out>
 static void split(const std::string &s, char delim, Out result) {
     std::stringstream ss(s);
@@ -597,12 +599,42 @@ int Player::computeAttackPower() {
     return (int)power;
 }
 
+/*
+* Returns true if enemy is at the (row, col) location, false otherwise
+*/
 bool Player::enemyAtLocation(int row, int col, std::vector<Enemy> enemies)
 {
     for (int i = 0; i < enemies.size(); i++) {
         if (enemies.at(i).row == row && enemies.at(i).col == col) {
             return true;
         }
+    }
+    return false;
+}
+
+/*
+*Attacks enemy. Returns true if enemy is killed, false otherwise
+*
+*/
+bool Player::attack(Enemy *enemy, WINDOW *alert_window)
+{
+    bool attack_hit = checkIfAttackHit((this->primary_weapon->accuracy + this->accuracy), enemy->current_evasion);
+    
+    wattron(alert_window, Color::MagentaBlack);
+    if (attack_hit) {
+        int dmg = this->computeAttackPower() * (1 - enemy->current_protection);
+        enemy->current_health -= dmg;
+        wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), dmg);
+        wrefresh(alert_window);
+        wattroff(alert_window, Color::MagentaBlack);
+        if (enemy->current_health <= 0) {
+            return true;
+        }
+    }
+    else {
+        wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
+        wrefresh(alert_window);
+        wattroff(alert_window, Color::MagentaBlack);
     }
     return false;
 }

@@ -10,6 +10,9 @@
 #include <math.h>
 #include "enemy.h"
 #include "color.h"
+#include "player.h"
+
+extern bool checkIfAttackHit(double acc, double eva);
 
 template<typename Out>
 static void split(const std::string &s, char delim, Out result) 
@@ -234,6 +237,33 @@ bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col)
     }
 
     return true;
+}
+
+/*
+*Attacks player. Returns true if player is killed, false otherwise
+*
+*/
+bool Enemy::attack(Player *player, WINDOW *alert_window)
+{
+    bool attack_hit = checkIfAttackHit(this->accuracy, player->current_evasion);
+    
+    wattron(alert_window, Color::RedBlack);
+    if (attack_hit) {
+        int dmg = this->computeAttackPower() * (1 - player->current_protection);
+        player->current_health -= dmg;
+        wprintw(alert_window, "%s hits you for %d damage.\n", (this->name).c_str(), dmg);
+        wrefresh(alert_window);
+        wattroff(alert_window, Color::RedBlack);
+        if (player->current_health <= 0) {
+            return true;
+        }
+    }
+    else {
+        wprintw(alert_window, "%s missed.\n", (this->name).c_str());
+        wrefresh(alert_window);
+        wattroff(alert_window, Color::RedBlack);
+    }
+    return false;
 }
 
 bool Enemy::isInCombat() 

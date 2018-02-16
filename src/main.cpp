@@ -49,6 +49,16 @@ int rollSpeedMod(int n)
     return (rand() % n);
 }
 
+void displayGameOver(std::string killer)
+{
+    wprintw(alert_window, "%s killed you. Game over.\n", (killer).c_str());
+    wrefresh(alert_window);
+    wrefresh(player_status_window);
+    endwin();
+    std::cout << "Game over.\n" << std::endl;
+    exit(0);
+}
+
 void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
     int n_speeds = 5; //Modifier to base speed, will be in range (0 to (N-1)), in other words, N possible values for the modifier
@@ -106,12 +116,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
         }
     }
     if (player->current_health <= 0) {
-        wprintw(alert_window, "%s killed you. Game over.\n", (enemy->name).c_str());
-        wrefresh(alert_window);
-        wrefresh(player_status_window);
-        endwin();
-        std::cout << "Game over.\n" << std::endl;
-        exit(0);
+        displayGameOver(enemy->name);
     }
     if (enemy->current_health <= 0) {
         wattron(alert_window, Color::MagentaBlack);
@@ -127,6 +132,32 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 
     player->printStatus(player_status_window);
     wrefresh(alert_window);
+}
+
+void slowCombat(Enemy *enemy, Player *player)
+{
+    bool inCombat = true;
+    int ch;
+
+    while (inCombat) {
+        ch = getch();
+        if (player->current_health <= 0) {
+            displayGameOver(enemy->name);
+        }
+        switch(ch) {
+            case 'a':
+                player->attack(enemy, alert_window);
+                if (enemy->current_health > 0) {
+                    enemy->attack(player, alert_window);
+                }
+                else {
+                    inCombat = false;
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 void removeDespawnableLootContainers()

@@ -3,8 +3,10 @@
 #include "food.h"
 #include "equipment.h"
 #include "armor.h"
+
 #ifndef ENEMY_H
 #define ENEMY_H
+class Player;
 
 class Enemy
 {
@@ -31,6 +33,7 @@ class Enemy
         void globalDebuff(double mod);
         bool isInCombat();
         void setInCombat(bool toggle);
+        bool attack(Player *player, WINDOW *alert_win);
 
         int row;
         int souls;

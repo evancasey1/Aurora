@@ -13,7 +13,7 @@ player.o: player.cpp player.h equipment.h enemy.h color.h equipmenttype.h visito
 	$(CXX) $(CXXFLAGS) -c player.cpp
 map.o: map.cpp map.h enemy.h player.h
 	$(CXX) $(CXXFLAGS) -c map.cpp
-enemy.o: enemy.cpp enemy.h weapon.h equipment.h color.h
+enemy.o: enemy.cpp enemy.h weapon.h equipment.h color.h player.h
 	$(CXX) $(CXXFLAGS) -c enemy.cpp
 weapon.o: weapon.cpp weapon.h equipment.h equipmenttype.h
 	$(CXX) $(CXXFLAGS) -c weapon.cpp
