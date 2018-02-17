@@ -32,6 +32,7 @@ WINDOW *inventory_window;
 WINDOW *loot_window;
 WINDOW *power_status_window;
 WINDOW *item_description_window;
+WINDOW *combat_window;
 /* End Globals */ 
 
 bool checkIfAttackHit(double accuracy, double evasion) 
@@ -103,6 +104,7 @@ void slowCombat(Player *player, Enemy *enemy)
 {
     bool inCombat = true;
     int ch;
+    enemy->printStatus(combat_window);
 
     while (inCombat) {
         ch = getch();
@@ -129,6 +131,7 @@ void slowCombat(Player *player, Enemy *enemy)
                     player->gainSouls(enemy->souls, alert_window);
                 }
                 player->printStatus(player_status_window);
+                enemy->printStatus(combat_window);
                 wrefresh(alert_window);
                 break;
             case 'r':
@@ -678,24 +681,26 @@ Map userCreateMap()
 void inititializeWindows()
 {
     static const int MAP_VERTICAL_PADDING = 3;
-    static const int COM_VERTICAL_PADDING = 4;
+    static const int ALERT_VERTICAL_PADDING = 4;
     static const int MAP_HORIZONTAL_PADDING = 5;
 
     int map_height = 30, map_width = 50;
-    int com_height = 14, com_width = 50;
-    int ps_height  = 3 , ps_width = map_width + com_width;
+    int alert_height = 14, alert_width = 50;
+    int ps_height  = 3 , ps_width = map_width + alert_width;
     int inv_height = 20, inv_width = 30;
     int inv_row = 22, inv_col = MAP_HORIZONTAL_PADDING;
 
     //TODO:
     //  have window generation depend on size of terminal, or resize it as necessary
     map_window = newwin(map_height, map_width, MAP_VERTICAL_PADDING + 1, MAP_HORIZONTAL_PADDING);
-    alert_window = newwin(com_height, com_width, COM_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
+    alert_window = newwin(alert_height, alert_width, ALERT_VERTICAL_PADDING + 1, map_width + (MAP_HORIZONTAL_PADDING * 2));
     player_status_window = newwin(ps_height, ps_width, 1, MAP_HORIZONTAL_PADDING);
     inventory_window = newwin(inv_height, inv_width, inv_row, inv_col);
     loot_window = newwin(inv_height, inv_width, inv_row, inv_col);
     power_status_window = newwin(1, 30, 50, MAP_HORIZONTAL_PADDING);
     item_description_window = newwin(30, 30, 22, 60);
+    combat_window = newwin(20, 20, inv_row, inv_col);
+
     scrollok(alert_window, true);
     scrollok(inventory_window, true);
     scrollok(loot_window, true);

@@ -266,6 +266,20 @@ bool Enemy::attack(Player *player, WINDOW *alert_window)
     return false;
 }
 
+void Enemy::printStatus(WINDOW *combat_window)
+{
+    wclear(combat_window);
+    int max_bars = 20;
+    double ratio = (double)this->current_health / (double)this->total_health;
+    int nbars = (int) (ratio * max_bars);
+    wprintw(combat_window, "%s\n", (this->name).c_str());
+    for (int i = 0; i < nbars; i++) {
+        wprintw(combat_window, "#");
+    }
+    wprintw(combat_window, "\n");
+    wrefresh(combat_window);
+}
+
 bool Enemy::isInCombat() 
 {
     return this->inCombat;

@@ -34,6 +34,7 @@ class Enemy
         bool isInCombat();
         void setInCombat(bool toggle);
         bool attack(Player *player, WINDOW *alert_win);
+        void printStatus(WINDOW *combat_window);
 
         int row;
         int souls;
