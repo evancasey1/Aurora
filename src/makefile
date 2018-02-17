@@ -3,9 +3,10 @@
 CXX = g++
 CXXFLAGS = -g -Wall -pedantic -std=c++14
 OBJS = main.o player.o map.o enemy.o weapon.o food.o armor.o
+PATHS = -I boost -I Documents/Aurora/src
 
 aurora: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o aurora $(OBJS) -lncurses -I boost
+	$(CXX) $(CXXFLAGS) -o aurora $(OBJS) -lncurses $(PATHS)
 
 main.o: main.cpp player.h map.h equipment.h color.h equipmenttype.h visitors.h
 	$(CXX) $(CXXFLAGS) -c main.cpp

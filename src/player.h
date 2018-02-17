@@ -36,7 +36,6 @@ class Player
         void eatFood(Food *food, WINDOW *player_window);
         void levelUp(WINDOW *alert_win);
         void foodEvents();
-        bool enemyAtLocation(int row, int col, std::vector<Enemy> enemies);
         void passiveHealthRegeneration(WINDOW *p_win);
         bool pickupLoot(Weapon weapon_item);
         bool pickupLoot(Food food_item);

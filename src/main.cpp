@@ -99,7 +99,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
     wrefresh(alert_window);
 }
 
-void slowCombat(Enemy *enemy, Player *player)
+void slowCombat(Player *player, Enemy *enemy)
 {
     bool inCombat = true;
     int ch;
@@ -117,12 +117,40 @@ void slowCombat(Enemy *enemy, Player *player)
                 }
                 else {
                     inCombat = false;
+                    wattron(alert_window, Color::MagentaBlack);
+                    wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
+                    wattroff(alert_window, Color::RedBlack);
+                    wattron(alert_window, Color::GreenBlack);
+                    wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
+                    wattroff(alert_window, Color::GreenBlack);
+                    wattron(alert_window, Color::RedBlack);
+
+                    player->gainExp(enemy->XP, alert_window);
+                    player->gainSouls(enemy->souls, alert_window);
                 }
+                player->printStatus(player_status_window);
+                wrefresh(alert_window);
+                break;
+            case 'r':
+                inCombat = false;
                 break;
             default:
                 break;
         }
     }
+}
+
+/*
+* Returns true if enemy is at the (row, col) location, false otherwise
+*/
+bool enemyAtLocation(int row, int col, std::vector<Enemy> enemies)
+{
+    for (int i = 0; i < enemies.size(); i++) {
+        if (enemies.at(i).row == row && enemies.at(i).col == col) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void removeDespawnableLootContainers()
@@ -400,6 +428,59 @@ void enemyDayDebuff(std::vector<Enemy> *enemies)
     }
 }
 
+Enemy* getEnemyFromLocation(int row, int col, std::vector<Enemy> *enemies) {
+    for (int i = 0; i < enemies->size(); i++) {
+        if (enemies->at(i).row == row && enemies->at(i).col == col) {
+            return &(enemies->at(i));
+        }
+    }
+    return NULL;
+}
+
+void selectTarget(Player *player, std::vector<Enemy> *enemies)
+{
+    int ch;
+    bool is_valid_selection = false;
+    int row_mod = 0;
+    int col_mod = 0;
+    wprintw(alert_window, "Select target...\n");
+    wrefresh(alert_window);
+
+    ch = getch();
+    switch(ch) {
+        case KEY_DOWN:
+            row_mod = 1;
+            is_valid_selection = true;
+            break;
+        case KEY_UP:
+            row_mod = -1;
+            is_valid_selection = true;
+            break;
+        case KEY_RIGHT:
+            col_mod = 1;
+            is_valid_selection = true;
+            break;
+        case KEY_LEFT:
+            col_mod = -1;
+            is_valid_selection = true;
+            break;
+        default:
+            break;
+    }
+    
+    if (is_valid_selection && enemyAtLocation(player->row + row_mod, player->col + col_mod, *enemies)) {
+        Enemy *target_enemy = getEnemyFromLocation(player->row + row_mod, player->col + col_mod, enemies);
+        wprintw(alert_window, "Attacking %s.\n", (target_enemy->name).c_str());
+        wrefresh(alert_window);
+        slowCombat(player, target_enemy);
+        deleteDefeatedEnemies(enemies);
+    }
+    else {
+        wprintw(alert_window, "Invalid Selection\n");
+        wrefresh(alert_window);
+    }
+}
+
 void mainGameLoop(Player *player, Map *map)
 {
     int ch;
@@ -438,6 +519,11 @@ void mainGameLoop(Player *player, Map *map)
                 break;
             case 'a':
                 player->manageArmor(inventory_window, item_description_window, alert_window);
+                break;
+            case 'f':
+                selectTarget(player, &enemies);
+                map->printPlayerInfo(*player, map_window);
+                map->printMap(player, player->vision, enemies, loot, map_window);
                 break;
             //player skips a single move
             case ',':

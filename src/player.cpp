@@ -600,19 +600,6 @@ int Player::computeAttackPower() {
 }
 
 /*
-* Returns true if enemy is at the (row, col) location, false otherwise
-*/
-bool Player::enemyAtLocation(int row, int col, std::vector<Enemy> enemies)
-{
-    for (int i = 0; i < enemies.size(); i++) {
-        if (enemies.at(i).row == row && enemies.at(i).col == col) {
-            return true;
-        }
-    }
-    return false;
-}
-
-/*
 *Attacks enemy. Returns true if enemy is killed, false otherwise
 *
 */
