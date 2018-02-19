@@ -2,6 +2,10 @@
 #define COLOR_H
 #include <ncurses.h>
 
+/*
+* Convention 'ForegroundBackground'
+*	I.E. WhiteBlack -> White text color with black highlight
+*/
 enum class Color : int {
     BlackWhite = COLOR_PAIR(1),
     WhiteBlack = COLOR_PAIR(2),

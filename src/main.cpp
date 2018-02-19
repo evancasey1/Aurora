@@ -122,6 +122,9 @@ void slowCombat(Player *player, Enemy *enemy)
                 }
                 else {
                     inCombat = false;
+                    wclear(combat_window);
+                    wrefresh(combat_window);
+
                     wattron(alert_window, Color::MagentaBlack);
                     wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
                     wattroff(alert_window, Color::RedBlack);
@@ -704,7 +707,7 @@ void inititializeWindows()
     loot_window = newwin(inv_height, inv_width, inv_row, inv_col);
     power_status_window = newwin(1, 30, 50, MAP_HORIZONTAL_PADDING);
     item_description_window = newwin(30, 30, 22, 60);
-    combat_window = newwin(20, 20, inv_row, inv_col);
+    combat_window = newwin(20, 21, inv_row, inv_col);
     controls_window = newwin(20, 20, 22, 60);
 
     scrollok(alert_window, true);

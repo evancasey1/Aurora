@@ -73,7 +73,6 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
     this->attack_power_range = 2;
     this->current_evasion = this->base_evasion;
     this->current_protection = this->base_protection;
-    this->current_health = this->total_health;
     this->alert_player = true;
     this->nightbuff_multiplier = 1.15;
     this->inCombat = false;
@@ -82,6 +81,7 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
 
     this->total_health = std::ceil(this->total_health * this->level_up_multiplier_health);
     this->attack_power = std::ceil(this->attack_power * this->level_up_multiplier_damage);
+    this->current_health = this->total_health;
 
     int e_row = 0;
     int e_col = 0;
@@ -272,11 +272,25 @@ void Enemy::printStatus(WINDOW *combat_window)
     int max_bars = 20;
     double ratio = (double)this->current_health / (double)this->total_health;
     int nbars = (int) (ratio * max_bars);
+    
     wprintw(combat_window, "%s\n", (this->name).c_str());
-    for (int i = 0; i < nbars; i++) {
-        wprintw(combat_window, "#");
+    if (ratio > 0.75) {
+        wattron(combat_window, Color::GreenBlack);
     }
-    wprintw(combat_window, "\n");
+    else if (ratio > 0.30) {
+        wattron(combat_window, Color::YellowBlack);
+    }
+    else {
+        wattron(combat_window, Color::RedBlack);
+    }
+
+    wattron(combat_window, A_ALTCHARSET);
+    for (int i = 0; i < nbars; i++) {
+        waddch(combat_window, ACS_CKBOARD);
+    }
+    wattrset(combat_window, A_NORMAL);
+
+    wprintw(combat_window, "\n\n%d/%d\nPROT: %.2f", this->current_health, this->total_health, this->current_protection);
     wrefresh(combat_window);
 }
 
