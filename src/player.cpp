@@ -16,21 +16,6 @@
 
 extern bool checkIfAttackHit(double acc, double eva);
 
-template<typename Out>
-static void split(const std::string &s, char delim, Out result) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        *(result++) = item;
-    }
-}
-
-static std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, std::back_inserter(elems));
-    return elems;
-}
-
 Player::Player(std::string p_class)
 {
     for (int j = 0; j < 5; j++) {
@@ -48,35 +33,38 @@ Player::Player(std::string p_class)
     this->inventory.weapon_count = 0;
 
     this->race = p_class;
-
-    std::ifstream infile("playerAttributes.txt");
-    std::string line;
-    std::vector<std::string> elements;
-    while (std::getline(infile, line))
-    {
-        elements = split(line, ' ');
-        if (elements.at(0) == p_class) {
-            break;
+    std::string element;
+    std::ifstream infile("playerAttributes.csv");
+    while(infile.good()) {
+        getline(infile, element, ',');
+        if (element == p_class) {
+            getline(infile, element, ',');
+            this->accuracy = std::atof(element.c_str()); 
+            getline(infile, element, ',');
+            this->speed = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->base_damage = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->allowed_moves = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->base_evasion = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->base_protection = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->base_total_health = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->level_up_multiplier_health = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->crit_chance = std::atof(element.c_str());
+            getline(infile, element, '\n');
+            this->level_up_multiplier_damage = std::atof(element.c_str());
+        }
+        else {
+            getline(infile, element);
         }
     }
-    /*
-    *Not a fan of this solution because of the 'magic number' aspect of it.
-    *Planning on replacing this with some kind of cpp JSON reader in the future,
-    *or at the very least a simpler csv format.
-    */
-    this->accuracy                   = std::atof(elements.at(1).substr(4, 4).c_str());
-    this->speed                      = std::atoi(elements.at(2).substr(4, 2).c_str());
-    this->base_damage                = std::atoi(elements.at(3).substr(4, 2).c_str());
-    this->allowed_moves              = std::atoi(elements.at(4).substr(4, 1).c_str());
-    this->base_evasion               = std::atof(elements.at(5).substr(4, 4).c_str());
-    this->base_protection            = std::atof(elements.at(6).substr(5, 4).c_str());
-    this->base_total_health          = std::atoi(elements.at(7).substr(3, 2).c_str());
-    this->level_up_multiplier_health = std::atof(elements.at(8).substr(4, 4).c_str());
-    this->crit_chance                = std::atof(elements.at(8).substr(5, 4).c_str());
-    this->level_up_multiplier_damage = std::atof(elements.at(9).substr(5, 4).c_str());
 
     //placeholder. For debugging only
-    
     this->base_total_health = 5000;
     
     //These attributes are constant for all player types
@@ -581,7 +569,7 @@ void Player::printStatus(WINDOW *player_window)
     //If health is below a certain threshold display it in red
     wprintw(player_window, "%d/%d\n", this->current_health, this->current_total_health);
     wattrset(player_window, A_NORMAL);
-    
+
     wprintw(player_window, "Level: %d        XP: %d/%d\n", this->level, this->current_xp, this->current_xp_cap);
     if (this->souls == this->souls_cap) {
         wattron(player_window, Color::YellowBlack);
