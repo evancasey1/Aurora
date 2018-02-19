@@ -14,70 +14,64 @@
 
 extern bool checkIfAttackHit(double acc, double eva);
 
-template<typename Out>
-static void split(const std::string &s, char delim, Out result) 
-{
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        *(result++) = item;
-    }
-}
-
-static std::vector<std::string> split(const std::string &s, char delim) 
-{
-    std::vector<std::string> elems;
-    split(s, delim, std::back_inserter(elems));
-    return elems;
-}
-
 Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_size, int e_level)
 {
     this->name = e_name;
     this->level = e_level;
-    /* ENEMY ATTRIBUTES */
-    std::ifstream infile("enemyAttributes.txt");
-    std::string line;
-    std::vector<std::string> elements;
-    while (std::getline(infile, line))
-    {
-        elements = split(line, ' ');
-        if (elements.at(0) == e_name) {
+    std::ifstream infile("enemyAttributes.csv");
+    std::string element;
+
+    while(infile.good()) {
+        getline(infile, element, ',');
+        if (element == e_name) {
+            getline(infile, element, ',');
+            this->accuracy = std::atof(element.c_str()); 
+            getline(infile, element, ',');
+            this->crit_chance = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->attack_power = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->base_protection = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->total_health = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->souls = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->XP = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->idle_moves = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->seek_moves = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->number_drops_possible = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->loot_drop_chance = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->vision = std::atoi(element.c_str());
+            getline(infile, element, ',');
+            this->speed = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->base_evasion = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->level_up_multiplier_health = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->level_up_multiplier_damage = std::atof(element.c_str());
+            getline(infile, element, '\n');
+            this->symbol = element[0];
+            infile.close();
             break;
+        }
+        else {
+            getline(infile, element);
         }
     }
 
-    /*
-    *Not a fan of this solution because of the 'magic number' aspect of it.
-    *Planning on replacing this with some kind of cpp JSON reader in the future,
-    *or at the very least a simpler csv format.
-    */
-    this->accuracy              = std::atof(elements.at(1).substr(4, 4).c_str());
-    this->crit_chance           = std::atof(elements.at(2).substr(5, 4).c_str());
-    this->attack_power          = std::atoi(elements.at(3).substr(4, 2).c_str());
-    this->base_protection       = std::atof(elements.at(4).substr(5, 4).c_str());
-    this->total_health          = std::atoi(elements.at(5).substr(3, 3).c_str());
-    this->souls                 = std::atoi(elements.at(6).substr(6, 2).c_str());
-    this->XP                    = std::atoi(elements.at(7).substr(3, 3).c_str());
-    this->idle_moves            = std::atoi(elements.at(8).substr(5, 1).c_str());
-    this->seek_moves            = std::atoi(elements.at(9).substr(5, 1).c_str());
-    this->number_drops_possible = std::atoi(elements.at(10).substr(6, 1).c_str());
-    this->loot_drop_chance      = std::atof(elements.at(11).substr(9, 4).c_str());
-    this->vision                = std::atoi(elements.at(12).substr(4, 2).c_str());
-    this->speed                 = std::atof(elements.at(13).substr(4, 5).c_str());
-    this->base_evasion          = std::atof(elements.at(14).substr(4, 4).c_str());
-    this->level_up_multiplier_health = pow(std::atof(elements.at(15).substr(4, 4).c_str()), e_level);
-    this->level_up_multiplier_damage = pow(std::atof(elements.at(16).substr(5, 4).c_str()), e_level);
-    this->symbol                = (elements.at(17).substr(4, 1))[0];
-    
     this->attack_power_range = 2;
     this->current_evasion = this->base_evasion;
     this->current_protection = this->base_protection;
     this->alert_player = true;
     this->nightbuff_multiplier = 1.15;
     this->inCombat = false;
-
-    //this->number_drops_possible = 3;
 
     this->total_health = std::ceil(this->total_health * this->level_up_multiplier_health);
     this->attack_power = std::ceil(this->attack_power * this->level_up_multiplier_damage);

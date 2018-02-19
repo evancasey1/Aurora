@@ -58,6 +58,8 @@ Player::Player(std::string p_class)
             this->crit_chance = std::atof(element.c_str());
             getline(infile, element, '\n');
             this->level_up_multiplier_damage = std::atof(element.c_str());
+            infile.close();
+            break;
         }
         else {
             getline(infile, element);
