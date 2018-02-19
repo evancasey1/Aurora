@@ -33,6 +33,7 @@ WINDOW *loot_window;
 WINDOW *power_status_window;
 WINDOW *item_description_window;
 WINDOW *combat_window;
+WINDOW *controls_window;
 /* End Globals */ 
 
 bool checkIfAttackHit(double accuracy, double evasion) 
@@ -105,6 +106,8 @@ void slowCombat(Player *player, Enemy *enemy)
     bool inCombat = true;
     int ch;
     enemy->printStatus(combat_window);
+    wprintw(controls_window, "<a> Attack\n<r> Run\n");
+    wrefresh(controls_window);
 
     while (inCombat) {
         ch = getch();
@@ -141,6 +144,8 @@ void slowCombat(Player *player, Enemy *enemy)
                 break;
         }
     }
+    wclear(controls_window);
+    wrefresh(controls_window);
 }
 
 /*
@@ -700,6 +705,7 @@ void inititializeWindows()
     power_status_window = newwin(1, 30, 50, MAP_HORIZONTAL_PADDING);
     item_description_window = newwin(30, 30, 22, 60);
     combat_window = newwin(20, 20, inv_row, inv_col);
+    controls_window = newwin(20, 20, 22, 60);
 
     scrollok(alert_window, true);
     scrollok(inventory_window, true);
