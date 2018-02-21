@@ -194,7 +194,8 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
             }
             else {
                 if ((rand() % 2) == 0) {
-                    loot_obj.weapons.push_back(Weapon(this->level));
+                    Weapon weapon = Weapon::randomWeapon(this->level);
+                    loot_obj.weapons.push_back(weapon);
                 }
                 else {
                     loot_obj.armor.push_back(Armor(this->level));

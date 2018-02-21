@@ -13,6 +13,7 @@
 #include "enemy.h"
 #include "color.h"
 #include "equipmenttype.h"
+#include "weaponType.h"
 
 extern bool checkIfAttackHit(double acc, double eva);
 
@@ -23,7 +24,7 @@ Player::Player(std::string p_class)
         equipped_armor.push_back(defArm);
     }
     this->vision = 6;
-    this->primary_weapon = new Weapon("Short Sword", 3, 2);
+    this->primary_weapon = new Sword(1);
 
     this->inventory.food_capacity = 5;
     this->inventory.weapon_capacity = 3;
@@ -582,8 +583,8 @@ void Player::printStatus(WINDOW *player_window)
 }
 
 int Player::computeAttackPower() {
-    int power = this->primary_weapon->attack_power + this->base_damage;
-    int power_range = this->primary_weapon->attack_power_range;
+    int power = this->primary_weapon->damage + this->base_damage;
+    int power_range = this->primary_weapon->damage_range;
     double crit_chance = this->primary_weapon->crit_chance;
 
     double chance_to_crit = ((double) rand() / RAND_MAX);

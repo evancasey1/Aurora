@@ -4,122 +4,63 @@
 #include <cmath>
 #include <math.h>
 #include "weapon.h"
-#include "equipmenttype.h"
+#include "weaponConstants.h"
+#include "weaponType.h"
 
-const int BASE_AP = 4;
-const int BASE_APR = 2;
+Weapon Weapon::randomWeapon(int level)
+{
+    int roll = rand() % 3;
+    if (roll == 0) {
+        Dagger d(level);
+        return d;
+    }
+    else if (roll == 1) {
+        Sword s(level);
+        return s;
+    }
+    else {
+        Mace m(level);
+        return m;
+    }
+}
 
-void Weapon::applyStatusBuff(std::string w_name, int ap, int apr)
+/*
+* Returns double between (min/100) and (max/100)
+* I.E. getRandInRange(50, 70) would yield values from 0.50 to 0.70
+*/
+double Weapon::getRandInRange(int min, int max)
+{
+    return (min + (rand() % static_cast<int>(max - min + 1))) / 100.0;
+}
+
+void Weapon::applyLevel(int level)
+{
+    this->damage *= (double)level * WeaponConstants::LEVEL_MOD;
+    this->damage_range *= (double)level * WeaponConstants::LEVEL_MOD;
+}
+
+void Weapon::applyRarity()
 {
     double condition_chance = ((double) rand() / RAND_MAX);
-    if (this->LEGENDARY_CHANCE >= condition_chance) {
-        this->name = "Legendary " + w_name;
-        this->attack_power = (int)((double)ap * this->LEGENDARY_MOD);
-        this->attack_power_range = (int)((double)apr * this->LEGENDARY_MOD);
+    if (condition_chance >= WeaponConstants::SUPERIOR_CHANCE) {
+        this->name = "Superior " + this->name;
+        this->damage *= WeaponConstants::SUPERIOR_MOD;
+        this->damage_range *= WeaponConstants::SUPERIOR_MOD; 
     }
-    else if (this->ENHANCED_CHANCE >= condition_chance) {
-        this->name = "Enhanced " + w_name;
-        this->attack_power = (int)((double)ap * this->ENHANCED_MOD);
-        this->attack_power_range = (int)((double)apr * this->ENHANCED_MOD);
-    }
-    else {
-        this->name = w_name;
-        this->attack_power = ap;
-        this->attack_power_range = apr;
+    else if (condition_chance >= WeaponConstants::ENHANCED_CHANCE) {
+        this->name = "Enhanced " + this->name;
+        this->damage *= WeaponConstants::ENHANCED_MOD;
+        this->damage_range *= WeaponConstants::ENHANCED_MOD; 
     }
 }
 
-void Weapon::applyAttributes(std::string w_name)
+void Weapon::printDescription(WINDOW *win) 
 {
-    if (w_name == "Sword") {
-        this->bleed_chance = 0.15;
-        //Random value 80 <= X < 100
-        this->accuracy = ((rand()%20)+80)/100.0;
-        this->attack_power += (rand() % (this->attack_power/4));
-        this->crit_chance = 0.07;
-    }
-    else if (w_name == "Dagger") {
-        this->bleed_chance = 0.25;
-        //Random value 90 <= X < 100
-        this->accuracy = ((rand()%10)+90)/100.0;
-        this->attack_power += (rand() % (this->attack_power/2));
-        this->crit_chance = 0.12;
-    }
-    else {
-        this->bleed_chance = 0.05;
-        //Random value 75 <= X < 100
-        this->accuracy = ((rand()%25)+75)/100.0;
-        this->attack_power += (rand() % (this->attack_power/3));
-        this->crit_chance = 0.04;
-    }
+    wprintw(win, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->damage, this->damage + this->damage_range, this->accuracy, this->crit_chance);
+    wrefresh(win);
 }
-
-Weapon::Weapon() {
-    //Random weapon generation
-    extern int item_id_counter;
-    this->item_id = item_id_counter++;
-    this->equipment_id = static_cast<int>(EquipmentType::Weapon);
-    this->ENHANCED_CHANCE = 0.20;
-    this->LEGENDARY_CHANCE = 0.02;
-    this->ENHANCED_MOD = 1.25;
-    this->LEGENDARY_MOD = 1.5;
-
-    std::string names[] = {"Sword", "Dagger", "Mace", "Club"};
-    int name_index = rand() % 4;
-    
-    std::string w_name = names[name_index];
-    
-    this->is_poisonous = false;
-    this->poison_chance = 0.0;
-
-    applyStatusBuff(w_name, BASE_AP, BASE_APR);
-    applyAttributes(w_name);
-}
-
-Weapon::Weapon(int level) {
-    //Random weapon generation
-    extern int item_id_counter;
-    this->item_id = item_id_counter++;
-    double level_mod = 1.10;
-    this->equipment_id = static_cast<int>(EquipmentType::Weapon);;
-    this->ENHANCED_CHANCE = 0.20;
-    this->LEGENDARY_CHANCE = 0.02;
-    this->ENHANCED_MOD = 1.25;
-    this->LEGENDARY_MOD = 1.5;
-
-    std::string names[] = {"Sword", "Dagger", "Mace", "Club"};
-    int name_index = rand() % 4;
-    
-    std::string w_name = names[name_index];
-    
-    this->is_poisonous = false;
-    this->poison_chance = 0.0;
-
-    applyStatusBuff(w_name, BASE_AP, BASE_APR);
-    applyAttributes(w_name);
-    this->attack_power = std::ceil(this->attack_power * pow(level_mod, level));
-}
-
-Weapon::Weapon(std::string w_name, int attack_pow, int attack_pow_range) {
-    extern int item_id_counter;
-    this->item_id = item_id_counter++;
-    this->equipment_id = static_cast<int>(EquipmentType::Weapon);
-    
-    this->is_poisonous = false;
-    this->poison_chance = 0.0;
-
-    applyStatusBuff(w_name, attack_pow, attack_pow_range);
-    applyAttributes(w_name);
-}
-
-void Weapon::printType(WINDOW *win) 
+void Weapon::printType(WINDOW *win)
 {
     wprintw(win, "WEAPON\n");
     wrefresh(win);
-}
-
-void Weapon::printDescription(WINDOW *item_description_window)
-{
-    wprintw(item_description_window, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->attack_power, this->attack_power + this->attack_power_range, this->accuracy, this->crit_chance);
-    wrefresh(item_description_window);
 }
