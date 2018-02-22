@@ -9,7 +9,7 @@
 
 Weapon Weapon::randomWeapon(int level)
 {
-    int roll = rand() % 3;
+    int roll = rand() % 5;
     if (roll == 0) {
         Dagger d(level);
         return d;
@@ -18,10 +18,19 @@ Weapon Weapon::randomWeapon(int level)
         Sword s(level);
         return s;
     }
-    else {
+    else if (roll == 2) {
         Mace m(level);
         return m;
     }
+    else if (roll == 3) {
+        ShortSword ss(level);
+        return ss;
+    }
+    else {
+        BlackJack b(level);
+        return b;
+    }
+
 }
 
 /*

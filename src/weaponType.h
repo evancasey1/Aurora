@@ -15,11 +15,51 @@ class Dagger : public Weapon
             is_primary = false;
     		applyRarity();
     		applyLevel(level);
-    		this->bleed_chance = Weapon::getRandInRange(0, 20);
+    		this->bleed_chance = Weapon::getRandInRange(5, 20);
     		this->crit_chance = Weapon::getRandInRange(0, 15);
     		this->stun_chance = 0.00;
             this->accuracy = Weapon::getRandInRange(70, 99);
 		}
+};
+
+class ShortSword : public Weapon
+{
+    public:
+        ShortSword(int level) {
+            extern int item_id_counter;
+            this->damage = 2;
+            this->damage_range = 4;
+            this->level = level;
+            this->item_id = item_id_counter++;
+            this->name = "Short Sword";
+            is_primary = false;
+            applyRarity();
+            applyLevel(level);
+            this->bleed_chance = Weapon::getRandInRange(5, 10);
+            this->crit_chance = Weapon::getRandInRange(0, 15);
+            this->stun_chance = Weapon::getRandInRange(0, 5);
+            this->accuracy = Weapon::getRandInRange(80, 95);
+        }
+};
+
+class BlackJack : public Weapon
+{
+    public:
+        BlackJack(int level) {
+            extern int item_id_counter;
+            this->damage = 1;
+            this->damage_range = 2;
+            this->level = level;
+            this->item_id = item_id_counter++;
+            this->name = "Blackjack";
+            is_primary = false;
+            applyRarity();
+            applyLevel(level);
+            this->bleed_chance = 0.00;
+            this->crit_chance = Weapon::getRandInRange(0, 5);
+            this->stun_chance = Weapon::getRandInRange(10, 20);
+            this->accuracy = Weapon::getRandInRange(75, 95);
+        }
 };
 
 class Sword : public Weapon
