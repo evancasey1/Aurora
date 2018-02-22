@@ -16,6 +16,7 @@ class Weapon : public Equipment
         std::string name;
         double bleed_chance;
         double crit_chance;
+        double stun_chance;
         double accuracy;
         int level;
         

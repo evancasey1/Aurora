@@ -56,7 +56,7 @@ void Weapon::applyRarity()
 
 void Weapon::printDescription(WINDOW *win) 
 {
-    wprintw(win, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f", this->damage, this->damage + this->damage_range, this->accuracy, this->crit_chance);
+    wprintw(win, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f\nBleed: %.2f\nStun: %.2f", this->damage, this->damage + this->damage_range, this->accuracy, this->crit_chance, this->bleed_chance, this->stun_chance);
     wrefresh(win);
 }
 void Weapon::printType(WINDOW *win)

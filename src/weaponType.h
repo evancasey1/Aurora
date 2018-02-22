@@ -16,7 +16,8 @@ class Dagger : public Weapon
     		applyLevel(level);
     		this->bleed_chance = Weapon::getRandInRange(0, 20);
     		this->crit_chance = Weapon::getRandInRange(0, 15);
-    		this->accuracy = Weapon::getRandInRange(70, 99);
+    		this->stun_chance = 0.00;
+            this->accuracy = Weapon::getRandInRange(70, 99);
 		}
 };
 
@@ -34,7 +35,8 @@ class Sword : public Weapon
     		applyLevel(level);
     		this->bleed_chance = Weapon::getRandInRange(0, 10);
     		this->crit_chance = Weapon::getRandInRange(0, 10);
-    		this->accuracy = Weapon::getRandInRange(70, 90);
+    		this->stun_chance = Weapon::getRandInRange(0, 5);
+            this->accuracy = Weapon::getRandInRange(70, 90);
 		}
 };
 
@@ -52,7 +54,8 @@ class Mace : public Weapon
     		applyLevel(level);
     		this->bleed_chance = Weapon::getRandInRange(0, 15);
     		this->crit_chance = Weapon::getRandInRange(0, 13);
-    		this->accuracy = Weapon::getRandInRange(60, 85);
+    		this->stun_chance = Weapon::getRandInRange(5, 15);
+            this->accuracy = Weapon::getRandInRange(60, 85);
 		}
 };
 
