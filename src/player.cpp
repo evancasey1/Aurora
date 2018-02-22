@@ -13,7 +13,7 @@
 #include "enemy.h"
 #include "color.h"
 #include "equipmenttype.h"
-#include "weaponType.h"
+#include "weaponInstance.h"
 
 extern bool checkIfAttackHit(double acc, double eva);
 
