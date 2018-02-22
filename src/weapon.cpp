@@ -10,6 +10,10 @@
 Weapon Weapon::randomWeapon(int level)
 {
     int roll = rand() % 5;
+    /*
+    * Not a huge fan of using the if statements like this. I'll 
+    * revisit this function later.
+    */
     if (roll == 0) {
         Dagger d(level);
         return d;
@@ -44,8 +48,8 @@ double Weapon::getRandInRange(int min, int max)
 
 void Weapon::applyLevel(int level)
 {
-    this->damage *= (double)level * WeaponConstants::LEVEL_MOD;
-    this->damage_range *= (double)level * WeaponConstants::LEVEL_MOD;
+    this->damage *= std::pow(WeaponConstants::LEVEL_MOD, level);
+    this->damage_range *= std::pow(WeaponConstants::LEVEL_MOD, level);
 }
 
 void Weapon::applyRarity()
@@ -65,7 +69,7 @@ void Weapon::applyRarity()
 
 void Weapon::printDescription(WINDOW *win) 
 {
-    wprintw(win, "Attack: %d - %d\nAccuracy: %.2f\nCrit: %.2f\nBleed: %.2f\nStun: %.2f", this->damage, this->damage + this->damage_range, this->accuracy, this->crit_chance, this->bleed_chance, this->stun_chance);
+    wprintw(win, "%s\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f\nBleed: %.2f\nStun: %.2f", (this->name).c_str(), this->damage, this->damage + this->damage_range, this->accuracy, this->crit_chance, this->bleed_chance, this->stun_chance);
     wrefresh(win);
 }
 void Weapon::printType(WINDOW *win)
