@@ -42,12 +42,12 @@ void Weapon::applyLevel(int level)
 void Weapon::applyRarity()
 {
     double condition_chance = ((double) rand() / RAND_MAX);
-    if (condition_chance >= WeaponConstants::SUPERIOR_CHANCE) {
+    if (condition_chance <= WeaponConstants::SUPERIOR_CHANCE) {
         this->name = "Superior " + this->name;
         this->damage *= WeaponConstants::SUPERIOR_MOD;
         this->damage_range *= WeaponConstants::SUPERIOR_MOD; 
     }
-    else if (condition_chance >= WeaponConstants::ENHANCED_CHANCE) {
+    else if (condition_chance <= WeaponConstants::ENHANCED_CHANCE) {
         this->name = "Enhanced " + this->name;
         this->damage *= WeaponConstants::ENHANCED_MOD;
         this->damage_range *= WeaponConstants::ENHANCED_MOD; 

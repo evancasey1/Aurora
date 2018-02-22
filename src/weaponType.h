@@ -12,6 +12,7 @@ class Dagger : public Weapon
 			this->level = level;
     		this->item_id = item_id_counter++;
     		this->name = "Dagger";
+            is_primary = false;
     		applyRarity();
     		applyLevel(level);
     		this->bleed_chance = Weapon::getRandInRange(0, 20);
@@ -31,6 +32,7 @@ class Sword : public Weapon
 			this->level = level;
     		this->item_id = item_id_counter++;
     		this->name = "Sword";
+            is_primary = true;
     		applyRarity();
     		applyLevel(level);
     		this->bleed_chance = Weapon::getRandInRange(0, 10);
@@ -50,6 +52,7 @@ class Mace : public Weapon
 			this->level = level;
     		this->item_id = item_id_counter++;
     		this->name = "Mace";
+            is_primary = false;
     		applyRarity();
     		applyLevel(level);
     		this->bleed_chance = Weapon::getRandInRange(0, 15);

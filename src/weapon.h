@@ -19,6 +19,7 @@ class Weapon : public Equipment
         double stun_chance;
         double accuracy;
         int level;
+        bool is_primary;
         
 };
 
