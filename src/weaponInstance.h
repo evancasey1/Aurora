@@ -1,11 +1,12 @@
-#ifndef WEAPONTYPES_H
-#define WEAPONTYPES_H
+#ifndef WEAPONINSTANCE_H
+#define WEAPONINSTANCE_H
 #include "weapon.h"
 
 class Dagger : public Weapon
 {
 	public:
-		Dagger(int level) {
+		Dagger(int level) 
+        {
 			extern int item_id_counter;
 			this->damage = 2;
 			this->damage_range = 2;
@@ -25,7 +26,8 @@ class Dagger : public Weapon
 class ShortSword : public Weapon
 {
     public:
-        ShortSword(int level) {
+        ShortSword(int level) 
+        {
             extern int item_id_counter;
             this->damage = 2;
             this->damage_range = 4;
@@ -45,7 +47,8 @@ class ShortSword : public Weapon
 class BlackJack : public Weapon
 {
     public:
-        BlackJack(int level) {
+        BlackJack(int level) 
+        {
             extern int item_id_counter;
             this->damage = 1;
             this->damage_range = 2;
@@ -65,7 +68,8 @@ class BlackJack : public Weapon
 class Sword : public Weapon
 {
 	public:
-		Sword(int level) {
+		Sword(int level) 
+        {
 			extern int item_id_counter;
 			this->damage = 3;
 			this->damage_range = 3;
@@ -85,7 +89,8 @@ class Sword : public Weapon
 class Mace : public Weapon
 {
 	public:
-		Mace(int level) {
+		Mace(int level) 
+        {
 			extern int item_id_counter;
 			this->damage = 5;
 			this->damage_range = 3;

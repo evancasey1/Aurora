@@ -6,7 +6,8 @@
 #include "armor.h"
 #include "armortype.h"
 #include "equipmenttype.h"
-
+#include "armorConstants.h"
+#include "armorInstance.h"
 
 Armor::Armor() 
 {
@@ -19,47 +20,61 @@ Armor::Armor()
     this->name = "<NONE>";
 }
 
-Armor::Armor(int level) 
+Armor Armor::randomArmor(int level)
 {
-    extern int item_id_counter;
-    this->item_id = item_id_counter++;
-    double base_prot = 0.05;
-    this->armor_type = static_cast<ArmorType>(rand() % 5);
-    this->equipment_id = static_cast<int>(EquipmentType::Armor);
-    this->level = level;
-    this->protection = base_prot * pow(base_prot + 1, level);
-    //Added protection of up to 10% or 0.10
-    this->protection += ((rand() % 10) / 100.0);
-    switch(armor_type) {
-        case ArmorType::Boots:
-            this->name = "Boots";
-            break;
-        case ArmorType::Legs:
-            this->name = "Leggings";
-            break;
-        case ArmorType::Chestpiece:
-            this->name = "Chestpiece";
-            break;
-        case ArmorType::Gloves:
-            this->name = "Gloves";
-            break;
-        case ArmorType::Helm:
-            this->name = "Helmet";
-            break;
-        default:
-            return;
+    int roll = rand() % 5;
+    /*
+    * Not a huge fan of using the if statements like this. I'll 
+    * revisit this function later.
+    */
+    if (roll == 0) {
+        Helmet h(level);
+        return h;
     }
+    else if (roll == 1) {
+        Chestpiece c(level);
+        return c;
+    }
+    else if (roll == 2) {
+        Gloves g(level);
+        return g;
+    }
+    else if (roll == 3) {
+        Leggings l(level);
+        return l;
+    }
+    else {
+        Boots b(level);
+        return b;
+    }
+
 }
 
-Armor::Armor(int level, std::string name, double prot) 
+/*
+* Returns double between (min/100) and (max/100)
+* I.E. getRandInRange(50, 70) would yield values from 0.50 to 0.70
+*/
+double Armor::getRandInRange(int min, int max)
 {
-    extern int item_id_counter;
-    this->item_id = item_id_counter++;
-    this->equipment_id = static_cast<int>(EquipmentType::Armor);
-    this->level = level;
-    this->name = name;
-    this->protection = prot;
-    this->armor_type = static_cast<ArmorType>(rand() % 5);
+    return (min + (rand() % static_cast<int>(max - min + 1))) / 100.0;
+}
+
+void Armor::applyLevel(int level)
+{
+    this->protection *= std::pow(ArmorConstants::LEVEL_MOD, level);
+}
+
+void Armor::applyRarity()
+{
+    double condition_chance = ((double) rand() / RAND_MAX);
+    if (condition_chance <= ArmorConstants::SUPERIOR_CHANCE) {
+        this->name = "Superior " + this->name;
+        this->protection *= ArmorConstants::SUPERIOR_MOD;
+    }
+    else if (condition_chance <= ArmorConstants::ENHANCED_CHANCE) {
+        this->name = "Enhanced " + this->name;
+        this->protection *= ArmorConstants::ENHANCED_MOD;
+    }
 }
 
 void Armor::printType(WINDOW *win) 
@@ -70,6 +85,6 @@ void Armor::printType(WINDOW *win)
 
 void Armor::printDescription(WINDOW *item_description_window)
 {
-    wprintw(item_description_window, "Protection: %.2f", this->protection);
+    wprintw(item_description_window, "%s\nProtection: %.2f", (this->name).c_str(), this->protection);
     wrefresh(item_description_window);
 }

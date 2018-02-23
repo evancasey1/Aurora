@@ -5,7 +5,7 @@
 #include <math.h>
 #include "weapon.h"
 #include "weaponConstants.h"
-#include "weaponType.h"
+#include "weaponInstance.h"
 
 Weapon Weapon::randomWeapon(int level)
 {

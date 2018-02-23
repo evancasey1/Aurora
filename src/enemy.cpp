@@ -193,12 +193,13 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
                 loot_obj.food.push_back(Food("Bear Meat", 6, 2, 4, 2));
             }
             else {
-                if ((rand() % 1) == 0) {
+                if ((rand() % 2) == 3) {
                     Weapon weapon = Weapon::randomWeapon(this->level);
                     loot_obj.weapons.push_back(weapon);
                 }
                 else {
-                    loot_obj.armor.push_back(Armor(this->level));
+                    Armor armor = Armor::randomArmor(this->level);
+                    loot_obj.armor.push_back(armor);
                 }
             }
         }
