@@ -6,6 +6,7 @@
 #include "weapon.h"
 #include "weaponConstants.h"
 #include "weaponInstance.h"
+#include "color.h"
 
 Weapon Weapon::randomWeapon(int level)
 {
@@ -65,6 +66,76 @@ void Weapon::applyRarity()
         this->damage *= WeaponConstants::ENHANCED_MOD;
         this->damage_range *= WeaponConstants::ENHANCED_MOD; 
     }
+}
+
+/*
+* Violating a lot of DRY principles here, will revisit
+*
+*/
+void Weapon::compareTo(Weapon weapon, WINDOW *win)
+{
+    wprintw(win, "%s\nAttack: ", (this->name).c_str());
+    if (this->damage < weapon.damage) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->damage > weapon.damage) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%d", this->damage);
+    wattrset(win, A_NORMAL);
+    wprintw(win, " - ");
+
+    if (this->damage + this->damage_range < weapon.damage + weapon.damage_range) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->damage + this->damage_range > weapon.damage + weapon.damage_range) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%d\n", this->damage + this->damage_range);
+    wattrset(win, A_NORMAL);
+    wprintw(win, "Accuracy: ");
+
+    if (this->accuracy < weapon.accuracy) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->accuracy > weapon.accuracy) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%.2f\n", this->accuracy);
+    wattrset(win, A_NORMAL);
+    wprintw(win, "Crit: ");
+
+    if (this->crit_chance < weapon.crit_chance) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->crit_chance > weapon.crit_chance) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%.2f\n", this->crit_chance);
+    wattrset(win, A_NORMAL);
+    wprintw(win, "Bleed: ");
+
+    if (this->bleed_chance < weapon.bleed_chance) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->bleed_chance > weapon.bleed_chance) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%.2f\n", this->bleed_chance);
+    wattrset(win, A_NORMAL);
+    wprintw(win, "Stun: ");
+
+    if (this->stun_chance < weapon.stun_chance) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->stun_chance > weapon.stun_chance) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%.2f\n", this->stun_chance);
+    wattrset(win, A_NORMAL);
+
+    mvwprintw(win, 7, 0, "Currently Equipped:\n");
+    weapon.printDescription(win);
 }
 
 void Weapon::printDescription(WINDOW *win) 

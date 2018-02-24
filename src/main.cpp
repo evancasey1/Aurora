@@ -522,7 +522,7 @@ void mainGameLoop(Player *player, Map *map)
                 }
                 break;
             case 'e':
-                player->manageInventory(inventory_window, player_status_window, alert_window, &loot);
+                player->manageInventory(inventory_window, player_status_window, alert_window, item_description_window, &loot);
                 player->printStatus(player_status_window);
                 break;
             case 'l':

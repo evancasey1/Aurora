@@ -16,7 +16,7 @@ map.o: map.cpp map.h enemy.h player.h
 	$(CXX) $(CXXFLAGS) -c map.cpp
 enemy.o: enemy.cpp enemy.h weapon.h equipment.h color.h player.h weaponInstance.h
 	$(CXX) $(CXXFLAGS) -c enemy.cpp
-weapon.o: weapon.cpp weapon.h equipment.h weaponConstants.h
+weapon.o: weapon.cpp weapon.h equipment.h weaponConstants.h color.h
 	$(CXX) $(CXXFLAGS) -c weapon.cpp
 food.o: food.cpp food.h equipment.h equipmenttype.h
 	$(CXX) $(CXXFLAGS) -c food.cpp

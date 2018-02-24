@@ -38,7 +38,7 @@ class Visitors
         {
             int counter;
             WINDOW *win;
-            explicit output_list_name(int item_counter, WINDOW *inventory_window) : counter (item_counter), win(inventory_window) {}
+            explicit output_list_name(int item_counter, WINDOW *inventory_window) : counter(item_counter), win(inventory_window) {}
 
             template <typename T>
             void operator()(T t) const 
@@ -87,6 +87,8 @@ class Visitors
                 return t.item_id; 
             }
         };
+
+
 };
 
 

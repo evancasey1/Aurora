@@ -7,10 +7,12 @@ class Weapon : public Equipment
     public:
         void printDescription(WINDOW *win);
         void printType(WINDOW *win);
-        static Weapon randomWeapon(int level);
         void applyRarity();
         void applyLevel(int level);
+        void compareTo(Weapon w, WINDOW *idw);
         static double getRandInRange(int min, int max);
+        static Weapon randomWeapon(int level);
+
 
         int damage, damage_range;
         std::string name;

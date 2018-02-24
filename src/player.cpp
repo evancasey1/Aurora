@@ -200,7 +200,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
             }
             boost::apply_visitor(Visitors::output_list_name(counter, inv_window), equipment.at(i));
 
-            if (counter == index) {
+            if (counter == index && this->inventory_index != static_cast<int>(EquipmentType::Weapon)) {
                 boost::apply_visitor(Visitors::output_inv_desc(item_description_window), equipment.at(i));
                 if (inventory_index != static_cast<int>(EquipmentType::Food)) {
                     mvwprintw(item_description_window, 7, 0, "Currently Equipped:\n");
@@ -208,7 +208,11 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
                 }
                 wattroff(inv_window, A_STANDOUT);
             }
-
+            else if (counter == index && this->inventory_index == static_cast<int>(EquipmentType::Weapon)){
+                Weapon weapon = boost::get<Weapon>(equipment.at(i));
+                weapon.compareTo(*(this->primary_weapon), item_description_window);
+                wattroff(inv_window, A_STANDOUT);
+            }
             counter++;
         }
     }
@@ -243,7 +247,7 @@ int findValidLootID(std::vector<Enemy::Loot> loot)
 *   <d>: allows player to drop an item, will be put into world as a standard loot object 
 *   <KEY_UP>/<KEY_DOWN>: Allows player to navigate menus
 */
-void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, WINDOW *alert_win, std::vector<Enemy::Loot> *loot)
+void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, WINDOW *alert_win, WINDOW *item_description_window, std::vector<Enemy::Loot> *loot)
 {
     int ch;
     int index = 0;
@@ -252,7 +256,7 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
     Enemy::Loot loot_obj;
     bool valid_drop = false;
     std::vector<Weapon> *weapon_vect;
-    WINDOW *item_description_window = newwin(30, 30, 22, 60);
+    //WINDOW *item_description_window = newwin(30, 30, 22, 60);
     while (true) {
         //temp = NULL;
         printInventory(inv_window, index, item_description_window);
