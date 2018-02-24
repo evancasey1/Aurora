@@ -228,11 +228,8 @@ bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col)
         }
         ++iter;
     }
-    if (this->row == p_row && this->col == p_col) {
-        return false;
-    }
 
-    return true;
+    return !(this->row == p_row && this->col == p_col);
 }
 
 /*
@@ -250,16 +247,13 @@ bool Enemy::attack(Player *player, WINDOW *alert_window)
         wprintw(alert_window, "%s hits you for %d damage.\n", (this->name).c_str(), dmg);
         wrefresh(alert_window);
         wattroff(alert_window, Color::RedBlack);
-        if (player->current_health <= 0) {
-            return true;
-        }
     }
     else {
         wprintw(alert_window, "%s missed.\n", (this->name).c_str());
         wrefresh(alert_window);
         wattroff(alert_window, Color::RedBlack);
     }
-    return false;
+    return player->current_health <= 0;
 }
 
 void Enemy::printStatus(WINDOW *combat_window)

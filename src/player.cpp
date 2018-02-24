@@ -626,16 +626,13 @@ bool Player::attack(Enemy *enemy, WINDOW *alert_window)
         wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), dmg);
         wrefresh(alert_window);
         wattroff(alert_window, Color::MagentaBlack);
-        if (enemy->current_health <= 0) {
-            return true;
-        }
     }
     else {
         wprintw(alert_window, "You miss %s.\n", (enemy->name).c_str());
         wrefresh(alert_window);
         wattroff(alert_window, Color::MagentaBlack);
     }
-    return false;
+    return enemy->current_health <= 0;
 }
 
 //Only passively regenerate on active moves (no skips)
