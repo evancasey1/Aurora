@@ -10,10 +10,11 @@ class Armor : public Equipment
         Armor(int level);
         void printDescription(WINDOW *win);
         void printType(WINDOW *win);
-        static Armor randomArmor(int level);
-        static double getRandInRange(int min, int max);
         void applyRarity();
         void applyLevel(int level);
+        void compareTo(Armor armor, WINDOW *win);
+        static Armor randomArmor(int level);
+        static double getRandInRange(int min, int max);
 
         int level;
         double protection;

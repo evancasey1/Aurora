@@ -20,7 +20,7 @@ weapon.o: weapon.cpp weapon.h equipment.h weaponConstants.h color.h
 	$(CXX) $(CXXFLAGS) -c weapon.cpp
 food.o: food.cpp food.h equipment.h equipmenttype.h
 	$(CXX) $(CXXFLAGS) -c food.cpp
-armor.o: armor.cpp armor.h equipment.h armortype.h equipmenttype.h
+armor.o: armor.cpp armor.h equipment.h armortype.h equipmenttype.h color.h
 	$(CXX) $(CXXFLAGS) -c armor.cpp
 
 clean:

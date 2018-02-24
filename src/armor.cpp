@@ -4,6 +4,7 @@
 #include <cmath>
 #include <math.h>
 #include "armor.h"
+#include "color.h"
 #include "armortype.h"
 #include "equipmenttype.h"
 #include "armorConstants.h"
@@ -75,6 +76,22 @@ void Armor::applyRarity()
         this->name = "Enhanced " + this->name;
         this->protection *= ArmorConstants::ENHANCED_MOD;
     }
+}
+
+void Armor::compareTo(Armor armor, WINDOW *win)
+{
+    wprintw(win, "%s\nProtection: ", (this->name).c_str());
+    if (this->protection < armor.protection) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->protection > armor.protection) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%.2f", this->protection);
+    wattrset(win, A_NORMAL);
+
+    mvwprintw(win, 7, 0, "Currently Equipped:\n");
+    armor.printDescription(win);
 }
 
 void Armor::printType(WINDOW *win) 
