@@ -326,7 +326,9 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
                     }
                     equipped_armor.at(static_cast<int>(atemp.armor_type)) = atemp;
                     wprintw(alert_win, "Equipped %s\n", (atemp.name).c_str());
-                    wrefresh(alert_win);   
+                    wrefresh(alert_win);  
+                    wclear(item_description_window);
+                    wrefresh(item_description_window); 
                     index = 0; 
                 }
                 break;
