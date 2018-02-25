@@ -40,6 +40,6 @@ void Food::printType(WINDOW *win)
 
 void Food::printDescription(WINDOW *item_description_window)
 {
-    wprintw(item_description_window, "Health Gain: %d\nHeal Over Time: %d:%d:%d", this->initial_health_gain, this->health_gain_per_trigger, this->total_triggers, this->turns_until_trigger);
+    wprintw(item_description_window, "Initial Health Gain: %d\nHealth per Tick: %d\nTotal Ticks: %d\nTurns until Tick: %d", this->initial_health_gain, this->health_gain_per_trigger, this->total_triggers, this->turns_until_trigger);
     wrefresh(item_description_window);
 }
