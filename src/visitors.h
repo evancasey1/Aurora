@@ -51,9 +51,8 @@ class Visitors
         struct compare_to : public boost::static_visitor<>
         {
             boost::variant<Weapon, Armor, Food> item;
-            int inv_index;
             WINDOW *win;
-            explicit compare_to(boost::variant<Weapon, Armor, Food> equipped, int index, WINDOW *item_description_window) : item(equipped), inv_index(index), win(item_description_window) {}
+            explicit compare_to(boost::variant<Weapon, Armor, Food> equipped, WINDOW *item_description_window) : item(equipped), win(item_description_window) {}
 
             template <typename T>
             void operator()(T t) const 
