@@ -163,11 +163,11 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
     wclear(item_description_window);
     int counter = 0;
     std::vector<boost::variant<Weapon, Food, Armor>> equipment;
-    boost::variant<Weapon, Armor> current_equipped;
     std::vector<Equipment>::iterator iter;
+    boost::variant<Weapon, Food, Armor> current_equipped;
 
     wattron(inv_window, A_BOLD);
-
+    
     switch(this->inventory_index) {
         case static_cast<int>(EquipmentType::Weapon):
             equipment.insert(equipment.end(), this->inventory.weapons.begin(), this->inventory.weapons.end());
@@ -177,6 +177,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
         case static_cast<int>(EquipmentType::Food):
             equipment.insert(equipment.end(), this->inventory.food.begin(), this->inventory.food.end());
             wprintw(inv_window, "<- FOOD [%d/%d]\n", this->inventory.food_count, this->inventory.food_capacity);
+            current_equipped = *(new Food());
             break;
         case static_cast<int>(EquipmentType::Armor):
             equipment.insert(equipment.end(), this->inventory.armor.begin(), this->inventory.armor.end());
@@ -188,6 +189,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
         default:
             return;
     }
+    
     wattroff(inv_window, A_BOLD);
 
     if (equipment.size() == 0) {
@@ -197,25 +199,10 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
         for (int i = 0; i < equipment.size(); i++) {
             if (counter == index) {
                 wattron(inv_window, A_STANDOUT);
+                boost::apply_visitor(Visitors::compare_to(current_equipped, this->inventory_index, item_description_window), equipment.at(i));
             }
             boost::apply_visitor(Visitors::output_list_name(counter, inv_window), equipment.at(i));
-
-            if (counter == index && this->inventory_index == static_cast<int>(EquipmentType::Food)) {
-                boost::apply_visitor(Visitors::output_inv_desc(item_description_window), equipment.at(i));
-                if (inventory_index != static_cast<int>(EquipmentType::Food)) {
-                    mvwprintw(item_description_window, 7, 0, "Currently Equipped:\n");
-                    boost::apply_visitor(Visitors::output_inv_desc(item_description_window), current_equipped);
-                }
-                wattroff(inv_window, A_STANDOUT);
-            }
-            else if (counter == index && this->inventory_index == static_cast<int>(EquipmentType::Weapon)){
-                Weapon weapon = boost::get<Weapon>(equipment.at(i));
-                weapon.compareTo(boost::get<Weapon>(current_equipped), item_description_window);
-                wattroff(inv_window, A_STANDOUT);
-            }
-            else if (counter == index && this->inventory_index == static_cast<int>(EquipmentType::Armor)) {
-                Armor armor = boost::get<Armor>(equipment.at(i));
-                armor.compareTo(boost::get<Armor>(current_equipped), item_description_window);
+            if (counter == index) {
                 wattroff(inv_window, A_STANDOUT);
             }
             counter++;

@@ -70,7 +70,6 @@ void Weapon::applyRarity()
 
 /*
 * Violating a lot of DRY principles here, will revisit
-*
 */
 void Weapon::compareTo(Weapon weapon, WINDOW *win)
 {

@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <vector>
 #include "player.h"
+#include "equipmenttype.h"
 
 class Visitors 
 {
@@ -44,6 +45,21 @@ class Visitors
             void operator()(T t) const 
             { 
                 wprintw(win, "> [%d] %s\n", counter, (t.name).c_str()); 
+            }
+        };
+
+        struct compare_to : public boost::static_visitor<>
+        {
+            boost::variant<Weapon, Armor, Food> item;
+            int inv_index;
+            WINDOW *win;
+            explicit compare_to(boost::variant<Weapon, Armor, Food> equipped, int index, WINDOW *item_description_window) : item(equipped), inv_index(index), win(item_description_window) {}
+
+            template <typename T>
+            void operator()(T t) const 
+            {
+                T raw_item = boost::get<T>(item);
+                t.compareTo(raw_item, win);
             }
         };
 
