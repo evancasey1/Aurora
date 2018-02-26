@@ -8,11 +8,12 @@ class Dagger : public Weapon
         Dagger(int level) 
         {
             extern int item_id_counter;
+            this->type = "S";
+            this->name = "Dagger";
             this->damage = 2;
             this->damage_range = 2;
             this->level = level;
             this->item_id = item_id_counter++;
-            this->name = "Dagger";
             is_primary = false;
             applyRarity();
             applyLevel(level);
@@ -30,11 +31,12 @@ class ShortSword : public Weapon
         ShortSword(int level) 
         {
             extern int item_id_counter;
+            this->type = "S";
+            this->name = "Short Sword";
             this->damage = 2;
             this->damage_range = 4;
             this->level = level;
             this->item_id = item_id_counter++;
-            this->name = "Short Sword";
             is_primary = false;
             applyRarity();
             applyLevel(level);
@@ -52,11 +54,12 @@ class BlackJack : public Weapon
         BlackJack(int level) 
         {
             extern int item_id_counter;
+            this->type = "S";
+            this->name = "Blackjack";
             this->damage = 1;
             this->damage_range = 2;
             this->level = level;
             this->item_id = item_id_counter++;
-            this->name = "Blackjack";
             is_primary = false;
             applyRarity();
             applyLevel(level);
@@ -74,11 +77,12 @@ class Sword : public Weapon
         Sword(int level) 
         {
             extern int item_id_counter;
+            this->type = "P";
+            this->name = "Sword";
             this->damage = 3;
             this->damage_range = 3;
             this->level = level;
             this->item_id = item_id_counter++;
-            this->name = "Sword";
             is_primary = true;
             applyRarity();
             applyLevel(level);
@@ -96,11 +100,12 @@ class Mace : public Weapon
         Mace(int level) 
         {
             extern int item_id_counter;
+            this->type = "P";
+            this->name = "Mace";
             this->damage = 5;
             this->damage_range = 3;
             this->level = level;
             this->item_id = item_id_counter++;
-            this->name = "Mace";
             is_primary = false;
             applyRarity();
             applyLevel(level);

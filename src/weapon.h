@@ -15,6 +15,7 @@ class Weapon : public Equipment
         static Weapon randomWeapon(int level);
 
         int damage, damage_range;
+        std::string type;
         std::string name;
         double bleed_chance;
         double crit_chance;
