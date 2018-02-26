@@ -1,6 +1,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 #include "equipment.h"
+#include "attack.h"
 
 class Weapon : public Equipment 
 {
@@ -13,7 +14,6 @@ class Weapon : public Equipment
         static double getRandInRange(int min, int max);
         static Weapon randomWeapon(int level);
 
-
         int damage, damage_range;
         std::string name;
         double bleed_chance;
@@ -22,6 +22,7 @@ class Weapon : public Equipment
         double accuracy;
         int level;
         bool is_primary;
+        Attack attack;
         
 };
 
