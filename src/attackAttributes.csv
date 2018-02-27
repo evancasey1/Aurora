@@ -1,5 +1,7 @@
 Name,Type,DMGX,ACCX,BLD_CHNCX,BLD_RDS,BLD_DMG,STUN_CHNCX,CRIT_CHNCX
-Slash,P,1.15,0.95,1.10,2,2,0.80,1.10
-Bleed Out,S,0.50,1.00,1.50,4,3,0.20,1.00
-Pummel,P,1.20,0.80,0.50,2,3,1.30,1.15
-Stab,PS,1.00,1.00,1.10,2,1,0.10,1.25
+Slash,P,1.15,0.95,1.1,2,2,0.8,1.1
+Bleed Out,S,0.5,1,1.5,4,3,0.2,1
+Pummel,P,1.2,0.8,0.5,2,3,1.3,1.15
+Stab,PS,1,1,1.1,2,1,0.1,1.25
+Crush,P,1.2,0.6,0.5,4,4,1.5,1.3
+Eviscerate,PS,1,1,1.3,3,5,0,2
