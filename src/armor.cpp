@@ -80,7 +80,18 @@ void Armor::applyRarity()
 
 void Armor::compareTo(Armor armor, WINDOW *win)
 {
-    wprintw(win, "%s\nProtection: ", (this->name).c_str());
+    wprintw(win, "%s\nLevel: ", (this->name).c_str());
+
+    if (this->level < armor.level) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->level > armor.level) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%d\n", this->level);
+    wattrset(win, A_NORMAL);
+    wprintw(win, "Protection: ");
+
     if (this->protection < armor.protection) {
         wattron(win, Color::RedBlack);
     }
@@ -102,6 +113,6 @@ void Armor::printType(WINDOW *win)
 
 void Armor::printDescription(WINDOW *item_description_window)
 {
-    wprintw(item_description_window, "%s\nProtection: %.2f", (this->name).c_str(), this->protection);
+    wprintw(item_description_window, "%s\nLevel: %d\nProtection: %.2f", (this->name).c_str(), this->level, this->protection);
     wrefresh(item_description_window);
 }
