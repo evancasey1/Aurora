@@ -25,6 +25,7 @@ Player::Player(std::string p_class)
     }
     this->vision = 6;
     this->primary_weapon = new Sword(1);
+    this->secondary_weapon = new Dagger(1);
 
     this->inventory.food_capacity = 5;
     this->inventory.weapon_capacity = 3;
@@ -149,6 +150,11 @@ void Player::eatFood(Food *food_item, WINDOW *player_status_window)
 void Player::setPrimaryWeapon(Weapon weapon) 
 {
     *this->primary_weapon = weapon;
+}
+
+void Player::setSecondaryWeapon(Weapon weapon)
+{
+    *this->secondary_weapon = weapon;
 }
 
 /*
@@ -291,9 +297,17 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
                 if (this->inventory_index == static_cast<int>(EquipmentType::Weapon) && this->inventory.weapons.size() > 0) {
                     weapon_vect = &this->inventory.weapons;
                     wtemp = weapon_vect->at(index);
-                    weapon_vect->at(index) = *this->primary_weapon;
-                    this->setPrimaryWeapon(wtemp);
-                    wprintw(alert_win, "Equipped %s\n", (this->primary_weapon->name).c_str());
+
+                    if (wtemp.type == "P") {
+                        weapon_vect->at(index) = *this->primary_weapon;
+                        this->setPrimaryWeapon(wtemp);
+                    }
+                    else {
+                        weapon_vect->at(index) = *this->secondary_weapon;
+                        this->setSecondaryWeapon(wtemp);
+                    }
+                    
+                    wprintw(alert_win, "Equipped %s\n", (wtemp.name).c_str());
                     wrefresh(alert_win);
                     index = 0;
                 }
@@ -371,7 +385,7 @@ void Player::manageInventory(WINDOW *inv_window, WINDOW *player_status_window, W
     wrefresh(item_description_window);
 }
 
-void Player::printArmor(WINDOW *inv_window, WINDOW *item_description_window, int index)
+void Player::printEquipped(WINDOW *inv_window, WINDOW *item_description_window, int index)
 {
     wclear(inv_window);
     wclear(item_description_window);
@@ -385,12 +399,19 @@ void Player::printArmor(WINDOW *inv_window, WINDOW *item_description_window, int
             wattron(inv_window, A_STANDOUT);
             this->equipped_armor.at(i).printDescription(item_description_window);
         }
-        wprintw(inv_window, "%s %s\n", armor_names[i].c_str(), this->equipped_armor.at(i).name.c_str());
+        wprintw(inv_window, " %s %s\n", armor_names[i].c_str(), this->equipped_armor.at(i).name.c_str());
         wattroff(inv_window, A_STANDOUT);
     }
+
+    wattron(inv_window, A_BOLD);
+    wprintw(inv_window, "\nEQUIPPED WEAPONS\n");
+    wattroff(inv_window, A_BOLD);
+
+    wprintw(inv_window, "[PRIM] %s\n", (this->primary_weapon->name).c_str());
+    wprintw(inv_window, "[SCND] %s", (this->secondary_weapon->name).c_str());
+
     wrefresh(inv_window);
     wrefresh(item_description_window);
-
 }
 
 void Player::unequipArmor(WINDOW *alert_win, int index)
@@ -422,7 +443,7 @@ void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window, WI
     int index = 0;
 
     while (true) {
-        printArmor(inv_window, item_description_window, index);
+        printEquipped(inv_window, item_description_window, index);
         ch = getch();
         switch(ch) {
             case KEY_UP:

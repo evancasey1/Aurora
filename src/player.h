@@ -33,6 +33,7 @@ class Player
         void printInventory(WINDOW *inv_window, int index, WINDOW *item_window);
         void manageInventory(WINDOW *inv_window, WINDOW *player_window, WINDOW *alert_win, WINDOW *item_description_window, std::vector<Enemy::Loot> *loot);
         void setPrimaryWeapon(Weapon weapon);
+        void setSecondaryWeapon(Weapon weapon);
         void eatFood(Food *food, WINDOW *player_window);
         void levelUp(WINDOW *alert_win);
         void foodEvents();
@@ -43,7 +44,7 @@ class Player
         bool isInCombat();
         void setInCombatAbsolute(bool toggle);
         void setInCombatCheck(std::vector<Enemy> enemies);
-        void printArmor(WINDOW *inv_window, WINDOW *item_description_window, int index);
+        void printEquipped(WINDOW *inv_window, WINDOW *item_description_window, int index);
         void manageArmor(WINDOW *inv_window, WINDOW *item_description_window, WINDOW *alert_win);
         void unequipArmor(WINDOW *alert_win, int index);
         bool attack(Enemy *enemy, WINDOW *alert_win);
@@ -85,6 +86,7 @@ class Player
         int passive_health_regen_amount;    //amount of health gained on trigger
 
         Weapon *primary_weapon;
+        Weapon *secondary_weapon;
 };
 
 #endif
