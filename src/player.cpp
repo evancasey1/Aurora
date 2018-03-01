@@ -612,35 +612,44 @@ void Player::printStatus(WINDOW *player_window)
     wrefresh(player_window);
 }
 
-int Player::computeAttackPower() {
-    int power = this->primary_weapon->damage + this->base_damage;
-    int power_range = this->primary_weapon->damage_range;
-    double crit_chance = this->primary_weapon->crit_chance;
+int Player::computeAttackPower(Weapon weapon) {
+    Attack w_attack = weapon.attack;
+    int damage = (weapon.damage + this->base_damage) * w_attack.damage_mod;
+    int damage_range = weapon.damage_range;
+    double crit_chance = (weapon.crit_chance + this->crit_chance) * w_attack.crit_chance_mod;
 
     double chance_to_crit = ((double) rand() / RAND_MAX);
-    if (power_range != 0) {
-        power += (rand() % power_range);
-    }
-    if (crit_chance >= chance_to_crit) {
-        power *= 2;
+    if (damage_range != 0) {
+        damage += (rand() % damage_range);
     }
     if (this->souls == this->souls_cap) {
-        power *= this->souls_multiplier;
+        damage *= this->souls_multiplier;
     }
-    return (int)power;
+    if (crit_chance >= chance_to_crit) {
+        damage *= 2;
+    }
+    return (int)damage;
 }
 
 /*
 *Attacks enemy. Returns true if enemy is killed, false otherwise
 *
 */
-bool Player::attack(Enemy *enemy, WINDOW *alert_window)
+bool Player::attack(Enemy *enemy, bool usePrimary, WINDOW *alert_window)
 {
-    bool attack_hit = checkIfAttackHit((this->primary_weapon->accuracy + this->accuracy), enemy->current_evasion);
+    Weapon player_weapon;
+    if (usePrimary) {
+        player_weapon = *(this->primary_weapon);
+    }
+    else {
+        player_weapon = *(this->secondary_weapon);
+    }
+
+    bool attack_hit = checkIfAttackHit((player_weapon.accuracy + this->accuracy) * player_weapon.attack.accuracy_mod, enemy->current_evasion);
     
     wattron(alert_window, Color::MagentaBlack);
     if (attack_hit) {
-        int dmg = this->computeAttackPower() * (1 - enemy->current_protection);
+        int dmg = this->computeAttackPower(player_weapon) * (1 - enemy->current_protection);
         enemy->current_health -= dmg;
         wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), dmg);
         wrefresh(alert_window);

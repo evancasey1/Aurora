@@ -9,8 +9,7 @@ class Attack {
         void parseCSV(std::string n);
         std::string name;
         std::string type;
-
-    private:
+        
         double accuracy_mod;
         double damage_mod;
         double stun_chance_mod;

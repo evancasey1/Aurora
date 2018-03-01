@@ -27,7 +27,7 @@ class Player
         bool moveSpace(int direction, int map_size, WINDOW *player_window, std::vector<Enemy> enemies);
         void setPosition(int r, int c);
         void printStatus(WINDOW *player_window);
-        int computeAttackPower();
+        int computeAttackPower(Weapon weapon);
         void gainExp(int xp, WINDOW *p_window);
         void gainSouls(int souls_to_gain, WINDOW *p_window);
         void printInventory(WINDOW *inv_window, int index, WINDOW *item_window);
@@ -47,7 +47,7 @@ class Player
         void printEquipped(WINDOW *inv_window, WINDOW *item_description_window, int index);
         void manageArmor(WINDOW *inv_window, WINDOW *item_description_window, WINDOW *alert_win);
         void unequipArmor(WINDOW *alert_win, int index);
-        bool attack(Enemy *enemy, WINDOW *alert_win);
+        bool attack(Enemy *enemy, bool usePrimary, WINDOW *alert_win);
         double getArmorScore();
 
         Inventory inventory;

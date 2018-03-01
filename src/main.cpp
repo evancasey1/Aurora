@@ -65,6 +65,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
     int n_speeds = 5; //Modifier to base speed, will be in range (0 to (N-1)), in other words, N possible values for the modifier
     Enemy *enemy = &(enemies->at(enemy_index));
+    bool usePrimary = true;
 
     int p_speed = player->speed + rollSpeedMod(n_speeds);
     int e_speed = enemy->speed + rollSpeedMod(n_speeds);
@@ -72,13 +73,13 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
     wattroff(alert_window, Color::MagentaBlack);
 
     if (p_speed >= e_speed) {
-        if (!player->attack(enemy, alert_window)) {
+        if (!player->attack(enemy, usePrimary, alert_window)) {
             enemy->attack(player, alert_window);
         }
     }
     else {
         if (!enemy->attack(player, alert_window)) {
-            player->attack(enemy, alert_window);
+            player->attack(enemy, usePrimary, alert_window);
         }
     }
     if (player->current_health <= 0) {
@@ -104,19 +105,23 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 void slowCombat(Player *player, Enemy *enemy)
 {
     bool inCombat = true;
+    bool usePrimary = true;
     int ch;
     enemy->printStatus(combat_window);
     wprintw(controls_window, "<z> %s\n<x> %s\n\n<r> Run\n", player->primary_weapon->attack.name.c_str(), player->secondary_weapon->attack.name.c_str());
     wrefresh(controls_window);
 
     while (inCombat) {
+        usePrimary = false;
         ch = getch();
         if (player->current_health <= 0) {
             displayGameOver(enemy->name);
         }
         switch(ch) {
-            case 'a':
-                player->attack(enemy, alert_window);
+            case 'z':
+                usePrimary = true;
+            case 'x':
+                player->attack(enemy, usePrimary, alert_window);
                 if (enemy->current_health > 0) {
                     enemy->attack(player, alert_window);
                 }

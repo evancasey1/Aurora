@@ -3,6 +3,10 @@
 #include <cmath>
 #include <math.h>
 #include "attack.h"
+#include <iostream>
+#include <algorithm>
+#include <string> 
+#include "ncurses.h"
 
 Attack::Attack() {
 	this->name = "Attack";
@@ -18,16 +22,21 @@ Attack::Attack() {
 
 Attack::Attack(std::string a_name) {
 	this->name = a_name;
+    std::transform(a_name.begin(), a_name.end(), a_name.begin(), ::tolower);
 	parseCSV(a_name);
 }
 
 void Attack::parseCSV(std::string a_name) {
 	std::ifstream infile("attackAttributes.csv");
     std::string element;
+    std::string element_lower;
 
     while(infile.good()) {
         getline(infile, element, ',');
-        if (element == a_name) {
+        element_lower = element;
+        std::transform(element_lower.begin(), element_lower.end(), element_lower.begin(), ::tolower);
+        if (element_lower == a_name) {
+            endwin();
             getline(infile, element, ',');
             this->type = element;
             getline(infile, element, ',');
