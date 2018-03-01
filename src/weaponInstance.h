@@ -21,7 +21,7 @@ class Dagger : public Weapon
             this->crit_chance = Weapon::getRandInRange(0, 15);
             this->stun_chance = 0.00;
             this->accuracy = Weapon::getRandInRange(70, 99);
-            this->attack = *(new Attack("bleed out"));
+            this->attack = *(new Attack("Bleed out"));
         }
 };
 
@@ -44,7 +44,7 @@ class ShortSword : public Weapon
             this->crit_chance = Weapon::getRandInRange(0, 15);
             this->stun_chance = Weapon::getRandInRange(0, 5);
             this->accuracy = Weapon::getRandInRange(80, 95);
-            this->attack = *(new Attack("slash"));
+            this->attack = *(new Attack("Slash"));
         }
 };
 
@@ -67,7 +67,7 @@ class BlackJack : public Weapon
             this->crit_chance = Weapon::getRandInRange(0, 5);
             this->stun_chance = Weapon::getRandInRange(10, 20);
             this->accuracy = Weapon::getRandInRange(75, 95);
-            this->attack = *(new Attack("pummel"));
+            this->attack = *(new Attack("Pummel"));
         }
 };
 
@@ -90,7 +90,7 @@ class Sword : public Weapon
             this->crit_chance = Weapon::getRandInRange(0, 10);
             this->stun_chance = Weapon::getRandInRange(0, 5);
             this->accuracy = Weapon::getRandInRange(70, 90);
-            this->attack = *(new Attack("slash"));
+            this->attack = *(new Attack("Slash"));
         }
 };
 
@@ -113,7 +113,7 @@ class Mace : public Weapon
             this->crit_chance = Weapon::getRandInRange(0, 13);
             this->stun_chance = Weapon::getRandInRange(5, 15);
             this->accuracy = Weapon::getRandInRange(60, 85);
-            this->attack = *(new Attack("pummel"));
+            this->attack = *(new Attack("Pummel"));
         }
 };
 
