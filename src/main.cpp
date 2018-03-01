@@ -581,7 +581,6 @@ void mainGameLoop(Player *player, Map *map)
             map->printMap(player, player->vision, enemies, loot, map_window);
         }
     }
-    endwin();
 }
 
 Player userCreatePlayer()

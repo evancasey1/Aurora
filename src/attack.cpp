@@ -36,7 +36,6 @@ void Attack::parseCSV(std::string a_name) {
         element_lower = element;
         std::transform(element_lower.begin(), element_lower.end(), element_lower.begin(), ::tolower);
         if (element_lower == a_name) {
-            endwin();
             getline(infile, element, ',');
             this->type = element;
             getline(infile, element, ',');
