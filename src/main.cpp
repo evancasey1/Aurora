@@ -106,7 +106,7 @@ void slowCombat(Player *player, Enemy *enemy)
     bool inCombat = true;
     int ch;
     enemy->printStatus(combat_window);
-    wprintw(controls_window, "<a> Attack\n<r> Run\n");
+    wprintw(controls_window, "<z> %s\n<x> %s\n\n<r> Run\n", player->primary_weapon->attack.name.c_str(), player->secondary_weapon->attack.name.c_str());
     wrefresh(controls_window);
 
     while (inCombat) {
