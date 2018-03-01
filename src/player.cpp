@@ -402,13 +402,15 @@ void Player::printEquipped(WINDOW *inv_window, WINDOW *item_description_window, 
         wprintw(inv_window, " %s %s\n", armor_names[i].c_str(), this->equipped_armor.at(i).name.c_str());
         wattroff(inv_window, A_STANDOUT);
     }
+    double armor_score = getArmorScore();
+    wprintw(inv_window, " TOTAL PROT: %.2f\n", armor_score);
 
     wattron(inv_window, A_BOLD);
     wprintw(inv_window, "\nEQUIPPED WEAPONS\n");
     wattroff(inv_window, A_BOLD);
 
-    wprintw(inv_window, "[PRIM] %s\n", (this->primary_weapon->name).c_str());
-    wprintw(inv_window, "[SCND] %s", (this->secondary_weapon->name).c_str());
+    wprintw(inv_window, " [PRIM] %s\n", (this->primary_weapon->name).c_str());
+    wprintw(inv_window, " [SCND] %s", (this->secondary_weapon->name).c_str());
 
     wrefresh(inv_window);
     wrefresh(item_description_window);
@@ -513,6 +515,15 @@ bool Player::pickupLoot(Armor armor_item)
         return true;
     }
     return false;
+}
+
+double Player::getArmorScore()
+{
+    double score = 0;
+    for (Armor a : equipped_armor) {
+        score += a.protection;
+    }
+    return score;
 }
 
 void Player::levelUp(WINDOW *alert_win)

@@ -48,6 +48,7 @@ class Player
         void manageArmor(WINDOW *inv_window, WINDOW *item_description_window, WINDOW *alert_win);
         void unequipArmor(WINDOW *alert_win, int index);
         bool attack(Enemy *enemy, WINDOW *alert_win);
+        double getArmorScore();
 
         Inventory inventory;
         std::vector<Food> active_food;
