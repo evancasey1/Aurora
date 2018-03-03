@@ -409,9 +409,26 @@ void Player::printEquipped(WINDOW *inv_window, WINDOW *item_description_window, 
     wprintw(inv_window, "\nEQUIPPED WEAPONS\n");
     wattroff(inv_window, A_BOLD);
 
-    wprintw(inv_window, " [PRIM] %s\n", (this->primary_weapon->name).c_str());
-    wprintw(inv_window, " [SCND] %s", (this->secondary_weapon->name).c_str());
+    if (index == 5) {
+        wattron(inv_window, A_STANDOUT);
+        wprintw(inv_window, " [PRIM] %s\n", (this->primary_weapon->name).c_str());
+        this->primary_weapon->printDescription(item_description_window);
+        wattroff(inv_window, A_STANDOUT);
+    }
+    else {
+        wprintw(inv_window, " [PRIM] %s\n", (this->primary_weapon->name).c_str());
+    }
 
+    if (index == 6) {
+        wattron(inv_window, A_STANDOUT);
+        wprintw(inv_window, " [SCND] %s\n", (this->secondary_weapon->name).c_str());
+        this->secondary_weapon->printDescription(item_description_window);
+        wattroff(inv_window, A_STANDOUT);
+    }
+    else {
+        wprintw(inv_window, " [SCND] %s\n", (this->secondary_weapon->name).c_str());
+    }
+    
     wrefresh(inv_window);
     wrefresh(item_description_window);
 }
@@ -443,6 +460,7 @@ void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window, WI
 {
     int ch;
     int index = 0;
+    int n_weapons = 2;
 
     while (true) {
         printEquipped(inv_window, item_description_window, index);
@@ -454,12 +472,14 @@ void Player::manageArmor(WINDOW *inv_window, WINDOW *item_description_window, WI
                 }
                 break;
             case KEY_DOWN:
-                if (index < (this->equipped_armor.size() - 1)) {
+                if (index < (this->equipped_armor.size() - 1) + n_weapons) {
                     index++;
                 }
                 break;
             case KEY_ENTER: case '\n':
-                this->unequipArmor(alert_win, index);
+                if (!(index > (this->equipped_armor.size() - 1))) {
+                    this->unequipArmor(alert_win, index); 
+                }
                 break;
             case 'a': case 'e':
                 wclear(inv_window);
