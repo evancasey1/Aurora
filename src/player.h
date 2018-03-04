@@ -49,6 +49,8 @@ class Player
         void unequipArmor(WINDOW *alert_win, int index);
         bool attack(Enemy *enemy, bool usePrimary, WINDOW *alert_win);
         double getArmorScore();
+        void setBleedDamage(int damage, int rounds);
+        void takeDamageOverTime(WINDOW *alert_window);
 
         Inventory inventory;
         std::vector<Food> active_food;
@@ -82,12 +84,15 @@ class Player
         int souls_cap;
         bool inCombat;
 
+        Weapon *primary_weapon;
+        Weapon *secondary_weapon;
+
+    private:
         int passive_health_regen_counter;   //count of number of moves. Rolls back to 0 when equal to trigger.
         int passive_health_regen_trigger;   //number of moves before passive health regeneration happens
         int passive_health_regen_amount;    //amount of health gained on trigger
-
-        Weapon *primary_weapon;
-        Weapon *secondary_weapon;
+        int bleed_damage;
+        int bleed_rounds;
 };
 
 #endif

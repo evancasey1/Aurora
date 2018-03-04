@@ -35,6 +35,8 @@ class Enemy
         void setInCombat(bool toggle);
         bool attack(Player *player, WINDOW *alert_win);
         void printStatus(WINDOW *combat_window);
+        void setBleedDamage(int damage, int rounds);
+        void takeDamageOverTime(WINDOW *alert_window);
 
         int row;
         int souls;
@@ -64,6 +66,9 @@ class Enemy
         int seek_moves;
         int idle_moves;
         bool inCombat;
+        double bleed_chance;
+        int bleed_damage;
+        int bleed_rounds;
 
         struct Equipment {
             std::vector<Weapon> weapons;

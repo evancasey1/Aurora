@@ -91,6 +91,8 @@ Player::Player(std::string p_class)
     this->current_evasion = this->base_evasion;
     this->current_protection = this->base_protection;
     this->inCombat = false;
+    this->bleed_damage = 0;
+    this->bleed_rounds = 0;
 }
 
 int getLootIndex(std::vector<Enemy::Loot> *loot, long loot_id) 
@@ -155,6 +157,27 @@ void Player::setPrimaryWeapon(Weapon weapon)
 void Player::setSecondaryWeapon(Weapon weapon)
 {
     *this->secondary_weapon = weapon;
+}
+
+void Player::setBleedDamage(int damage, int rounds) 
+{
+    this->bleed_damage += damage;
+    this->bleed_rounds += rounds;
+}
+
+void Player::takeDamageOverTime(WINDOW *alert_window)
+{
+    if (this->bleed_rounds > 0) {
+        wattron(alert_window, Color::RedBlack);
+        wprintw(alert_window, "You bleed for %d damage.\n", this->bleed_damage);
+        wattroff(alert_window, Color::RedBlack);
+        wrefresh(alert_window);
+        this->bleed_rounds--;
+        this->current_health -= this->bleed_damage;
+    }
+    else {
+        this->bleed_damage = 0;
+    }
 }
 
 /*
@@ -664,12 +687,21 @@ bool Player::attack(Enemy *enemy, bool usePrimary, WINDOW *alert_window)
     else {
         player_weapon = *(this->secondary_weapon);
     }
+    this->takeDamageOverTime(alert_window);
+    if (this->current_health <= 0) {
+        return false;
+    }
 
     bool attack_hit = checkIfAttackHit((player_weapon.accuracy + this->accuracy) * player_weapon.attack.accuracy_mod, enemy->current_evasion);
     
     wattron(alert_window, Color::MagentaBlack);
     if (attack_hit) {
         int dmg = this->computeAttackPower(player_weapon) * (1 - enemy->current_protection);
+        double bleed_roll = ((double) rand() / RAND_MAX);
+        if (bleed_roll <= (player_weapon.bleed_chance * player_weapon.attack.bleed_chance_mod)) {
+            wprintw(alert_window, "%s is bleeding.\n", (enemy->name).c_str());
+            enemy->setBleedDamage(player_weapon.attack.bleed_damage, player_weapon.attack.bleed_rounds);
+        }
         enemy->current_health -= dmg;
         wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), dmg);
         wrefresh(alert_window);

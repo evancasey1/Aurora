@@ -72,6 +72,9 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
     this->alert_player = true;
     this->nightbuff_multiplier = 1.15;
     this->inCombat = false;
+    this->bleed_chance = 0.05;
+    this->bleed_damage = 0;
+    this->bleed_rounds = 0;
 
     this->total_health = std::ceil(this->total_health * this->level_up_multiplier_health);
     this->attack_power = std::ceil(this->attack_power * this->level_up_multiplier_damage);
@@ -232,6 +235,27 @@ bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col)
     return !(this->row == p_row && this->col == p_col);
 }
 
+void Enemy::setBleedDamage(int damage, int rounds) 
+{
+    this->bleed_damage += damage;
+    this->bleed_rounds += rounds;
+}
+
+void Enemy::takeDamageOverTime(WINDOW *alert_window)
+{
+    if (this->bleed_rounds > 0) {
+        wattron(alert_window, Color::RedBlack);
+        wprintw(alert_window, "%s bleeds for %d damage.\n", (this->name).c_str(), this->bleed_damage);
+        wattroff(alert_window, Color::RedBlack);
+        wrefresh(alert_window);
+        this->bleed_rounds--;
+        this->current_health -= this->bleed_damage;
+    }
+    else {
+        this->bleed_damage = 0;
+    }
+}
+
 /*
 *Attacks player. Returns true if player is killed, false otherwise
 *
@@ -239,10 +263,19 @@ bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col)
 bool Enemy::attack(Player *player, WINDOW *alert_window)
 {
     bool attack_hit = checkIfAttackHit(this->accuracy, player->current_evasion);
+    this->takeDamageOverTime(alert_window);
+    if (this->current_health <= 0) {
+        return false;
+    }
     
     wattron(alert_window, Color::RedBlack);
     if (attack_hit) {
         int dmg = this->computeAttackPower() * (1 - player->current_protection);
+        double bleed_roll = ((double) rand() / RAND_MAX);
+        if (bleed_roll <= this->bleed_chance) {
+            wprintw(alert_window, "You are bleeding.\n");
+            player->setBleedDamage(1, 3); //placeholder. Will be based on enemy attacks when implemented
+        }
         player->current_health -= dmg;
         wprintw(alert_window, "%s hits you for %d damage.\n", (this->name).c_str(), dmg);
         wrefresh(alert_window);

@@ -557,6 +557,10 @@ void mainGameLoop(Player *player, Map *map)
         }
         if (player->used_moves == player->allowed_moves) {
             turn_counter++;
+            player->takeDamageOverTime(alert_window);
+            if (player->current_health <= 0) {
+                displayGameOver("Blood loss");
+            }
             updateLootDespawn();
             if (is_daytime && turn_counter > day_turns) {
                 enemyNightBuff(&enemies);
