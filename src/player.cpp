@@ -201,7 +201,12 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
         case static_cast<int>(EquipmentType::Weapon):
             equipment.insert(equipment.end(), this->inventory.weapons.begin(), this->inventory.weapons.end());
             wprintw(inv_window, "WEAPONS [%d/%d] ->\n", this->inventory.weapon_count, this->inventory.weapon_capacity);
-            current_equipped = *this->primary_weapon;
+            if (boost::get<Weapon>(equipment.at(index)).is_primary) {
+                current_equipped = *(this->primary_weapon);
+            }
+            else {
+                current_equipped = *(this->secondary_weapon);
+            }
             break;
         case static_cast<int>(EquipmentType::Food):
             equipment.insert(equipment.end(), this->inventory.food.begin(), this->inventory.food.end());
