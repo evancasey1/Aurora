@@ -698,9 +698,18 @@ bool Player::attack(Enemy *enemy, bool usePrimary, WINDOW *alert_window)
     if (attack_hit) {
         int dmg = this->computeAttackPower(player_weapon) * (1 - enemy->current_protection);
         double bleed_roll = ((double) rand() / RAND_MAX);
+        double stun_roll = ((double) rand() / RAND_MAX);
         if (bleed_roll <= (player_weapon.bleed_chance * player_weapon.attack.bleed_chance_mod)) {
             wprintw(alert_window, "%s is bleeding.\n", (enemy->name).c_str());
             enemy->setBleedDamage(player_weapon.attack.bleed_damage, player_weapon.attack.bleed_rounds);
+        }
+        if (stun_roll <= (player_weapon.stun_chance * player_weapon.attack.stun_chance_mod)) {
+            wattroff(alert_window, Color::MagentaBlack);
+            wattron(alert_window, Color::YellowBlack);
+            wprintw(alert_window, "%s is stunned.\n", (enemy->name).c_str());
+            wattroff(alert_window, Color::YellowBlack);
+            wattron(alert_window, Color::MagentaBlack);
+            enemy->is_stunned = true;
         }
         enemy->current_health -= dmg;
         wprintw(alert_window, "You hit %s for %d damage.\n", (enemy->name).c_str(), dmg);

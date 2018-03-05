@@ -122,8 +122,11 @@ void slowCombat(Player *player, Enemy *enemy)
                 usePrimary = true;
             case 'x':
                 player->attack(enemy, usePrimary, alert_window);
-                if (enemy->current_health > 0) {
+                if (enemy->current_health > 0 && !enemy->is_stunned) {
                     enemy->attack(player, alert_window);
+                }
+                else if (enemy->is_stunned) {
+                    enemy->is_stunned = false;
                 }
                 else {
                     inCombat = false;

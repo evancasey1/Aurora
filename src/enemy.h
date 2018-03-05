@@ -69,6 +69,7 @@ class Enemy
         double bleed_chance;
         int bleed_damage;
         int bleed_rounds;
+        bool is_stunned;
 
         struct Equipment {
             std::vector<Weapon> weapons;
