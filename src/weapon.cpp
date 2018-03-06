@@ -73,7 +73,7 @@ void Weapon::applyRarity()
 */
 void Weapon::compareTo(Weapon weapon, WINDOW *win)
 {
-    wprintw(win, "%s\nLevel: ", (this->name).c_str());
+    wprintw(win, "%s [%s]\nLevel: ", (this->name).c_str(), (this->type).c_str());
     if (this->level < weapon.level) {
         wattron(win, Color::RedBlack);
     }
@@ -133,13 +133,13 @@ void Weapon::compareTo(Weapon weapon, WINDOW *win)
     wprintw(win, "%.2f\n", this->stun_chance);
     wattrset(win, A_NORMAL);
 
-    mvwprintw(win, 8, 0, "Currently Equipped:\n");
+    mvwprintw(win, 9, 0, "Currently Equipped:\n");
     weapon.printDescription(win);
 }
 
 void Weapon::printDescription(WINDOW *win) 
 {
-    wprintw(win, "%s\nLevel: %d\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f\nBleed: %.2f\nStun: %.2f", (this->name).c_str(), this->level, this->damage, this->damage + this->damage_range, this->accuracy, this->crit_chance, this->bleed_chance, this->stun_chance);
+    wprintw(win, "%s [%s]\nLevel: %d\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f\nBleed: %.2f\nStun: %.2f", (this->name).c_str(), (this->type).c_str(), this->level, this->damage, this->damage + this->damage_range, this->accuracy, this->crit_chance, this->bleed_chance, this->stun_chance);
     wrefresh(win);
 }
 void Weapon::printType(WINDOW *win)

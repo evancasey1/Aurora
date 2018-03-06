@@ -196,11 +196,20 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
     boost::variant<Weapon, Food, Armor> current_equipped;
 
     wattron(inv_window, A_BOLD);
-    
+
+    /*
+    *There's a bit of code repetition here that I'd like to reduce later
+    */
     switch(this->inventory_index) {
         case static_cast<int>(EquipmentType::Weapon):
             equipment.insert(equipment.end(), this->inventory.weapons.begin(), this->inventory.weapons.end());
             wprintw(inv_window, "WEAPONS [%d/%d] ->\n", this->inventory.weapon_count, this->inventory.weapon_capacity);
+            wattrset(inv_window, A_NORMAL);
+            if (equipment.size() == 0) {
+                wprintw(inv_window, "<EMPTY>");
+                wrefresh(inv_window);
+                return;
+            }
             if (boost::get<Weapon>(equipment.at(index)).is_primary) {
                 current_equipped = *(this->primary_weapon);
             }
@@ -211,11 +220,23 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
         case static_cast<int>(EquipmentType::Food):
             equipment.insert(equipment.end(), this->inventory.food.begin(), this->inventory.food.end());
             wprintw(inv_window, "<- FOOD [%d/%d]\n", this->inventory.food_count, this->inventory.food_capacity);
+            wattrset(inv_window, A_NORMAL);
+            if (equipment.size() == 0) {
+                wprintw(inv_window, "<EMPTY>");
+                wrefresh(inv_window);
+                return;
+            }
             current_equipped = *(new Food());
             break;
         case static_cast<int>(EquipmentType::Armor):
             equipment.insert(equipment.end(), this->inventory.armor.begin(), this->inventory.armor.end());
             wprintw(inv_window, "<- ARMOR [%d/%d] ->\n", this->inventory.armor_count, this->inventory.armor_capacity);
+            wattrset(inv_window, A_NORMAL);
+            if (equipment.size() == 0) {
+                wprintw(inv_window, "<EMPTY>");
+                wrefresh(inv_window);
+                return;
+            }
             if (this->inventory.armor.size() > 0) {
                 current_equipped = equipped_armor.at(static_cast<int>(this->inventory.armor.at(index).armor_type));
             }
@@ -224,24 +245,18 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
             return;
     }
     
-    wattroff(inv_window, A_BOLD);
-
-    if (equipment.size() == 0) {
-        wprintw(inv_window, "<EMPTY>");
-    }
-    else {
-        for (int i = 0; i < equipment.size(); i++) {
-            if (counter == index) {
-                wattron(inv_window, A_STANDOUT);
-                boost::apply_visitor(Visitors::compare_to(current_equipped, item_description_window), equipment.at(i));
-            }
-            boost::apply_visitor(Visitors::output_list_name(counter, inv_window), equipment.at(i));
-            if (counter == index) {
-                wattroff(inv_window, A_STANDOUT);
-            }
-            counter++;
+    for (int i = 0; i < equipment.size(); i++) {
+        if (counter == index) {
+            wattron(inv_window, A_STANDOUT);
+            boost::apply_visitor(Visitors::compare_to(current_equipped, item_description_window), equipment.at(i));
         }
+        boost::apply_visitor(Visitors::output_list_name(counter, inv_window), equipment.at(i));
+        if (counter == index) {
+            wattroff(inv_window, A_STANDOUT);
+        }
+        counter++;
     }
+    
     wrefresh(inv_window);
 }
 
