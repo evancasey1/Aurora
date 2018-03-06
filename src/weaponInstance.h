@@ -17,7 +17,7 @@ class Dagger : public Weapon
             is_primary = false;
             applyRarity();
             applyLevel(level);
-            this->bleed_chance = Weapon::getRandInRange(5, 20);
+            this->bleed_chance = Weapon::getRandInRange(30, 70);
             this->crit_chance = Weapon::getRandInRange(0, 15);
             this->stun_chance = 0.00;
             this->accuracy = Weapon::getRandInRange(70, 99);
@@ -65,9 +65,9 @@ class BlackJack : public Weapon
             applyLevel(level);
             this->bleed_chance = 0.00;
             this->crit_chance = Weapon::getRandInRange(0, 5);
-            this->stun_chance = Weapon::getRandInRange(10, 20);
+            this->stun_chance = Weapon::getRandInRange(50, 80);
             this->accuracy = Weapon::getRandInRange(75, 95);
-            this->attack = *(new Attack("Pummel"));
+            this->attack = *(new Attack("Smash"));
         }
 };
 
