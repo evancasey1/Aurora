@@ -314,7 +314,12 @@ void Enemy::printStatus(WINDOW *combat_window)
     }
     wattrset(combat_window, A_NORMAL);
 
-    wprintw(combat_window, "\n\n%d/%d\nPROT: %.2f", this->current_health, this->total_health, this->current_protection);
+    wprintw(combat_window, "\n\n%d/%d\nPROT: %.2f\n", this->current_health, this->total_health, this->current_protection);
+    if (this->bleed_rounds > 0) {
+        wattron(combat_window, Color::RedBlack);
+        wprintw(combat_window, "BLD %d pts/%d rds", this->bleed_damage, this->bleed_rounds);
+        wattroff(combat_window, Color::RedBlack);
+    }
     wrefresh(combat_window);
 }
 
