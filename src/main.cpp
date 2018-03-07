@@ -128,7 +128,7 @@ void slowCombat(Player *player, Enemy *enemy)
                 else if (enemy->is_stunned) {
                     enemy->is_stunned = false;
                 }
-                else {
+                if (enemy->current_health <= 0) {
                     inCombat = false;
                     wclear(combat_window);
                     wrefresh(combat_window);

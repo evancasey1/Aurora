@@ -297,7 +297,7 @@ void Enemy::printStatus(WINDOW *combat_window)
     double ratio = (double)this->current_health / (double)this->total_health;
     int nbars = (int) (ratio * max_bars);
     
-    wprintw(combat_window, "%s\n", (this->name).c_str());
+    wprintw(combat_window, "%s [lvl %d]\n", (this->name).c_str(), this->level);
     if (ratio > 0.75) {
         wattron(combat_window, Color::GreenBlack);
     }
