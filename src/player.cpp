@@ -90,7 +90,8 @@ Player::Player(std::string p_class)
     this->souls_multiplier = 1.15;
     this->current_evasion = this->base_evasion;
     this->current_protection = this->base_protection;
-    this->inCombat = false;
+    this->in_combat = false;
+    this->is_stunned = false;
     this->bleed_damage = 0;
     this->bleed_rounds = 0;
 }
@@ -624,23 +625,23 @@ void Player::setPosition(int row, int col)
 
 void Player::setInCombatAbsolute(bool toggle)
 {
-    this->inCombat = toggle;
+    this->in_combat = toggle;
 }
 
 void Player::setInCombatCheck(std::vector<Enemy> enemies)
 {
     for (Enemy e : enemies){
         if (e.isInCombat()) {
-            this->inCombat = true;
+            this->in_combat = true;
             return;
         }
     }
-    this->inCombat = false;
+    this->in_combat = false;
 }
 
 bool Player::isInCombat()
 {
-    return this->inCombat;
+    return this->in_combat;
 }
 
 //Will print things like player gold count, health, status, and 

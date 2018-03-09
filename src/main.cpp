@@ -63,7 +63,7 @@ void displayGameOver(std::string killer)
 
 void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
 {
-    int n_speeds = 5; //Modifier to base speed, will be in range (0 to (N-1)), in other words, N possible values for the modifier
+    int n_speeds = 6; //Modifier to base speed, will be in range (0 to (N-1)), in other words, N possible values for the modifier
     Enemy *enemy = &(enemies->at(enemy_index));
     bool usePrimary = true;
 
@@ -107,6 +107,9 @@ void slowCombat(Player *player, Enemy *enemy)
     bool inCombat = true;
     bool usePrimary = true;
     int ch;
+    int p_speed;
+    int e_speed;
+    int n_speeds = 6;
     enemy->printStatus(combat_window);
     wprintw(controls_window, "<z> %s\n<x> %s\n\n<r> Run\n", player->primary_weapon->attack.name.c_str(), player->secondary_weapon->attack.name.c_str());
     wrefresh(controls_window);
@@ -121,13 +124,27 @@ void slowCombat(Player *player, Enemy *enemy)
             case 'z':
                 usePrimary = true;
             case 'x':
-                player->attack(enemy, usePrimary, alert_window);
-                if (enemy->current_health > 0 && !enemy->is_stunned) {
+                p_speed = player->speed + rollSpeedMod(n_speeds);
+                e_speed = enemy->speed + rollSpeedMod(n_speeds);
+                if (p_speed >= e_speed) {
+                    player->attack(enemy, usePrimary, alert_window);
+                    if (enemy->current_health > 0 && !enemy->is_stunned) {
+                        enemy->attack(player, alert_window);
+                    }
+                    else if (enemy->is_stunned) {
+                        enemy->is_stunned = false;
+                    }
+                }
+                else {
                     enemy->attack(player, alert_window);
+                    if (player->current_health > 0 && !player->is_stunned) {
+                        player->attack(enemy, usePrimary, alert_window);
+                    }
+                    else if (player->is_stunned) {
+                        player->is_stunned = false;
+                    }
                 }
-                else if (enemy->is_stunned) {
-                    enemy->is_stunned = false;
-                }
+                
                 if (enemy->current_health <= 0) {
                     inCombat = false;
                     wclear(combat_window);

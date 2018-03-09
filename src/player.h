@@ -75,6 +75,7 @@ class Player
         double level_up_multiplier_xp;
         double level_up_multiplier_health;
         double level_up_multiplier_damage;
+        bool is_stunned;
         std::string race;
         int row;
         int col;
@@ -82,7 +83,7 @@ class Player
         int max_inventory_index;
         int souls;
         int souls_cap;
-        bool inCombat;
+        bool in_combat;
 
         Weapon *primary_weapon;
         Weapon *secondary_weapon;
