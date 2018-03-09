@@ -118,18 +118,20 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
     this->col = e_col;
 }
 
-int Enemy::computeAttackPower() 
+int Enemy::computeAttackPower(WINDOW *alert_window) 
 {
     int power = this->attack_power;
     int power_range = this->attack_power_range;
     double crit_chance = this->crit_chance;
     
-    double chance_to_crit = ((double) rand() / RAND_MAX);
+    double crit_roll = ((double) rand() / RAND_MAX);
     if (power_range != 0) {
         power += (rand() % power_range);
     }
-    if (crit_chance >= chance_to_crit) {
+    if (crit_chance >= crit_roll) {
         power *= 2;
+        wprintw(alert_window, "CRITICAL HIT\n");
+        wrefresh(alert_window);
     }
 
     return (int)power;
@@ -271,7 +273,7 @@ bool Enemy::attack(Player *player, WINDOW *alert_window)
     
     wattron(alert_window, Color::RedBlack);
     if (attack_hit) {
-        int dmg = this->computeAttackPower() * (1 - player->current_protection);
+        int dmg = this->computeAttackPower(alert_window) * (1 - player->current_protection);
         double bleed_roll = ((double) rand() / RAND_MAX);
         if (bleed_roll <= this->bleed_chance) {
             wprintw(alert_window, "You are bleeding.\n");

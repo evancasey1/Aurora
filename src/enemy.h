@@ -26,7 +26,7 @@ class Enemy
         Enemy(std::string en, int rw, int cl, int vi, int sz, int lvl);
         void seek(int p_row, int p_col);
         void idle(int m_size);
-        int computeAttackPower();
+        int computeAttackPower(WINDOW *alert_window);
         bool isValidMove(std::vector<Enemy> *enems, int p_row, int p_col);
         void deathEvents(std::vector<Enemy::Loot> *loot, WINDOW *win);
         void globalBuff(double mod);

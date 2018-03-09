@@ -57,9 +57,9 @@ Player::Player(std::string p_class)
             getline(infile, element, ',');
             this->level_up_multiplier_health = std::atof(element.c_str());
             getline(infile, element, ',');
-            this->crit_chance = std::atof(element.c_str());
-            getline(infile, element, '\n');
             this->level_up_multiplier_damage = std::atof(element.c_str());
+            getline(infile, element, '\n');
+            this->crit_chance = std::atof(element.c_str());
             infile.close();
             break;
         }
@@ -675,21 +675,23 @@ void Player::printStatus(WINDOW *player_window)
     wrefresh(player_window);
 }
 
-int Player::computeAttackPower(Weapon weapon) {
+int Player::computeAttackPower(Weapon weapon, WINDOW *alert_window) {
     Attack w_attack = weapon.attack;
     int damage = (weapon.damage + this->base_damage) * w_attack.damage_mod;
     int damage_range = weapon.damage_range;
     double crit_chance = (weapon.crit_chance + this->crit_chance) * w_attack.crit_chance_mod;
-
-    double chance_to_crit = ((double) rand() / RAND_MAX);
+    double crit_roll = ((double) rand() / RAND_MAX);
+    
     if (damage_range != 0) {
         damage += (rand() % damage_range);
     }
     if (this->souls == this->souls_cap) {
         damage *= this->souls_multiplier;
     }
-    if (crit_chance >= chance_to_crit) {
+    if (crit_chance >= crit_roll) {
         damage *= 2;
+        wprintw(alert_window, "CRITICAL HIT\n");
+        wrefresh(alert_window);
     }
     return (int)damage;
 }
@@ -716,7 +718,7 @@ bool Player::attack(Enemy *enemy, bool usePrimary, WINDOW *alert_window)
     
     wattron(alert_window, Color::MagentaBlack);
     if (attack_hit) {
-        int dmg = this->computeAttackPower(player_weapon) * (1 - enemy->current_protection);
+        int dmg = this->computeAttackPower(player_weapon, alert_window) * (1 - enemy->current_protection);
         double bleed_roll = ((double) rand() / RAND_MAX);
         double stun_roll = ((double) rand() / RAND_MAX);
         if (bleed_roll <= (player_weapon.bleed_chance * player_weapon.attack.bleed_chance_mod)) {

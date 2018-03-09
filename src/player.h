@@ -27,7 +27,7 @@ class Player
         bool moveSpace(int direction, int map_size, WINDOW *player_window, std::vector<Enemy> enemies);
         void setPosition(int r, int c);
         void printStatus(WINDOW *player_window);
-        int computeAttackPower(Weapon weapon);
+        int computeAttackPower(Weapon weapon, WINDOW *alert_window);
         void gainExp(int xp, WINDOW *p_window);
         void gainSouls(int souls_to_gain, WINDOW *p_window);
         void printInventory(WINDOW *inv_window, int index, WINDOW *item_window);
