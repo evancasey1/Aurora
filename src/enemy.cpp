@@ -267,7 +267,10 @@ bool Enemy::attack(Player *player, WINDOW *alert_window)
 {
     bool attack_hit = checkIfAttackHit(this->accuracy, player->current_evasion);
     this->takeDamageOverTime(alert_window);
-    if (this->current_health <= 0) {
+    if (this->current_health <= 0 || this->is_stunned) {
+        if (this->is_stunned) {
+            this->is_stunned = false;
+        }
         return false;
     }
     

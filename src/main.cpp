@@ -128,21 +128,11 @@ void slowCombat(Player *player, Enemy *enemy)
                 e_speed = enemy->speed + rollSpeedMod(n_speeds);
                 if (p_speed >= e_speed) {
                     player->attack(enemy, usePrimary, alert_window);
-                    if (enemy->current_health > 0 && !enemy->is_stunned) {
-                        enemy->attack(player, alert_window);
-                    }
-                    else if (enemy->is_stunned) {
-                        enemy->is_stunned = false;
-                    }
+                    enemy->attack(player, alert_window);
                 }
                 else {
                     enemy->attack(player, alert_window);
-                    if (player->current_health > 0 && !player->is_stunned) {
-                        player->attack(enemy, usePrimary, alert_window);
-                    }
-                    else if (player->is_stunned) {
-                        player->is_stunned = false;
-                    }
+                    player->attack(enemy, usePrimary, alert_window);
                 }
                 
                 if (enemy->current_health <= 0) {

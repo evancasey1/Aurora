@@ -711,7 +711,10 @@ bool Player::attack(Enemy *enemy, bool usePrimary, WINDOW *alert_window)
         player_weapon = *(this->secondary_weapon);
     }
     this->takeDamageOverTime(alert_window);
-    if (this->current_health <= 0) {
+    if (this->current_health <= 0 || this->is_stunned) {
+        if (this->is_stunned) {
+            this->is_stunned = false;
+        }
         return false;
     }
 
@@ -722,10 +725,12 @@ bool Player::attack(Enemy *enemy, bool usePrimary, WINDOW *alert_window)
         int dmg = this->computeAttackPower(player_weapon, alert_window) * (1 - enemy->current_protection);
         double bleed_roll = ((double) rand() / RAND_MAX);
         double stun_roll = ((double) rand() / RAND_MAX);
+        //Roll for bleed
         if (bleed_roll <= (player_weapon.bleed_chance * player_weapon.attack.bleed_chance_mod)) {
             wprintw(alert_window, "%s is bleeding.\n", (enemy->name).c_str());
             enemy->setBleedDamage(player_weapon.attack.bleed_damage, player_weapon.attack.bleed_rounds);
         }
+        //Roll for stun
         if (stun_roll <= (player_weapon.stun_chance * player_weapon.attack.stun_chance_mod)) {
             wattroff(alert_window, Color::MagentaBlack);
             wattron(alert_window, Color::YellowBlack);
