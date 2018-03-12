@@ -67,6 +67,7 @@ class Enemy
         int idle_moves;
         bool inCombat;
         double bleed_chance;
+        double bleed_resist;
         int bleed_damage;
         int bleed_rounds;
         bool is_stunned;

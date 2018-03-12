@@ -56,6 +56,8 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
             this->level_up_multiplier_health = std::atof(element.c_str());
             getline(infile, element, ',');
             this->level_up_multiplier_damage = std::atof(element.c_str());
+            getline(infile, element, ',');
+            this->bleed_resist = std::atof(element.c_str());
             getline(infile, element, '\n');
             this->symbol = element[0];
             infile.close();
@@ -319,7 +321,7 @@ void Enemy::printStatus(WINDOW *combat_window)
     }
     wattrset(combat_window, A_NORMAL);
 
-    wprintw(combat_window, "\n\n%d/%d\nPROT: %.2f\n", this->current_health, this->total_health, this->current_protection);
+    wprintw(combat_window, "\n\nHP: %d/%d\nPROT: %.2f%%\nBLD RESIST: %.2f%%\n", this->current_health, this->total_health, this->current_protection * 100, this->bleed_resist * 100);
     if (this->bleed_rounds > 0) {
         wattron(combat_window, Color::RedBlack);
         wprintw(combat_window, "BLD %d pts/%d rds", this->bleed_damage, this->bleed_rounds);

@@ -726,7 +726,7 @@ bool Player::attack(Enemy *enemy, bool usePrimary, WINDOW *alert_window)
         double bleed_roll = ((double) rand() / RAND_MAX);
         double stun_roll = ((double) rand() / RAND_MAX);
         //Roll for bleed
-        if (bleed_roll <= (player_weapon.bleed_chance * player_weapon.attack.bleed_chance_mod)) {
+        if (bleed_roll <= (player_weapon.bleed_chance * player_weapon.attack.bleed_chance_mod) - enemy->bleed_resist) {
             wprintw(alert_window, "%s is bleeding.\n", (enemy->name).c_str());
             enemy->setBleedDamage(player_weapon.attack.bleed_damage, player_weapon.attack.bleed_rounds);
         }
