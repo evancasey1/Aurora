@@ -27,3 +27,6 @@ attack.o: attack.cpp attack.h
 
 clean:
 	rm -f $(OBJS) aurora
+
+rebuild:
+	make clean && make
