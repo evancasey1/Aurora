@@ -98,7 +98,7 @@ void Armor::compareTo(Armor armor, WINDOW *win)
     else if (this->protection > armor.protection) {
         wattron(win, Color::GreenBlack);
     }
-    wprintw(win, "%.2f", this->protection);
+    wprintw(win, "%.0f%%", this->protection * 100);
     wattrset(win, A_NORMAL);
 
     mvwprintw(win, 7, 0, "Currently Equipped:\n");
@@ -113,6 +113,6 @@ void Armor::printType(WINDOW *win)
 
 void Armor::printDescription(WINDOW *item_description_window)
 {
-    wprintw(item_description_window, "%s\nLevel: %d\nProtection: %.2f", (this->name).c_str(), this->level, this->protection);
+    wprintw(item_description_window, "%s\nLevel: %d\nProtection: %.0f%%", (this->name).c_str(), this->level, this->protection * 100);
     wrefresh(item_description_window);
 }
