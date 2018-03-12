@@ -100,7 +100,7 @@ void Weapon::compareTo(Weapon weapon, WINDOW *win)
     else if (this->accuracy > weapon.accuracy) {
         wattron(win, Color::GreenBlack);
     }
-    wprintw(win, "%.2f\n", this->accuracy);
+    wprintw(win, "%.0f%%\n", this->accuracy * 100);
     wattrset(win, A_NORMAL);
     wprintw(win, "Crit: ");
 
@@ -110,7 +110,7 @@ void Weapon::compareTo(Weapon weapon, WINDOW *win)
     else if (this->crit_chance > weapon.crit_chance) {
         wattron(win, Color::GreenBlack);
     }
-    wprintw(win, "%.2f\n", this->crit_chance);
+    wprintw(win, "%.0f%%\n", this->crit_chance * 100);
     wattrset(win, A_NORMAL);
     wprintw(win, "Bleed: ");
 
@@ -120,7 +120,7 @@ void Weapon::compareTo(Weapon weapon, WINDOW *win)
     else if (this->bleed_chance > weapon.bleed_chance) {
         wattron(win, Color::GreenBlack);
     }
-    wprintw(win, "%.2f\n", this->bleed_chance);
+    wprintw(win, "%.0f%%\n", this->bleed_chance * 100);
     wattrset(win, A_NORMAL);
     wprintw(win, "Stun: ");
 
@@ -130,7 +130,7 @@ void Weapon::compareTo(Weapon weapon, WINDOW *win)
     else if (this->stun_chance > weapon.stun_chance) {
         wattron(win, Color::GreenBlack);
     }
-    wprintw(win, "%.2f\n", this->stun_chance);
+    wprintw(win, "%.0f%%\n", this->stun_chance * 100);
     wattrset(win, A_NORMAL);
 
     mvwprintw(win, 9, 0, "Currently Equipped:\n");
@@ -139,7 +139,7 @@ void Weapon::compareTo(Weapon weapon, WINDOW *win)
 
 void Weapon::printDescription(WINDOW *win) 
 {
-    wprintw(win, "%s [%s]\nLevel: %d\nAttack: %d - %d\nAccuracy: %.2f\nCrit: %.2f\nBleed: %.2f\nStun: %.2f", (this->name).c_str(), (this->type).c_str(), this->level, this->damage, this->damage + this->damage_range, this->accuracy, this->crit_chance, this->bleed_chance, this->stun_chance);
+    wprintw(win, "%s [%s]\nLevel: %d\nAttack: %d - %d\nAccuracy: %.0f%%\nCrit: %.0f%%\nBleed: %.0f%%\nStun: %.0f%%", (this->name).c_str(), (this->type).c_str(), this->level, this->damage, this->damage + this->damage_range, this->accuracy * 100, this->crit_chance * 100, this->bleed_chance * 100, this->stun_chance * 100);
     wrefresh(win);
 }
 void Weapon::printType(WINDOW *win)

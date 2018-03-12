@@ -447,7 +447,7 @@ void Player::printEquipped(WINDOW *inv_window, WINDOW *item_description_window, 
         wattroff(inv_window, A_STANDOUT);
     }
     double armor_score = getArmorScore();
-    wprintw(inv_window, " TOTAL PROT: %.2f\n", armor_score);
+    wprintw(inv_window, " TOTAL PROT: %.0f%%\n", armor_score * 100);
 
     wattron(inv_window, A_BOLD);
     wprintw(inv_window, "\nEQUIPPED WEAPONS\n");
