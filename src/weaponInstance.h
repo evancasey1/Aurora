@@ -106,7 +106,7 @@ class Mace : public Weapon
             this->damage_range = 3;
             this->level = level;
             this->item_id = item_id_counter++;
-            is_primary = false;
+            is_primary = true;
             applyRarity();
             applyLevel(level);
             this->bleed_chance = Weapon::getRandInRange(0, 15);
@@ -114,6 +114,52 @@ class Mace : public Weapon
             this->stun_chance = Weapon::getRandInRange(5, 15);
             this->accuracy = Weapon::getRandInRange(60, 85);
             this->attack = *(new Attack("Pummel"));
+        }
+};
+
+class Flail : public Weapon
+{
+    public:
+        Flail(int level) 
+        {
+            extern int item_id_counter;
+            this->type = "P";
+            this->name = "Flail";
+            this->damage = 3;
+            this->damage_range = 4;
+            this->level = level;
+            this->item_id = item_id_counter++;
+            is_primary = true;
+            applyRarity();
+            applyLevel(level);
+            this->bleed_chance = Weapon::getRandInRange(5, 25);
+            this->crit_chance = Weapon::getRandInRange(3, 15);
+            this->stun_chance = Weapon::getRandInRange(15, 30);
+            this->accuracy = Weapon::getRandInRange(70, 90);
+            this->attack = *(new Attack("Crush"));
+        }
+};
+
+class Halberd : public Weapon
+{
+    public:
+        Halberd(int level) 
+        {
+            extern int item_id_counter;
+            this->type = "PS";
+            this->name = "Halberd";
+            this->damage = 6;
+            this->damage_range = 3;
+            this->level = level;
+            this->item_id = item_id_counter++;
+            is_primary = true;
+            applyRarity();
+            applyLevel(level);
+            this->bleed_chance = Weapon::getRandInRange(20, 40);
+            this->crit_chance = Weapon::getRandInRange(5, 15);
+            this->stun_chance = Weapon::getRandInRange(0, 10);
+            this->accuracy = Weapon::getRandInRange(80, 95);
+            this->attack = *(new Attack("Cleave"));
         }
 };
 

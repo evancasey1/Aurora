@@ -84,6 +84,16 @@ void Weapon::compareTo(Weapon weapon, WINDOW *win)
     wattrset(win, A_NORMAL);
     wprintw(win, "Attack: ");
 
+    if (this->damage < weapon.damage) {
+        wattron(win, Color::RedBlack);
+    }
+    else if (this->damage > weapon.damage) {
+        wattron(win, Color::GreenBlack);
+    }
+    wprintw(win, "%d", this->damage, this->damage + this->damage_range);
+    wattrset(win, A_NORMAL);
+    wprintw(win, " - ");
+
     if (this->damage + this->damage_range < weapon.damage + weapon.damage_range) {
         wattron(win, Color::RedBlack);
     }
