@@ -543,12 +543,11 @@ void Player::gainSouls(int souls_to_gain, WINDOW *alert_win)
     if (this->souls > souls_cap) {
         this->souls = souls_cap;
     }
-    wattroff(alert_win, Color::RedBlack);
+    wattrset(alert_win, A_NORMAL);
     wattron(alert_win, Color::GreenBlack);
     wprintw(alert_win, "Acquired %d souls.\n", souls_to_gain);
     wrefresh(alert_win);
     wattroff(alert_win, Color::GreenBlack);
-    wattron(alert_win, Color::RedBlack);
 }
 
 bool Player::pickupLoot(Weapon weapon_item) 
@@ -611,6 +610,10 @@ void Player::levelUp(WINDOW *alert_win)
 
 void Player::gainExp(int xp, WINDOW *alert_win) 
 {
+    wattrset(alert_win, A_NORMAL);
+    wattron(alert_win, Color::GreenBlack);
+    wprintw(alert_win, "You gained %d XP.\n", xp);
+    wattroff(alert_win, Color::GreenBlack);
     this->current_xp += xp;
     if (this->current_xp >= this->current_xp_cap) {
         this->levelUp(alert_win);

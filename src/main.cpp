@@ -88,14 +88,11 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
     if (enemy->current_health <= 0) {
         wattron(alert_window, Color::MagentaBlack);
         wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
-        wattroff(alert_window, Color::RedBlack);
-        wattron(alert_window, Color::GreenBlack);
-        wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
-        wattroff(alert_window, Color::GreenBlack);
-        wattron(alert_window, Color::RedBlack);
+        wattroff(alert_window, Color::MagentaBlack);
 
         player->gainExp(enemy->XP, alert_window);
         player->gainSouls(enemy->souls, alert_window);
+        wattron(alert_window, Color::RedBlack);
     }
 
     player->printStatus(player_status_window);
@@ -142,14 +139,11 @@ void slowCombat(Player *player, Enemy *enemy)
 
                     wattron(alert_window, Color::MagentaBlack);
                     wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
-                    wattroff(alert_window, Color::RedBlack);
-                    wattron(alert_window, Color::GreenBlack);
-                    wprintw(alert_window, "You gained %d XP.\n", enemy->XP);
-                    wattroff(alert_window, Color::GreenBlack);
-                    wattron(alert_window, Color::RedBlack);
+                    wattroff(alert_window, Color::MagentaBlack);
 
                     player->gainExp(enemy->XP, alert_window);
                     player->gainSouls(enemy->souls, alert_window);
+                    wattron(alert_window, Color::RedBlack);
                 }
                 player->printStatus(player_status_window);
                 enemy->printStatus(combat_window);
