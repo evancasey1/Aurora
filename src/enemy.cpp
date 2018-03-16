@@ -79,8 +79,8 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
     this->bleed_rounds = 0;
     this->is_stunned = false;
 
-    this->total_health = std::ceil(this->total_health * this->level_up_multiplier_health);
-    this->attack_power = std::ceil(this->attack_power * this->level_up_multiplier_damage);
+    this->total_health = std::ceil(this->total_health * std::pow(this->level_up_multiplier_health, e_level));
+    this->attack_power = std::ceil(this->attack_power * std::pow(this->level_up_multiplier_damage, e_level));
     this->current_health = this->total_health;
 
     int e_row = 0;
