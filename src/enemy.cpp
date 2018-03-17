@@ -15,7 +15,6 @@
 #include "map.h"
 
 extern bool checkIfAttackHit(double acc, double eva);
-extern void slowCombat(Player *player, Enemy *enemy, Map map, std::vector<Enemy> enemies);
 
 Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_size, int e_level)
 {
@@ -82,6 +81,7 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
     this->bleed_damage = 0;
     this->bleed_rounds = 0;
     this->is_stunned = false;
+    this->attacking = false;
 
     this->total_health = std::ceil(this->total_health * std::pow(this->level_up_multiplier_health, e_level));
     this->attack_power = std::ceil(this->attack_power * std::pow(this->level_up_multiplier_damage, e_level));
@@ -343,6 +343,7 @@ void Enemy::idle(int map_size)
 {
     //move a random direction or stay still
     int move;
+    this->attacking = false;
     for (int i = 0; i < this->idle_moves; i++) {
         move = (rand() % 6);
         switch (move) {
@@ -387,6 +388,7 @@ void Enemy::seek(Player player, Map map, std::vector<Enemy> enemies)
     int p_node = map.getSectionID(p_row, p_col);
     int current;
     bool found = false;
+    this->attacking = false;
     
     search_queue.push(e_node); //push player tile to queue
     trail.at(e_node) = e_node;
@@ -421,7 +423,7 @@ void Enemy::seek(Player player, Map map, std::vector<Enemy> enemies)
             index++;
         }
         if (index < this->seek_moves) {
-            slowCombat(&player, this, map, enemies);
+            this->attacking = true;
         }
 
     }

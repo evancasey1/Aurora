@@ -99,7 +99,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
     wrefresh(alert_window);
 }
 
-void slowCombat(Player *player, Enemy *enemy, Map map, std::vector<Enemy> enemies)
+void slowCombat(Player *player, Enemy *enemy)
 {
     bool inCombat = true;
     bool usePrimary = true;
@@ -107,7 +107,6 @@ void slowCombat(Player *player, Enemy *enemy, Map map, std::vector<Enemy> enemie
     int p_speed;
     int e_speed;
     int n_speeds = 6;
-    map.printMap(player, player->vision, enemies, loot, map_window);
     enemy->printStatus(combat_window);
     wprintw(alert_window, "Attacking %s.\n", (enemy->name).c_str());
     wrefresh(alert_window);
@@ -405,10 +404,15 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
             }
             e.idle(map->size);
         }
+        if (e.attacking) {
+            slowCombat(player, &e);
+        }
+        /*
         if (e.row == player->row && e.col == player->col && (!player->isInCombat() || e.isInCombat())) {
             e.setInCombat(true);
             fastCombat(player, enemies, index);
         }
+        */
         index++;
     }
 
@@ -460,7 +464,7 @@ Enemy* getEnemyFromLocation(int row, int col, std::vector<Enemy> *enemies) {
     return NULL;
 }
 
-void selectTarget(Player *player, std::vector<Enemy> *enemies, Map map)
+void selectTarget(Player *player, std::vector<Enemy> *enemies)
 {
     int ch;
     bool is_valid_selection = false;
@@ -493,7 +497,7 @@ void selectTarget(Player *player, std::vector<Enemy> *enemies, Map map)
     
     if (is_valid_selection && enemyAtLocation(player->row + row_mod, player->col + col_mod, *enemies)) {
         Enemy *target_enemy = getEnemyFromLocation(player->row + row_mod, player->col + col_mod, enemies);
-        slowCombat(player, target_enemy, map, *enemies);
+        slowCombat(player, target_enemy);
         deleteDefeatedEnemies(enemies);
     }
     else {
@@ -542,7 +546,7 @@ void mainGameLoop(Player *player, Map *map)
                 player->manageArmor(inventory_window, item_description_window, alert_window);
                 break;
             case 'f':
-                selectTarget(player, &enemies, *map);
+                selectTarget(player, &enemies);
                 map->printPlayerInfo(*player, map_window);
                 map->printMap(player, player->vision, enemies, loot, map_window);
                 break;
