@@ -61,44 +61,6 @@ void displayGameOver(std::string killer)
     exit(0);
 }
 
-void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
-{
-    int n_speeds = 6; //Modifier to base speed, will be in range (0 to (N-1)), in other words, N possible values for the modifier
-    Enemy *enemy = &(enemies->at(enemy_index));
-    bool usePrimary = true;
-
-    int p_speed = player->speed + rollSpeedMod(n_speeds);
-    int e_speed = enemy->speed + rollSpeedMod(n_speeds);
-
-    wattroff(alert_window, Color::MagentaBlack);
-
-    if (p_speed >= e_speed) {
-        if (!player->attack(enemy, usePrimary, alert_window)) {
-            enemy->attack(player, alert_window);
-        }
-    }
-    else {
-        if (!enemy->attack(player, alert_window)) {
-            player->attack(enemy, usePrimary, alert_window);
-        }
-    }
-    if (player->current_health <= 0) {
-        displayGameOver(enemy->name);
-    }
-    if (enemy->current_health <= 0) {
-        wattron(alert_window, Color::MagentaBlack);
-        wprintw(alert_window, "You killed %s.\n", (enemy->name).c_str());
-        wattroff(alert_window, Color::MagentaBlack);
-
-        player->gainExp(enemy->XP, alert_window);
-        player->gainSouls(enemy->souls, alert_window);
-        wattron(alert_window, Color::RedBlack);
-    }
-
-    player->printStatus(player_status_window);
-    wrefresh(alert_window);
-}
-
 void slowCombat(Player *player, Enemy *enemy)
 {
     bool inCombat = true;
@@ -407,12 +369,6 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
         if (e.attacking) {
             slowCombat(player, &e);
         }
-        /*
-        if (e.row == player->row && e.col == player->col && (!player->isInCombat() || e.isInCombat())) {
-            e.setInCombat(true);
-            fastCombat(player, enemies, index);
-        }
-        */
         index++;
     }
 
