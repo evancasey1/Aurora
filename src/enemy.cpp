@@ -31,6 +31,8 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
             getline(infile, element, ',');
             this->attack_power = std::atoi(element.c_str());
             getline(infile, element, ',');
+            this->attack_power_range = std::atoi(element.c_str());
+            getline(infile, element, ',');
             this->base_protection = std::atof(element.c_str());
             getline(infile, element, ',');
             this->total_health = std::atoi(element.c_str());
@@ -68,7 +70,6 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
         }
     }
 
-    this->attack_power_range = 2;
     this->current_evasion = this->base_evasion;
     this->current_protection = this->base_protection;
     this->alert_player = true;
@@ -81,8 +82,13 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
 
     this->total_health = std::ceil(this->total_health * std::pow(this->level_up_multiplier_health, e_level));
     this->attack_power = std::ceil(this->attack_power * std::pow(this->level_up_multiplier_damage, e_level));
+    this->attack_power_range = std::ceil(this->attack_power_range * std::pow(this->level_up_multiplier_damage, e_level));
     this->current_health = this->total_health;
 
+
+    /*
+    *Set enemy coordinates on map
+    */
     int e_row = 0;
     int e_col = 0;
     int range = (p_vision * 2);
