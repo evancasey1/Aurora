@@ -121,6 +121,8 @@ void slowCombat(Player *player, Enemy *enemy)
         }
     }
     wclear(controls_window);
+    wclear(combat_window);
+    wrefresh(combat_window);
     wrefresh(controls_window);
 }
 
@@ -367,6 +369,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
             e.idle(map->size);
         }
         if (e.attacking) {
+            map->printMap(player, player->vision, *enemies, loot, map_window);
             slowCombat(player, &e);
         }
         index++;
