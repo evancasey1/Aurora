@@ -390,15 +390,14 @@ void Enemy::seek(Player player, Map map, std::vector<Enemy> enemies)
     bool found = false;
     this->attacking = false;
     
-    search_queue.push(e_node); //push player tile to queue
+    search_queue.push(e_node); //push enemy node to queue
     trail.at(e_node) = e_node;
-    //endwin();
 
     while(!search_queue.empty() && !found) {
         current = search_queue.front();
         search_queue.pop();
         for (int i = 0; i < 4; i++) {
-            if (map.isValidMove(current + mods[i]) && trail.at(current + mods[i]) == -1) {
+            if (map.isValidMove(current + mods[i], enemies) && trail.at(current + mods[i]) == -1) {
                 search_queue.push(current + mods[i]);
                 trail.at(current + mods[i]) = current;
                 if ((current + mods[i]) == p_node) {
@@ -431,48 +430,3 @@ void Enemy::seek(Player player, Map map, std::vector<Enemy> enemies)
         this->idle(map.size);
     }
 }
-
-
-/*
-* Movement pattern when enemy spots player
-*/
-/*
-void Enemy::seek(int p_row, int p_col)
-{
-    //Not too happy with this randomization solution, but since enemy
-    //movement is going to be overhauled soon anyway it'll do
-    int choice;
-    for (int i = 0; i < this->seek_moves; i++){ 
-        choice = rand() % 2;
-        if (choice) {
-            if (p_row > this->row) {
-                this->row++;
-            }
-            else if (p_row < this->row) {
-                this->row--;
-            }
-            else if (p_col > this->col) {
-                this->col++;
-            }
-            else if (p_col < this->col) {
-                this->col--;
-            }
-        }
-        else {
-            if (p_col > this->col) {
-                this->col++;
-            }
-            else if (p_col < this->col) {
-                this->col--;
-            }
-            else if (p_row > this->row) {
-                this->row++;
-            }
-            else if (p_row < this->row) {
-                this->row--;
-            }
-        }
-        
-    }
-}
-*/

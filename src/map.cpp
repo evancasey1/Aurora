@@ -44,8 +44,13 @@ int Map::getSectionID(int row, int col)
     return (row * this->size) + col;
 }
 
-bool Map::isValidMove(int row, int col)
+bool Map::isValidMove(int row, int col, std::vector<Enemy> enemies)
 {
+    for (auto &e : enemies) {
+        if (row == e.row && col == e.col) {
+            return false;
+        }
+    }
     char arr[] = {loot_symbol, '.', '-'};
     std::vector<int>valid_syms(arr, arr + sizeof(arr) / sizeof(arr[0]));
     if (row < size && col < size && row >= 0 && col >= 0) {
@@ -57,8 +62,15 @@ bool Map::isValidMove(int row, int col)
     return false;
 }
 
-bool Map::isValidMove(int id)
-{
+bool Map::isValidMove(int id, std::vector<Enemy> enemies)
+{   
+    int t_id;
+    for (auto &e : enemies) {
+        t_id = this->getSectionID(e.row, e.col);
+        if (t_id == id) {
+            return false;
+        }
+    }
     char arr[] = {loot_symbol, '.', '-'};
     std::vector<int>valid_syms(arr, arr + sizeof(arr) / sizeof(arr[0]));
     if (id < size * size && id >= 0) {
