@@ -24,7 +24,7 @@ Map::Map(int s)
         for (int j = 0; j < s; j++) {
             r = (rand() % 2) + 45;
             (this->map + ((i * this->size) + j))->symbol = r;
-            r = ((double) rand() / RAND_MAX);
+            //r = ((double) rand() / RAND_MAX);
             /*
             if (r < .002) {
                 (this->map + ((i * this->size) + j))->symbol = '%';
@@ -37,6 +37,37 @@ Map::Map(int s)
 Map::MapSection Map::getMapSectionFromIndex(int row, int col)
 {
     return *(this->map + ((row * this->size) + col));
+}
+
+int Map::getSectionID(int row, int col)
+{
+    return (row * this->size) + col;
+}
+
+bool Map::isValidMove(int row, int col)
+{
+    char arr[] = {loot_symbol, '.', '-'};
+    std::vector<int>valid_syms(arr, arr + sizeof(arr) / sizeof(arr[0]));
+    if (row < size && col < size && row >= 0 && col >= 0) {
+        char sym = getMapSectionFromIndex(row, col).symbol;
+        if (std::find(valid_syms.begin(), valid_syms.end(), sym) != valid_syms.end()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Map::isValidMove(int id)
+{
+    char arr[] = {loot_symbol, '.', '-'};
+    std::vector<int>valid_syms(arr, arr + sizeof(arr) / sizeof(arr[0]));
+    if (id < size * size && id >= 0) {
+        char sym = (*(this->map + id)).symbol;
+        if (std::find(valid_syms.begin(), valid_syms.end(), sym) != valid_syms.end()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void Map::printPlayerInfo(Player player, WINDOW *map_window)

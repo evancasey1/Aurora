@@ -99,7 +99,7 @@ void fastCombat(Player *player, std::vector<Enemy> *enemies, int enemy_index)
     wrefresh(alert_window);
 }
 
-void slowCombat(Player *player, Enemy *enemy)
+void slowCombat(Player *player, Enemy *enemy, Map map, std::vector<Enemy> enemies)
 {
     bool inCombat = true;
     bool usePrimary = true;
@@ -107,7 +107,10 @@ void slowCombat(Player *player, Enemy *enemy)
     int p_speed;
     int e_speed;
     int n_speeds = 6;
+    map.printMap(player, player->vision, enemies, loot, map_window);
     enemy->printStatus(combat_window);
+    wprintw(alert_window, "Attacking %s.\n", (enemy->name).c_str());
+    wrefresh(alert_window);
     wprintw(controls_window, "<z> %s\n<x> %s\n\n<r> Run\n", player->primary_weapon->attack.name.c_str(), player->secondary_weapon->attack.name.c_str());
     wrefresh(controls_window);
 
@@ -358,7 +361,7 @@ void spawnEnemy(std::vector<Enemy> *enemies, Player *player, Map *map) {
     static const std::string ENEMY_NAMES[] = {"Kobold", "Bear", "Wolf", "Specter", "Undead", "Graverobber"};
     int spawn_denominator = 100;
     int enemy_spawn_rate = 25;
-    unsigned int max_enemies = 50;
+    unsigned int max_enemies = 10;
     int num_enemies = sizeof(ENEMY_NAMES) / sizeof(*ENEMY_NAMES);
     int rng = (rand() % spawn_denominator);
     
@@ -386,7 +389,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
     for (auto &e : *enemies) {
         distance = getDistance(player->col, player->row, e.col, e.row);
         if (distance <= (double) e.vision) {
-            e.seek(player->row, player->col);
+            e.seek(*player, *map, *enemies);
             if (e.alert_player) {
                 e.alert_player = false;
                 wprintw(alert_window, "%s has spotted you!\n", (e.name).c_str());
@@ -457,7 +460,7 @@ Enemy* getEnemyFromLocation(int row, int col, std::vector<Enemy> *enemies) {
     return NULL;
 }
 
-void selectTarget(Player *player, std::vector<Enemy> *enemies)
+void selectTarget(Player *player, std::vector<Enemy> *enemies, Map map)
 {
     int ch;
     bool is_valid_selection = false;
@@ -490,9 +493,7 @@ void selectTarget(Player *player, std::vector<Enemy> *enemies)
     
     if (is_valid_selection && enemyAtLocation(player->row + row_mod, player->col + col_mod, *enemies)) {
         Enemy *target_enemy = getEnemyFromLocation(player->row + row_mod, player->col + col_mod, enemies);
-        wprintw(alert_window, "Attacking %s.\n", (target_enemy->name).c_str());
-        wrefresh(alert_window);
-        slowCombat(player, target_enemy);
+        slowCombat(player, target_enemy, map, *enemies);
         deleteDefeatedEnemies(enemies);
     }
     else {
@@ -541,7 +542,7 @@ void mainGameLoop(Player *player, Map *map)
                 player->manageArmor(inventory_window, item_description_window, alert_window);
                 break;
             case 'f':
-                selectTarget(player, &enemies);
+                selectTarget(player, &enemies, *map);
                 map->printPlayerInfo(*player, map_window);
                 map->printMap(player, player->vision, enemies, loot, map_window);
                 break;

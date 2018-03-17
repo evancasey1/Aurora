@@ -23,7 +23,6 @@ class Map
         struct MapSection
         {
             char symbol;
-            std::string biome;
             //will contain structure information later
         };
         Map();
@@ -31,6 +30,9 @@ class Map
         MapSection getMapSectionFromIndex(int row, int col);
         void printMap(Player *player, int vision, std::vector<Enemy> e, std::vector<Enemy::Loot> loot, WINDOW *win);
         void printPlayerInfo(Player player, WINDOW *win);
+        int getSectionID(int row, int col);
+        bool isValidMove(int row, int col);
+        bool isValidMove(int id);
         int size;
         MapSection *map;
         int player_color;

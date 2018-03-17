@@ -8,11 +8,14 @@
 #include <sstream>
 #include <cmath>
 #include <math.h>
+#include <queue>
 #include "enemy.h"
 #include "color.h"
 #include "player.h"
+#include "map.h"
 
 extern bool checkIfAttackHit(double acc, double eva);
+extern void slowCombat(Player *player, Enemy *enemy, Map map, std::vector<Enemy> enemies);
 
 Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_size, int e_level)
 {
@@ -233,19 +236,6 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
     wrefresh(alert_win);
 }
 
-bool Enemy::isValidMove(std::vector<Enemy> *enemies, int p_row, int p_col)
-{
-    std::vector<Enemy>::iterator iter;
-    for (iter = enemies->begin(); iter != enemies->end();) {
-        if (iter->row == this->row && iter->col == this->col) {
-            return false;
-        }
-        ++iter;
-    }
-
-    return !(this->row == p_row && this->col == p_col);
-}
-
 void Enemy::setBleedDamage(int damage, int rounds) 
 {
     this->bleed_damage += damage;
@@ -380,9 +370,71 @@ void Enemy::idle(int map_size)
     }
 }
 
+void Enemy::setPosFromID(int id, int size) 
+{
+    this->row = std::floor(id / size);
+    this->col = id % size;
+}
+
+void Enemy::seek(Player player, Map map, std::vector<Enemy> enemies)
+{
+    std::vector<int> trail(map.size * map.size, -1);
+    std::queue<int> search_queue;
+    int p_row = player.row;
+    int p_col = player.col;
+    int mods[] = {1, -1, map.size, -map.size}; //right, left, down, up
+    int e_node = map.getSectionID(this->row, this->col);
+    int p_node = map.getSectionID(p_row, p_col);
+    int current;
+    bool found = false;
+    
+    search_queue.push(e_node); //push player tile to queue
+    trail.at(e_node) = e_node;
+    //endwin();
+
+    while(!search_queue.empty() && !found) {
+        current = search_queue.front();
+        search_queue.pop();
+        for (int i = 0; i < 4; i++) {
+            if (map.isValidMove(current + mods[i]) && trail.at(current + mods[i]) == -1) {
+                search_queue.push(current + mods[i]);
+                trail.at(current + mods[i]) = current;
+                if ((current + mods[i]) == p_node) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (found) {
+        std::vector<int> path;
+        int index = p_node;
+        while(trail[index] != e_node) {
+            index = trail[index];
+            path.push_back(index);
+        }
+        std::reverse(path.begin(), path.end());
+        index = 0;
+        while (index < this->seek_moves && index < static_cast<int>(path.size())) {
+            setPosFromID(path.at(index), map.size);
+            index++;
+        }
+        if (index < this->seek_moves) {
+            slowCombat(&player, this, map, enemies);
+        }
+
+    }
+    else {
+        this->idle(map.size);
+    }
+}
+
+
 /*
 * Movement pattern when enemy spots player
 */
+/*
 void Enemy::seek(int p_row, int p_col)
 {
     //Not too happy with this randomization solution, but since enemy
@@ -421,3 +473,4 @@ void Enemy::seek(int p_row, int p_col)
         
     }
 }
+*/

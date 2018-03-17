@@ -7,6 +7,7 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 class Player;
+class Map;
 
 class Enemy
 {
@@ -24,10 +25,10 @@ class Enemy
         };
         
         Enemy(std::string en, int rw, int cl, int vi, int sz, int lvl);
-        void seek(int p_row, int p_col);
+        //void seek(int p_row, int p_col);
+        void seek(Player player, Map map, std::vector<Enemy> enemies);
         void idle(int m_size);
         int computeAttackPower(WINDOW *alert_window);
-        bool isValidMove(std::vector<Enemy> *enems, int p_row, int p_col);
         void deathEvents(std::vector<Enemy::Loot> *loot, WINDOW *win);
         void globalBuff(double mod);
         void globalDebuff(double mod);
@@ -37,6 +38,7 @@ class Enemy
         void printStatus(WINDOW *combat_window);
         void setBleedDamage(int damage, int rounds);
         void takeDamageOverTime(WINDOW *alert_window);
+        void setPosFromID(int id, int size);
 
         int row;
         int souls;
