@@ -83,7 +83,7 @@ Player::Player(std::string p_class)
     this->current_xp = 0;
     this->passive_health_regen_counter = 0;
     this->passive_health_regen_trigger = 50;
-    this->passive_health_regen_amount = 1;
+    this->passive_health_regen_amount = 0;
     this->inventory_index = 0;
     this->max_inventory_index = 2;
     this->souls_cap = 25;
@@ -796,7 +796,9 @@ bool Player::moveSpace(int direction, Map map, WINDOW *player_window, std::vecto
     if (map.isValidMove(this->row + row_mod, this->col + col_mod, enemies)) {
         this->row += row_mod;
         this->col += col_mod;
-        passiveHealthRegeneration(player_window);
+        if (this->passive_health_regen_amount > 0) {
+            passiveHealthRegeneration(player_window);  
+        }
         return true; 
     }
     return false;
