@@ -485,7 +485,7 @@ void mainGameLoop(Player *player, Map *map)
         switch(ch) {
             //player movement
             case KEY_UP: case KEY_DOWN: case KEY_LEFT: case KEY_RIGHT:
-                if(player->moveSpace(ch, map->size, player_status_window, enemies)) {
+                if(player->moveSpace(ch, *map, player_status_window, enemies)) {
                     player->used_moves++;
                     map->printPlayerInfo(*player, map_window);
                     //only prints if enemies won't also update and force a map print

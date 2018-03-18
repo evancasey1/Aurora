@@ -6,6 +6,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+class Map;
+
 class Player 
 {
     public:
@@ -24,7 +26,7 @@ class Player
         };
 
         Player(std::string race);
-        bool moveSpace(int direction, int map_size, WINDOW *player_window, std::vector<Enemy> enemies);
+        bool moveSpace(int direction, Map map, WINDOW *player_window, std::vector<Enemy> enemies);
         void setPosition(int r, int c);
         void printStatus(WINDOW *player_window);
         int computeAttackPower(Weapon weapon, WINDOW *alert_window);

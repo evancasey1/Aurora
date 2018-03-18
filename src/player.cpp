@@ -12,6 +12,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "color.h"
+#include "map.h"
 #include "equipmenttype.h"
 #include "weaponInstance.h"
 
@@ -771,30 +772,34 @@ void Player::passiveHealthRegeneration(WINDOW *player_window)
 }
 
 //Returns true if the movement was valid, false otherwise
-bool Player::moveSpace(int direction, int map_size, WINDOW *player_window, std::vector<Enemy> enemies)
+bool Player::moveSpace(int direction, Map map, WINDOW *player_window, std::vector<Enemy> enemies)
 {
+    int row_mod = 0;
+    int col_mod = 0;
     switch (direction) {
         case KEY_UP:
-            if (this->row == 0) return false;
-            this->row--;
+            row_mod = -1;
             break;
         case KEY_DOWN:
-            if (this->row == map_size-1) return false;
-            this->row++;
+            row_mod = 1;
             break;
         case KEY_LEFT:
-            if (this->col == 0) return false;
-            this->col--;
+            col_mod = -1;
             break;
         case KEY_RIGHT:
-            if (this->col == map_size-1) return false;
-            this->col++;
+            col_mod = 1;
             break;
         default:
             break;
     }
     
-    passiveHealthRegeneration(player_window);
-    return true;
+    if (map.isValidMove(this->row + row_mod, this->col + col_mod, enemies)) {
+        this->row += row_mod;
+        this->col += col_mod;
+        passiveHealthRegeneration(player_window);
+        return true; 
+    }
+    return false;
+    
 }
 

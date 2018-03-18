@@ -24,12 +24,6 @@ Map::Map(int s)
         for (int j = 0; j < s; j++) {
             r = (rand() % 2) + 45;
             (this->map + ((i * this->size) + j))->symbol = r;
-            //r = ((double) rand() / RAND_MAX);
-            /*
-            if (r < .002) {
-                (this->map + ((i * this->size) + j))->symbol = '%';
-            }
-            */
         }
     }
 }
