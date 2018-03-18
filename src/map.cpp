@@ -9,6 +9,7 @@
 
 Map::Map(int s) 
 {
+    double obstacle_spawn_rate = 0.05;
     this->size = s;
     this->player_symbol = '@';
     this->loot_symbol = '*';
@@ -22,10 +23,12 @@ Map::Map(int s)
     double r;
     for (int i = 0; i < s; i++) {
         for (int j = 0; j < s; j++) {
+            //generate ambient terrain
             r = (rand() % 2) + 45;
             (this->map + ((i * this->size) + j))->symbol = r;
+            //spawn obstacles
             r = ((double) rand() / RAND_MAX);
-            if (r < .05) {
+            if (r < obstacle_spawn_rate) {
                 (this->map + ((i * this->size) + j))->symbol = '#';
             }
             
@@ -111,7 +114,7 @@ void Map::printMap(Player *player, int vision, std::vector<Enemy> enemies, std::
         for (int j = col_min; j < col_max; j++) {
             to_add = this->getMapSectionFromIndex(i, j).symbol;
 
-            for (int k = 0; k < loot.size(); k++) {
+            for (size_t k = 0; k < loot.size(); k++) {
                 if (loot.at(k).row == i && loot.at(k).col == j) {
                     to_add = this->loot_symbol;
                 }

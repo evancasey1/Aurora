@@ -99,7 +99,7 @@ Player::Player(std::string p_class)
 
 int getLootIndex(std::vector<Enemy::Loot> *loot, long loot_id) 
 {
-    for (int i = 0; i < loot->size(); i++) {
+    for (size_t i = 0; i < loot->size(); i++) {
         if (loot->at(i).l_id == loot_id) {
             return i;
         }
@@ -247,7 +247,7 @@ void Player::printInventory(WINDOW *inv_window, int index, WINDOW *item_descript
             return;
     }
     
-    for (int i = 0; i < equipment.size(); i++) {
+    for (size_t i = 0; i < equipment.size(); i++) {
         if (counter == index) {
             wattron(inv_window, A_STANDOUT);
             boost::apply_visitor(Visitors::compare_to(current_equipped, item_description_window), equipment.at(i));
@@ -271,7 +271,7 @@ int findValidLootID(std::vector<Enemy::Loot> loot)
 {
     std::vector<int> used_ids;
     int new_id = 0;
-    for (int i = 0; i < loot.size(); i++) {
+    for (size_t i = 0; i < loot.size(); i++) {
         used_ids.push_back(loot.at(i).l_id);
     }
     while(true) {
@@ -439,7 +439,7 @@ void Player::printEquipped(WINDOW *inv_window, WINDOW *item_description_window, 
     wprintw(inv_window, "EQUIPPED ARMOR\n");
     wattroff(inv_window, A_BOLD);
 
-    for (int i = 0; i < this->equipped_armor.size(); i++) {
+    for (size_t i = 0; i < this->equipped_armor.size(); i++) {
         if (i == index) {
             wattron(inv_window, A_STANDOUT);
             this->equipped_armor.at(i).printDescription(item_description_window);

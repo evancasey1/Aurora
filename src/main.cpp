@@ -131,7 +131,7 @@ void slowCombat(Player *player, Enemy *enemy)
 */
 bool enemyAtLocation(int row, int col, std::vector<Enemy> enemies)
 {
-    for (int i = 0; i < enemies.size(); i++) {
+    for (size_t i = 0; i < enemies.size(); i++) {
         if (enemies.at(i).row == row && enemies.at(i).col == col) {
             return true;
         }
@@ -155,7 +155,7 @@ void removeDespawnableLootContainers()
 
 void updateLootDespawn() 
 {
-    for (int i = 0; i < loot.size(); i++) {
+    for (size_t i = 0; i < loot.size(); i++) {
         loot.at(i).despawn_counter++;
     }
     removeDespawnableLootContainers();
@@ -163,20 +163,20 @@ void updateLootDespawn()
 
 bool removeLootByItemIndex(int it_id) 
 {
-    for (int i = 0; i < loot.size(); i++) {
-        for (int w = 0; w < loot.at(i).weapons.size(); w++) {
+    for (size_t i = 0; i < loot.size(); i++) {
+        for (size_t w = 0; w < loot.at(i).weapons.size(); w++) {
             if (loot.at(i).weapons.at(w).item_id == it_id) {
                 loot.at(i).weapons.erase(loot.at(i).weapons.begin() + w);
                 return true;
             }
         }
-        for (int f = 0; f < loot.at(i).food.size(); f++) {
+        for (size_t f = 0; f < loot.at(i).food.size(); f++) {
             if (loot.at(i).food.at(f).item_id == it_id) {
                 loot.at(i).food.erase(loot.at(i).food.begin() + f);
                 return true;
             }
         }
-        for (int a = 0; a < loot.at(i).armor.size(); a++) {
+        for (size_t a = 0; a < loot.at(i).armor.size(); a++) {
             if (loot.at(i).armor.at(a).item_id == it_id) {
                 loot.at(i).armor.erase(loot.at(i).armor.begin() + a);
                 return true;
@@ -192,7 +192,7 @@ void printLoot(std::vector<boost::variant<Weapon, Food, Armor>> allLoot, int cur
     wclear(inventory_window);
     
     wprintw(inventory_window, "[%d/%d]\n", screen_index, max_screens);
-    for (int i = loot_items_per_screen * screen_index; i < (loot_items_per_screen * screen_index) + loot_items_per_screen && i < allLoot.size(); i++) {
+    for (size_t i = loot_items_per_screen * screen_index; i < (loot_items_per_screen * screen_index) + loot_items_per_screen && i < allLoot.size(); i++) {
         if (i == cursor_index) {
             wattron(inventory_window, A_STANDOUT);
         }
@@ -221,7 +221,7 @@ void manageLoot(Player *player, int loot_row, int loot_col)
     int max_screens;
     int ch;
 
-    for (int i = 0; i < loot.size(); i++) {
+    for (size_t i = 0; i < loot.size(); i++) {
         if (loot.at(i).row == loot_row && loot.at(i).col == loot_col) {
             allLoot.insert(allLoot.end(), loot.at(i).weapons.begin(), loot.at(i).weapons.end());
             allLoot.insert(allLoot.end(), loot.at(i).food.begin(), loot.at(i).food.end());
@@ -322,13 +322,12 @@ void deleteDefeatedEnemies(std::vector<Enemy> *enemies) {
 
 void spawnEnemy(std::vector<Enemy> *enemies, Player *player, Map *map) {
     static const std::string ENEMY_NAMES[] = {"Kobold", "Bear", "Wolf", "Specter", "Undead", "Graverobber"};
-    int spawn_denominator = 100;
-    int enemy_spawn_rate = 25;
+    double enemy_spawn_rate = 0.25;
     unsigned int max_enemies = 10;
     int num_enemies = sizeof(ENEMY_NAMES) / sizeof(*ENEMY_NAMES);
-    int rng = (rand() % spawn_denominator);
+    double rng = ((double)rand() / RAND_MAX);
     
-    if (rng <= enemy_spawn_rate && (enemies->size() < max_enemies)) {
+    if (rng <= enemy_spawn_rate && (static_cast<int>(enemies->size()) < max_enemies)) {
         int enemy_index = (rand() % num_enemies);
         std::string e_name = ENEMY_NAMES[enemy_index];
         Enemy tempE(e_name, player->row, player->col, player->vision, map->size, player->level);
@@ -402,20 +401,20 @@ void printTitle()
 
 void enemyNightBuff(std::vector<Enemy> *enemies)
 {
-    for (int i = 0; i < enemies->size(); i++) {
+    for (size_t i = 0; i < enemies->size(); i++) {
         enemies->at(i).globalBuff(enemies->at(i).nightbuff_multiplier);
     }
 }
 
 void enemyDayDebuff(std::vector<Enemy> *enemies)
 {
-    for (int i = 0; i < enemies->size(); i++) {
+    for (size_t i = 0; i < enemies->size(); i++) {
         enemies->at(i).globalDebuff(enemies->at(i).nightbuff_multiplier);
     }
 }
 
 Enemy* getEnemyFromLocation(int row, int col, std::vector<Enemy> *enemies) {
-    for (int i = 0; i < enemies->size(); i++) {
+    for (size_t i = 0; i < enemies->size(); i++) {
         if (enemies->at(i).row == row && enemies->at(i).col == col) {
             return &(enemies->at(i));
         }
