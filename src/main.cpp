@@ -114,6 +114,9 @@ void slowCombat(Player *player, Enemy *enemy)
                 wrefresh(alert_window);
                 break;
             case 'r':
+                wprintw(alert_window, "%s attacks as you run away.\n", (enemy->name).c_str());
+                wrefresh(alert_window);
+                enemy->attack(player, alert_window);
                 inCombat = false;
                 break;
             default:
