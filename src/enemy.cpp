@@ -350,7 +350,7 @@ void Enemy::idle(Map map, std::vector<Enemy> enemies)
     for (int i = 0; i < this->idle_moves; i++) {
         row_mod = 0;
         col_mod = 0;
-        move = (rand() % 5);
+        move = (rand() % 4);
         switch (move) {
             case 0:
                 row_mod = 1;
