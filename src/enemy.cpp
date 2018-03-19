@@ -9,6 +9,7 @@
 #include <cmath>
 #include <math.h>
 #include <queue>
+#include <algorithm>
 #include "enemy.h"
 #include "color.h"
 #include "player.h"
@@ -384,6 +385,7 @@ void Enemy::seek(Player player, Map map, std::vector<Enemy> enemies)
     int p_row = player.row;
     int p_col = player.col;
     int mods[] = {1, -1, map.size, -map.size}; //right, left, down, up
+    std::random_shuffle(std::begin(mods), std::end(mods)); //shuffle to get some diversity of movement
     int e_node = map.getSectionID(this->row, this->col);
     int p_node = map.getSectionID(p_row, p_col);
     int current;
