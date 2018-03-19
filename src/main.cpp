@@ -69,6 +69,7 @@ void slowCombat(Player *player, Enemy *enemy)
     int p_speed;
     int e_speed;
     int n_speeds = 6;
+    int run_grace_period = 3;
     enemy->printStatus(combat_window);
     wprintw(alert_window, "Attacking %s.\n", (enemy->name).c_str());
     wrefresh(alert_window);
@@ -117,6 +118,7 @@ void slowCombat(Player *player, Enemy *enemy)
                 wprintw(alert_window, "%s attacks as you run away.\n", (enemy->name).c_str());
                 wrefresh(alert_window);
                 enemy->attack(player, alert_window);
+                enemy->setPassive(run_grace_period);
                 inCombat = false;
                 break;
             default:

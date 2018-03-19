@@ -83,6 +83,7 @@ Enemy::Enemy(std::string e_name, int p_row, int p_col, int p_vision, int map_siz
     this->bleed_rounds = 0;
     this->is_stunned = false;
     this->attacking = false;
+    this->passive_turns = 0;
 
     this->total_health = std::ceil(this->total_health * std::pow(this->level_up_multiplier_health, e_level));
     this->attack_power = std::ceil(this->attack_power * std::pow(this->level_up_multiplier_damage, e_level));
@@ -237,6 +238,11 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
     wrefresh(alert_win);
 }
 
+void Enemy::setPassive(int turns)
+{
+    this->passive_turns = turns;
+}
+
 void Enemy::setBleedDamage(int damage, int rounds) 
 {
     this->bleed_damage += damage;
@@ -383,6 +389,12 @@ void Enemy::setPosFromID(int id, int size)
 
 void Enemy::seek(Player player, Map map, std::vector<Enemy> enemies)
 {
+    //If enemy is not currently passive
+    if (this->passive_turns > 0) {
+        this->attacking = false;
+        this->passive_turns--;
+        return;
+    }
     std::vector<int> trail(map.size * map.size, -1);
     std::queue<int> search_queue;
     int p_row = player.row;

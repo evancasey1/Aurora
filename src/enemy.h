@@ -39,6 +39,7 @@ class Enemy
         void setBleedDamage(int damage, int rounds);
         void takeDamageOverTime(WINDOW *alert_window);
         void setPosFromID(int id, int size);
+        void setPassive(int turns);
 
         int row;
         int souls;
@@ -72,6 +73,7 @@ class Enemy
         double bleed_resist;
         int bleed_damage;
         int bleed_rounds;
+        int passive_turns;
         bool is_stunned;
         bool attacking;
 
