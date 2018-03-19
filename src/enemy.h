@@ -27,7 +27,7 @@ class Enemy
         Enemy(std::string en, int rw, int cl, int vi, int sz, int lvl);
         //void seek(int p_row, int p_col);
         void seek(Player player, Map map, std::vector<Enemy> enemies);
-        void idle(int m_size);
+        void idle(Map map, std::vector<Enemy> enemies);
         int computeAttackPower(WINDOW *alert_window);
         void deathEvents(std::vector<Enemy::Loot> *loot, WINDOW *win);
         void globalBuff(double mod);

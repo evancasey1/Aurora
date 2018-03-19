@@ -340,35 +340,38 @@ void Enemy::setInCombat(bool toggle)
 /*
 * Movement pattern when enemy does not spot player
 */
-void Enemy::idle(int map_size)
+void Enemy::idle(Map map, std::vector<Enemy> enemies)
 {
     //move a random direction or stay still
     int move;
+    int row_mod = 0;
+    int col_mod = 0;
     this->attacking = false;
     for (int i = 0; i < this->idle_moves; i++) {
-        move = (rand() % 6);
+        row_mod = 0;
+        col_mod = 0;
+        move = (rand() % 5);
         switch (move) {
             case 0:
-                this->row++;
+                row_mod = 1;
                 break;
             case 1:
-                this->row--;
+                row_mod = -1;
                 break;
             case 2:
-                this->col++;
+                col_mod = 1;
                 break;
             case 3:
-                this->col--;
+                col_mod = -1;
                 break;
             default:
                 break;
         }
         //bounding logic
-        if (this->row >= map_size) this->row--;
-        else if (this->row < 0) this->row++;
-
-        if (this->col >= map_size) this->col--;
-        else if (this->col < 0) this->col++;
+        if (map.isValidMove(this->row + row_mod, this->col + col_mod, enemies)) {
+            this->row += row_mod;
+            this->col += col_mod;
+        }
     }
 }
 
@@ -429,6 +432,6 @@ void Enemy::seek(Player player, Map map, std::vector<Enemy> enemies)
 
     }
     else {
-        this->idle(map.size);
+        this->idle(map, enemies);
     }
 }

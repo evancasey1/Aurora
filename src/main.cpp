@@ -365,16 +365,18 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
                 e.alert_player = true;
                 e.setInCombat(false);
             }
-            e.idle(map->size);
+            e.idle(*map, *enemies);
         }
         if (e.attacking) {
             map->printMap(player, player->vision, *enemies, loot, map_window);
             slowCombat(player, &e);
+            deleteDefeatedEnemies(enemies);
+            map->printMap(player, player->vision, *enemies, loot, map_window);
         }
         index++;
     }
 
-    deleteDefeatedEnemies(enemies);
+    //deleteDefeatedEnemies(enemies);
     player->setInCombatCheck(*enemies);
     spawnEnemy(enemies, player, map);
 
