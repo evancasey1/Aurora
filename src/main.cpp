@@ -354,6 +354,12 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
     double distance;
     wattron(alert_window, Color::RedBlack); //turn on enemy color scheme while enemy events are active
     for (auto &e : *enemies) {
+        e.takeDamageOverTime(alert_window);
+        if (e.current_health < 0) {
+            wprintw(alert_window, "%s has bled out.", (e.name).c_str());
+            wrefresh(alert_window);
+            continue;
+        }
         distance = getDistance(player->col, player->row, e.col, e.row);
         if (distance <= (double) e.vision) {
             e.seek(*player, *map, *enemies);
@@ -381,7 +387,7 @@ void enemyEvents(Player *player, Map *map, std::vector<Enemy> *enemies)
         index++;
     }
 
-    //deleteDefeatedEnemies(enemies);
+    deleteDefeatedEnemies(enemies);
     player->setInCombatCheck(*enemies);
     spawnEnemy(enemies, player, map);
 
