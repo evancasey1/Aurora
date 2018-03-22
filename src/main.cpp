@@ -558,6 +558,7 @@ void mainGameLoop(Player *player, Map *map)
             }
             if (!passive_turn) {
                 player->foodEvents();
+                player->printStatus(player_status_window);
             }
             enemyEvents(player, map, &enemies);
             player->used_moves = 0;

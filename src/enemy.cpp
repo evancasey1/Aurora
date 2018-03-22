@@ -206,10 +206,10 @@ void Enemy::deathEvents(std::vector<Loot> *loot, WINDOW *alert_win)
             
             if (this->name == "Wolf") {
                 //Food(std::string name, int initial_health_gain, int health_gain_per_trigger, int turns_until_trigger, int total_triggers);
-                loot_obj.food.push_back(Food("Wolf Meat", 4, 1, 5, 3));
+                loot_obj.food.push_back(Food("Wolf Meat", 4, 1, 3));
             }
             else if (this->name == "Bear") {
-                loot_obj.food.push_back(Food("Bear Meat", 6, 2, 4, 2));
+                loot_obj.food.push_back(Food("Bear Meat", 6, 2, 2));
             }
             else {
                 if ((rand() % 2) == 0) {
