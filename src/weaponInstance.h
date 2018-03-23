@@ -80,7 +80,7 @@ class Sword : public Weapon
             this->type = "P";
             this->name = "Sword";
             this->damage = 3;
-            this->damage_range = 3;
+            this->damage_range = 1;
             this->level = level;
             this->item_id = item_id_counter++;
             is_primary = true;
@@ -102,8 +102,8 @@ class Mace : public Weapon
             extern int item_id_counter;
             this->type = "P";
             this->name = "Mace";
-            this->damage = 5;
-            this->damage_range = 3;
+            this->damage = 4;
+            this->damage_range = 1;
             this->level = level;
             this->item_id = item_id_counter++;
             is_primary = true;
@@ -125,8 +125,8 @@ class Flail : public Weapon
             extern int item_id_counter;
             this->type = "P";
             this->name = "Flail";
-            this->damage = 3;
-            this->damage_range = 4;
+            this->damage = 2;
+            this->damage_range = 3;
             this->level = level;
             this->item_id = item_id_counter++;
             is_primary = true;
@@ -148,8 +148,8 @@ class Halberd : public Weapon
             extern int item_id_counter;
             this->type = "PS";
             this->name = "Halberd";
-            this->damage = 6;
-            this->damage_range = 3;
+            this->damage = 5;
+            this->damage_range = 2;
             this->level = level;
             this->item_id = item_id_counter++;
             is_primary = true;
