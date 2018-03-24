@@ -6,4 +6,5 @@ src/main.o
 src/weapon.o
 src/food.o
 src/armor.o
+src/attack.o
 src/aurora
