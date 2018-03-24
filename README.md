@@ -7,7 +7,7 @@
 </ul>
 
 ## STATUS
-<TEMPORARILY ON HOLD>
+### TEMPORARILY ON HOLD
 Pre-Alpha: No major gamebreaking bugs, not feature-complete, no end objectives (yet), little testing cross platform.
 
 ## Description
