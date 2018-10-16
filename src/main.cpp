@@ -722,20 +722,6 @@ void inititializeColorPairs()
 int main(int argc, char *argv[]) 
 {
     //Map map;
-    /*
-    *This
-    *Comment
-    *Is
-    *A
-    *Test
-    *For
-    *Block
-    *Comments
-    *In
-    *Another
-    *Project
-    *14 lines added
-    */
     srand((int)time(0));
 
     initscr();
